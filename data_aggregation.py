@@ -6,13 +6,7 @@ import numpy as np
 from sklearn.cluster import DBSCAN
 import os
 import pandas as pd
-cnt = 0
-with open("""D:\dalnloud\Wyklad1\london-device-id-lookup.txt""",'rb') as ffile:
-	for row in ffile:
-		cnt += 1
-		print(cnt)
-print(cnt)
-brr
+
 save_dir = "OUTPUT_DIR"
 in_path = "INPUT_PATH"  # STOPS DETECTED
 df_sel = TrajectoriesFrame(in_path, {'names': ['columns'], 'delimiter': ',', 'skiprows': 1})  # LOAD DATA
