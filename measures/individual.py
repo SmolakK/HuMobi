@@ -267,7 +267,7 @@ def _real_entropy(indi, gs):
 	return indi, np.power(np.mean(matchfinder(gs)), -1) * np.log2(len(gs))
 
 
-def _real_scalling_entropy(indi, trace):
+def _real_scalling_entropy(indi, trace, estimation_method='unc'):
 	"""
 	Calculates actual antropy for trajectories. If trajectory has missing data, uses estimation. Uncorrelated entropy-based
 	estimation is used.
@@ -283,10 +283,13 @@ def _real_scalling_entropy(indi, trace):
 	scaling_features = []
 	uncs = []
 	real_qs = []
-	visit_freq = trace.value_counts() / trace.shape[0]  # FOR UNCORRELATED ENTROPY-BASED ESTIMATION
-	# Sunc_baseline = np.power(np.mean(matchfinder(trace.sample(frac=1).reset_index(drop=True))), -1) * \
-	#                 np.log2(len(trace.sample(frac=1).reset_index(drop=True)))  # FOR SHUFFLED TRAJECTORY-BASED ESTIMATION
-	Sunc_baseline = -np.sum(visit_freq * np.log2(visit_freq))  # FOR UNCORRELATED ENTROPY-BASED ESTIMATION
+	if estimation_method == 'unc':
+		visit_freq = trace.value_counts() / trace.shape[0]  # FOR UNCORRELATED ENTROPY-BASED ESTIMATION
+		Sunc_baseline = -np.sum(visit_freq * np.log2(visit_freq))  # FOR UNCORRELATED ENTROPY-BASED ESTIMATION
+	elif estimation_method == 'shuff':
+		Sunc_baseline = np.power(np.mean(matchfinder(trace.sample(frac=1).reset_index(drop=True))), -1) * \
+		                np.log2(len(
+			                trace.sample(frac=1).reset_index(drop=True)))  # FOR SHUFFLED TRAJECTORY-BASED ESTIMATION
 	for q in range_to_empty[1:]:
 		trace_copy2 = trace.copy()
 		points_to_remove = sample(set(trace_copy2[~trace_copy2.isnull()].index),
@@ -294,16 +297,17 @@ def _real_scalling_entropy(indi, trace):
 		trace_copy2.loc[points_to_remove] = None
 		Strue = np.power(np.mean(matchfinder(trace_copy2)), -1) * np.log2(len(trace_copy2))
 		trace_shuffled = trace_copy2.sample(frac=1).reset_index(drop=True)
-		visit_freq = trace_copy2.value_counts() / trace_copy2.shape[0]  # FOR UNCORRELATED ENTROPY-BASED ESTIMATION
-		Sunc = -np.sum(visit_freq * np.log2(visit_freq))  # FOR UNCORRELATED ENTROPY-BASED ESTIMATION
-		# Sunc = np.power(np.mean(matchfinder(trace_shuffled)), -1) * np.log2(len(trace_shuffled)) # FOR SHUFFLED TRAJECTORY-BASED ESTIMATION
+		if estimation_method == 'unc':
+			visit_freq = trace_copy2.value_counts() / trace_copy2.shape[0]  # FOR UNCORRELATED ENTROPY-BASED ESTIMATION
+			Sunc = -np.sum(visit_freq * np.log2(visit_freq))  # FOR UNCORRELATED ENTROPY-BASED ESTIMATION
+		elif estimation_method == 'shuff':
+			Sunc = np.power(np.mean(matchfinder(trace_shuffled)), -1) * np.log2(len(trace_shuffled)) # FOR SHUFFLED TRAJECTORY-BASED ESTIMATION
 		scaling_features.append(np.log2(Strue / Sunc))
-		# scaling_features.append((Sunc - Sunc_baseline) / Sunc_baseline)  # FOR ERROR BASED ESTIMATION
 		uncs.append(Sunc)
 		real_qs.append(sum(trace_copy2.isnull()) / len(trace_copy2))
 	try:
 		popt, pcov = curve_fit(_fit_func, real_qs, scaling_features, maxfev=12000, p0=[0.1, 2, 0.1])
-		if sum(scaling_features) == 0 and r2_score(scaling_features,[fit_func(x,*popt) for x in real_qs]) < .9:
+		if sum(scaling_features) == 0 and r2_score(scaling_features, [fit_func(x, *popt) for x in real_qs]) < .9:
 			a, b = np.polyfit(real_qs, scaling_features, 1)
 			return indi, np.power(2, b) * Sunc_baseline
 		else:
@@ -366,3 +370,159 @@ def real_predictability(trajectories_frame):
 	real_ent = real_entropy(trajectories_frame)
 	merged = pd.DataFrame([distinct_locations, real_ent], index=['locations', 'entropy'])
 	return merged.progress_apply(lambda x: fano_inequality(x['locations'], x['entropy'])), real_ent
+
+
+def stationarity(trajectories_frame):
+	"""
+	Calculates the stationarity according to Teixeira et al. (2019) as the average stay length in the location.
+	:param trajectories_frame: TrajectoriesFrame class object
+	:return: a Series with stationarity values for each user
+	"""
+	stationarity_frame = trajectories_frame.labels.groupby(level=0).apply(
+		lambda x: x.groupby((x != x.shift()).cumsum()).size()-1)
+	stationarity_frame = stationarity_frame.groupby(level=0).sum()
+	size_frame = trajectories_frame.groupby(level=0).size()
+	return stationarity_frame/size_frame
+
+
+def regularity(trajectories_frame):
+	"""
+	Calculates the regularity according to Teixeira et al. (2019) as the ratio of sequence lenght and the number of
+	unique symbols
+	:param trajectories_frame: TrajectoriesFrame class object
+	:return: a Series with regularity values for each user
+	"""
+	regul = trajectories_frame.groupby(level=0).progress_apply(lambda x: len(x)) / num_of_distinct_locations(
+		trajectories_frame)
+	return regul
+
+
+def _repeatability_dense(indi, S1, S2):
+	S1 = S1.values
+	S2 = S2.values
+	return indi, _repeatfinder_dense(S1, S2)
+
+
+def _repeatability_sparse(indi, S1, S2):
+	S1 = S1.values
+	S2 = S2.values
+	return indi, _repeatfinder_sparse(S1, S2)
+
+
+def _repeatability_equally_sparse(indi, S1, S2):
+	S1 = S1.values
+	S2 = S2.values
+	return indi, _repeatfinder_equally_sparse(S1,S2)
+
+
+def _global_alignment(indi, S1, S2):
+	S1 = S1.values
+	S2 = S2.values
+	return indi, _global_align(S1, S2)
+
+
+def _iterative_global_alignment(indi, S1, S2):
+	S1 = S1.values
+	S2 = S2.values
+	return indi, _iterative_global_align(S1, S2)
+
+
+def repeatability_sparse(train_frame, test_frame):
+	"""
+	Calculates the sparse repeatability metric proposed in the paper Smolak et al. (2022) as the number of
+	transitions repeating in two sequences in the same order. Matched transitions can be separated by a gap of any size.
+	Returns normalised values.
+	:param train_frame: TrajectoriesFrame class object with the training data
+	:param test_frame:TrajectoriesFrame class object with the test data
+	:return: a Series with sparse repeatability values for each user
+	"""
+	result_dic = {}
+	with cf.ThreadPoolExecutor() as executor:
+		args_train = [val.labels for indi, val in train_frame.groupby(level=0)]
+		args_test = [val.labels for indi, val in test_frame.groupby(level=0)]
+		ids = [indi for indi, val in test_frame.groupby(level=0)]
+		results = list(tqdm(executor.map(_repeatability_sparse, ids, args_train, args_test), total=len(ids)))
+	for result in results:
+		result_dic[result[0]] = result[1]
+	return pd.Series(np.fromiter(result_dic.values(), dtype=float), index = np.fromiter(result_dic.keys(), dtype = int))
+
+
+def repeatability_dense(train_frame, test_frame):
+	"""
+		Calculates the dense repeatability metric proposed in the paper Smolak et al. (2022) as the number of
+		transitions repeating in two sequences in the same order. Matched transitions cannot be separated by a gap.
+		Returns normalised values.
+		:param train_frame: TrajectoriesFrame class object with the training data
+		:param test_frame:TrajectoriesFrame class object with the test data
+		:return: a Series with dense repeatability values for each user
+		"""
+	result_dic = {}
+	with cf.ThreadPoolExecutor() as executor:
+		args_train = [val.labels for indi, val in train_frame.groupby(level=0)]
+		args_test = [val.labels for indi, val in test_frame.groupby(level=0)]
+		ids = [indi for indi, val in test_frame.groupby(level=0)]
+		results = list(tqdm(executor.map(_repeatability_dense, ids, args_train, args_test), total=len(ids)))
+	for result in results:
+		result_dic[result[0]] = result[1]
+	return pd.Series(np.fromiter(result_dic.values(), dtype=float), index=np.fromiter(result_dic.keys(), dtype=int))
+
+
+def repeatability_equally_sparse(train_frame, test_frame):
+	"""
+	Calculates the equally sparse repeatability metric proposed in the paper Smolak et al. (2022) as the number of
+	transitions repeating in two sequences in the same order. Matched transitions can be separated by a gap of any size.
+	Matched transitions HAVE TO BE spearated by the gap of the same size.
+	Returns normalised values.
+	:param train_frame: TrajectoriesFrame class object with the training data
+	:param test_frame:TrajectoriesFrame class object with the test data
+	:return: a Series with equally sparse repeatability values for each user
+	"""
+	result_dic = {}
+	with cf.ThreadPoolExecutor() as executor:
+		args_train = [val.labels for indi, val in train_frame.groupby(level=0)]
+		args_test = [val.labels for indi, val in test_frame.groupby(level=0)]
+		ids = [indi for indi, val in test_frame.groupby(level=0)]
+		results = list(tqdm(executor.map(_repeatability_equally_sparse, ids, args_train, args_test), total=len(ids)))
+	for result in results:
+		result_dic[result[0]] = result[1]
+	return pd.Series(np.fromiter(result_dic.values(), dtype=float), index = np.fromiter(result_dic.keys(), dtype = int))
+
+
+def global_alignment(train_frame, test_frame):
+	"""
+	Calculates the global alignment metric proposed in the paper Smolak et al. (2022) through the application of the
+	Needleman-Wunsch algorithm on sequences for pairwise matching.
+	Returns normalised values.
+	:param train_frame: TrajectoriesFrame class object with the training data
+	:param test_frame: TrajectoriesFrame class object with the test data
+	:return: a Series with global alginment metric values for each user
+	"""
+	result_dic = {}
+	with cf.ThreadPoolExecutor() as executor:
+		args_train = [val.labels for indi, val in train_frame.groupby(level=0)]
+		args_test = [val.labels for indi, val in test_frame.groupby(level=0)]
+		ids = [indi for indi, val in test_frame.groupby(level=0)]
+		results = list(tqdm(executor.map(_global_alignment, ids, args_train, args_test), total=len(ids)))
+	for result in results:
+		result_dic[result[0]] = result[1]
+	return pd.Series(np.fromiter(result_dic.values(), dtype=float), index = np.fromiter(result_dic.keys(), dtype = int))
+
+
+def iterative_global_alignment(train_frame, test_frame):
+	"""
+	Calculates the iterative global alignment metric proposed in the paper Smolak et al. (2022) through the application 
+	of the Needleman-Wunsch algorithm on sequences for pairwise matching with the iterative approach.
+	Returns normalised values.
+	:param train_frame: TrajectoriesFrame class object with the training data
+	:param test_frame: TrajectoriesFrame class object with the test data
+	:return: a Series with global alginment metric values for each user
+	"""
+	result_dic = {}
+	with cf.ThreadPoolExecutor() as executor:
+		args_train = [val.labels for indi, val in train_frame.groupby(level=0)]
+		args_test = [val.labels for indi, val in test_frame.groupby(level=0)]
+		ids = [indi for indi, val in test_frame.groupby(level=0)]
+		results = list(tqdm(executor.map(_iterative_global_alignment, ids, args_train, args_test), total=len(ids)))
+	for result in results:
+		result_dic[result[0]] = result[1]
+	return pd.Series(np.fromiter(result_dic.values(), dtype=float), index = np.fromiter(result_dic.keys(), dtype = int))
