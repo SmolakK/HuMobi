@@ -1,6 +1,6 @@
 # HuMobi
  
-This is HuMobi library. It is a dedicated Python library for human mobility data processing. It mostly extends Pandas
+This is the HuMobi library. It is a dedicated Python library for human mobility data processing. It mostly extends Pandas
 DataFrames and Geopandas GeoDataFrames. Check three example files for data_aggregation, data_preprocessing, and
 data_statistics.
 
