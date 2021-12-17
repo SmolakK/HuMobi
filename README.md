@@ -8,8 +8,13 @@ The basic class is TrajectoriesFrame - used to load and store the mobility data.
 structures directory.
 
 Measures contains individual and collective measures for human mobility.
+
 Misc contains useful functions for data processing.
+
 Models contains human mobility models. Currently under development.
+
 Predictors contains next-place prediction methods, Markov Chains, deep-learning and shallow-learning models.
+
 Preprocessing contains methods for data aggregation and filtering.
+
 Tools contains useful tools for data processing.
