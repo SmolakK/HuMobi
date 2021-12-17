@@ -4,7 +4,7 @@ import sys
 sys.path.append("..")
 import pandas as pd
 from numba import cuda, jit
-from math import ceil, floot
+from math import ceil, floor
 from tqdm import tqdm
 from itertools import repeat
 import concurrent.futures as cf
