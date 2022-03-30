@@ -3,12 +3,25 @@ import sys
 
 sys.path.append("..")
 import pandas as pd
+from scipy.optimize import fsolve
 from numba import cuda, jit
 from math import ceil, floor
 from tqdm import tqdm
 from itertools import repeat
 import concurrent.futures as cf
 from Bio import pairwise2
+
+
+def normalize_chain(dicto):
+	"""
+	Normalizes dictionary values. Used for the Markov Chain normalization.
+	:param dicto: dictionary to normalize
+	:return: normalized dictionary
+	"""
+	total = 1 / float(np.sum(list(dicto.values())))
+	for k, v in dicto.items():
+		dicto[k] = v * total
+	return dicto
 
 
 def get_diags(a):
@@ -260,6 +273,37 @@ def _iterative_global_align(s1, s2):
 			break  # if sequence for search does not consist of at least two symbols - stop
 	return sum(all_match) / (len(two) - 1)
 
+
+def _equally_sparse_match(s1, s2):
+	if len(s1) > len(s2):
+		return None
+	matrix = np.zeros((len(s1), len(s2)))  # prepare matrix for results
+	for i in range(len(s1)):
+		for j in range(len(s2)):
+			if s1[i] == s2[j]:
+				if i == 0 or j == 0:  # if matched symbols are at the start of the sequence
+					matrix[i][j] += 1  # if symbols matched - add 1
+				else:
+					matrix[i][j] = 1  # if symbols matched - add 1
+	s2_indi = (np.vstack(
+		[np.arange(matrix.shape[1]) + 1 for x in range(matrix.shape[0])])) * matrix # convert matched 1's into indices
+	s1_indi = (np.hstack(
+		[np.expand_dims(np.arange(matrix.shape[0]),axis=1)+1 for x in range(matrix.shape[1])]))*matrix
+	s2diags = get_diags(s2_indi)  # get all diagonals
+	s1diags = get_diags(s1_indi)
+	if sum([sum(x) for x in s2diags]) == 0:
+		return None
+	nonzero_s2 = [[y-1 for y in x if y != 0] for x in s2diags if sum(x) > 0]  # filter out empty lists
+	nonzero_s1 = [[len(s1)-y+1 for y in x if y != 0] for x in s1diags if sum(x) > 0] # filter out empty lists
+	# nonzero_s2 = [x for x in nonzero_s2 if len(x) >= 2]
+	# nonzero_s1 = [x for x in nonzero_s1 if len(x) >= 2]
+	matches = []
+	for x, y in zip(nonzero_s1, nonzero_s2):
+		if y[-1] + x[-1] < len(s2):
+			matched_pattern = [(int(-w), s2[int(z)]) for z, w in zip(y, x)]
+			next_symbol = s2[int(y[-1] + x[-1])]
+			matches.append((matched_pattern, next_symbol))
+	return matches
 
 def fano_inequality(distinct_locations, entropy):
 	"""

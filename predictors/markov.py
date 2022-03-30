@@ -101,7 +101,7 @@ class MarkovChain(object):
 					break
 				if len(lower_state) == 0:
 					return -1
-			temp_model = self.build_single(self.sequence, lower_state_size, lower_state)  # builds temporal, smaller model
+			temp_model = build_single(self.sequence, lower_state_size, lower_state)  # builds temporal, smaller model
 			transit = normalize_chain(temp_model[lower_state])
 		else:
 			transit = normalize_chain(self.model[state])  # normalize chain

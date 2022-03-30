@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4d672d87-12d3-4fe6-8639-f959ea66a97a" name="Default Changelist" comment="" />
+    <list default="true" id="4d672d87-12d3-4fe6-8639-f959ea66a97a" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/predictors/sparse.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/frame_tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/misc/generators.py" beforeDir="false" afterPath="$PROJECT_DIR$/misc/generators.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/misc/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/misc/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predictors/markov.py" beforeDir="false" afterPath="$PROJECT_DIR$/predictors/markov.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predictors/wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/predictors/wrapper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/structures/trajectory.py" beforeDir="false" afterPath="$PROJECT_DIR$/structures/trajectory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/user_statistics.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/user_statistics.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,7 +33,7 @@
   <component name="ProjectId" id="1t1iU6wE14y1cCZnNeUUxbKLoMT" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../HuMobi2" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../covid19" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunDashboard">
@@ -36,7 +48,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.EPJpaper">
+  <component name="RunManager" selected="Python.prediction_test">
     <configuration name="EPJpaper" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="SR_EntropyProbs" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -100,6 +112,69 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="prediction_test" type="PythonConfigurationType" factoryName="Python" singleton="false" temporary="true">
+      <module name="SR_EntropyProbs" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\kamil\.conda\envs\HuMobiDeep\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/prediction_test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="smbco" type="PythonConfigurationType" factoryName="Python" singleton="false" temporary="true">
+      <module name="SR_EntropyProbs" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\kamil\.conda\envs\HuMobiDeep\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/smbco.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="wrapper" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="SR_EntropyProbs" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\kamil\.conda\envs\HuMobiDeep\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/predictors" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/predictors/wrapper.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="Tox" factoryName="Tox">
       <module name="HuMobi_alpha" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -146,9 +221,15 @@
     <list>
       <item itemvalue="Python.data_aggregation" />
       <item itemvalue="Python.EPJpaper" />
+      <item itemvalue="Python.smbco" />
+      <item itemvalue="Python.prediction_test" />
+      <item itemvalue="Python.wrapper" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.prediction_test" />
+        <item itemvalue="Python.smbco" />
+        <item itemvalue="Python.wrapper" />
         <item itemvalue="Python.EPJpaper" />
         <item itemvalue="Python.data_aggregation" />
       </list>
@@ -198,7 +279,25 @@
           <line>1028</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/prediction_test.py</url>
+          <line>25</line>
+          <option name="timeStamp" value="501" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="s1" language="Python" />
+        <watch expression="s2" language="Python" />
+        <watch expression="x" language="Python" />
+        <watch expression="y" language="Python" />
+        <watch expression="s2[int(y[-1] + x[-1])]" language="Python" />
+        <watch expression="seq.labels.values[-1]" language="Python" />
+        <watch expression="SMC" language="Python" />
+        <watch expression="S[[x[0] for x in cases]]" language="Python" />
+        <watch expression="[x[1] for x in cases]" language="Python" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

@@ -9,8 +9,12 @@ import warnings
 def infer_datetime(trajectories_frame):
 	"""
 	This function infers the timestamp column index.
-	:param trajectories_frame: TrajectoriesFrame class object
-	:return: date column index and time column index or datetime column index
+
+	Args:
+		trajectories_frame (TrajectoriesFrame): TrajectoriesFrame class object
+
+	Returns:
+		date column index and time column index or datetime column index
 	"""
 	single_row = trajectories_frame.head(1)
 	date_col = None
@@ -35,8 +39,12 @@ def infer_datetime(trajectories_frame):
 def infer_geometry(trajectories_frame):
 	"""
 	This function infers the index of column with geometry
-	:param trajectories_frame: TrajectoriesFrame class object
-	:return: geometry column index
+	
+	Args:
+		trajectories_frame (TrajectoriesFrame): TrajectoriesFrame class object
+	
+	Returns:
+		geometry column index
 	"""
 	latitude_column = None
 	longitude_column = None

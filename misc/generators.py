@@ -2,6 +2,17 @@ import numpy as np
 import pandas as pd
 
 
+def _Mseq(places,length,prob):
+	out_seq = []
+	for n in range(length):
+		seq_type = np.random.choice([True,False], 1, p=[prob,1-prob])
+		if seq_type:
+			out_seq.append(n%places)
+		else:
+			out_seq.append(np.random.randint(0, places, 1)[0])
+	return out_seq
+
+
 def markovian_sequences_generator(users,places,length,prob):
 	"""
 	Generates synthetic frame wtih Markovian sequences.
@@ -26,7 +37,7 @@ def markovian_sequences_generator(users,places,length,prob):
 		prob = [prob] * users
 	frames = []
 	for uid in range(users):
-		generated_track = Mseq(places[uid],length[uid],prob[uid])
+		generated_track = _Mseq(places[uid],length[uid],prob[uid])
 		tmstmps = pd.date_range(0,periods=length[uid],freq='h')
 		generated_frame = pd.concat({uid: pd.DataFrame(generated_track,index=tmstmps)})
 		frames.append(generated_frame)
