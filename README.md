@@ -18,13 +18,12 @@ Smolak, K., Siła-Nowicka, K., Delvenne, J. C., Wierzbiński, M., & Rohm, W. (20
 It is a constantly expanding project, and new functionalities are added as you read that text. Currently, I am implementing human mobility models - these are not functioning properly yet and are not covered in the documentation.
 
 Current functionalities of HuMobi library cover:
-* The basic class is TrajectoriesFrame - used to load and store the mobility data. You will find that class in the
+* The basic class of TrajectoriesFrame - used to load and store the mobility data. You will find that class in the
 structures directory.
-* Measures contains individual and collective measures for human mobility.
-* Misc contains useful functions for data processing.
-* Models contains human mobility models. Currently under development.
-* Predictors contains next-place prediction methods, Markov Chains, deep-learning and shallow-learning models.
-* Preprocessing contains methods for data aggregation and filtering.
-* Tools contain useful tools for data processing.
+* Measures of individual and collective statistics for human mobility.
+* Useful functions for data processing.
+* Next-place and next time-bin prediction methods, including Markov Chains, deep-learning and shallow-learning models.
+* Preprocessing methods for data aggregation and filtering.
+* Other useful tools for data processing.
 
 ## Installing HuMobi
