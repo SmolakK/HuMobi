@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="4d672d87-12d3-4fe6-8639-f959ea66a97a" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/structures/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/tools/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/HuMobi_alpha.iml" beforeDir="false" afterPath="$PROJECT_DIR$/src/.idea/HuMobi_alpha.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_aggregation.py" beforeDir="false" afterPath="$PROJECT_DIR$/demo/data_aggregation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_preprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/demo/data_preprocessing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_statistics.py" beforeDir="false" afterPath="$PROJECT_DIR$/demo/data_statistics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/measures/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/demo/data_reading.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/measures/collective.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/measures/collective.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/measures/individual.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/measures/individual.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/misc/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/misc/create_grid.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/misc/create_grid.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/misc/generators.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/misc/generators.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/misc/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/misc/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/agent_module/agent_class.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/agent_module/agent_class.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/agent_module/generate_agents.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/agent_module/generate_agents.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/mobility_model/data_generating.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/mobility_model/data_generating.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/mobility_model/data_sampling.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/mobility_model/data_sampling.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/mobility_model/who.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/mobility_model/who.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/spatial_modules/where.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/spatial_modules/where.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/spatial_tools/distributions.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/spatial_tools/distributions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/spatial_tools/filtering.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/spatial_tools/filtering.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/spatial_tools/generating.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/spatial_tools/generating.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/spatial_tools/misc.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/spatial_tools/misc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/temporal_tools/cluster_traj.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/temporal_tools/cluster_traj.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/temporal_tools/when.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/temporal_tools/when.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predictors/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/measures/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predictors/deep.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/predictors/deep.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predictors/markov.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/predictors/markov.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predictors/wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/predictors/wrapper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocessing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/misc/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocessing/filters.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/preprocessing/filters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocessing/spatial_aggregation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/preprocessing/spatial_aggregation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocessing/temporal_aggregation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/preprocessing/temporal_aggregation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/structures/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/structures/trajectory.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/structures/trajectory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/frame_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/preprocessing/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/predictors/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/processing.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tools/processing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/user_statistics.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tools/user_statistics.py" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="HuMobi" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1t1iU6wE14y1cCZnNeUUxbKLoMT" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../covid19" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\GitHub\GIT\HuMobi\src" />
+      <recent name="D:\GitHub\GIT\HuMobi\demo" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Python.data_reading">
+    <configuration name="EPJpaper" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="SR_EntropyProbs" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\kamil\.conda\envs\HuMobiDeep\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/EPJpaper.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="HuMobi_alpha" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="data_reading" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="SR_EntropyProbs" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\kamil\.conda\envs\HuMobiDeep\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/demo" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/demo/data_reading.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="prediction_test" type="PythonConfigurationType" factoryName="Python" singleton="false" temporary="true">
+      <module name="SR_EntropyProbs" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\kamil\.conda\envs\HuMobiDeep\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/prediction_test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="smbco" type="PythonConfigurationType" factoryName="Python" singleton="false" temporary="true">
+      <module name="SR_EntropyProbs" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\kamil\.conda\envs\HuMobiDeep\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/smbco.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="wrapper" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="SR_EntropyProbs" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\kamil\.conda\envs\HuMobiDeep\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/predictors" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/predictors/wrapper.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <module name="HuMobi_alpha" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <module name="HuMobi_alpha" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <module name="HuMobi_alpha" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.EPJpaper" />
+      <item itemvalue="Python.smbco" />
+      <item itemvalue="Python.prediction_test" />
+      <item itemvalue="Python.wrapper" />
+      <item itemvalue="Python.data_reading" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.prediction_test" />
+        <item itemvalue="Python.data_reading" />
+        <item itemvalue="Python.smbco" />
+        <item itemvalue="Python.wrapper" />
+        <item itemvalue="Python.EPJpaper" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4d672d87-12d3-4fe6-8639-f959ea66a97a" name="Default Changelist" comment="" />
+      <created>1621943008953</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1621943008953</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/EPJpaper.py</url>
+          <line>511</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/EPJpaper.py</url>
+          <line>1037</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/EPJpaper.py</url>
+          <line>1028</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/prediction_test.py</url>
+          <line>25</line>
+          <option name="timeStamp" value="501" />
+        </line-breakpoint>
+      </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="scanthrough[k]" language="Python" />
+      </configuration>
+    </watches-manager>
+  </component>
+</project>

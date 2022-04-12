@@ -1,0 +1,39 @@
+Metadata-Version: 2.1
+Name: HuMobi
+Version: 0.1.1
+Summary: A library dedicated to human mobility data processing
+Home-page: https://github.com/SmolakK/HuMobi
+Author: Kamil Smolak
+Author-email: kamil.smolak@upwr.edu.pl
+License: UNKNOWN
+Project-URL: Bug Tracker, https://github.com/SmolakK/HuMobi/issues
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# HuMobi
+ 
+This is the HuMobi library. It is a dedicated Python library for human mobility data processing. It mostly extends Pandas
+DataFrames and Geopandas GeoDataFrames. Check three example files for data_aggregation, data_preprocessing, and
+data_statistics.
+
+The basic class is TrajectoriesFrame - used to load and store the mobility data. You will find that class in the
+structures directory.
+
+Measures contains individual and collective measures for human mobility.
+
+Misc contains useful functions for data processing.
+
+Models contains human mobility models. Currently under development.
+
+Predictors contains next-place prediction methods, Markov Chains, deep-learning and shallow-learning models.
+
+Preprocessing contains methods for data aggregation and filtering.
+
+Tools contains useful tools for data processing.
+
+
