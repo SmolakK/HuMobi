@@ -1,9 +1,9 @@
 import pandas as pd, geopandas as gpd
 import sys
 sys.path.append("..")
-from models.temporal_tools import when
-from models.spatial_tools import where
-from misc import export_to_file
+from src.humobi.models.temporal_tools import when
+from src.humobi.models.spatial_modules import where
+# from src.humobi.misc import export_to_file
 WEIGHT = False
 
 
@@ -36,4 +36,4 @@ def data_generator(start, agents, clusters, circadian_rhythm, end=None, duration
 			for user in users:
 				when.when(user, slot, circadian_rhythm)
 				where.where(user)
-	export_to_file.export_to_file(agents, time_slots, output_format, output_style)
+	# export_to_file.export_to_file(agents, time_slots, output_format, output_style)

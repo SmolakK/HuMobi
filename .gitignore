@@ -1,2 +1,4 @@
 smbco.py
 prediction_test.py
+src\generate_docs.bat
+src\humobi\config.mako
