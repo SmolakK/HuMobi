@@ -1,7 +1,7 @@
-from src.humobi.structures import trajectory as tr
-from src.humobi.preprocessing.temporal_aggregation import TemporalAggregator
-from src.humobi.preprocessing.spatial_aggregation import GridAggregation, ClusteringAggregator
-from src.humobi.preprocessing.filters import next_location_sequence
+from humobi.structures import trajectory as tr
+from humobi.preprocessing.temporal_aggregation import TemporalAggregator
+from humobi.preprocessing.spatial_aggregation import GridAggregation, ClusteringAggregator
+from humobi.preprocessing.filters import next_location_sequence
 from sklearn.cluster import DBSCAN
 
 in_path = "preprocessed_stops_sample.csv"  # STOPS DETECTED

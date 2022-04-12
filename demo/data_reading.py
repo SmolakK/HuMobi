@@ -1,5 +1,4 @@
-# from humobi.structures import trajectory as tr
-from src.humobi.structures import trajectory as tr
+from humobi.structures import trajectory as tr
 import pandas as pd
 
 # READ FROM PATH

@@ -1,8 +1,7 @@
-# from humobi.structures import trajectory as tr
-from src.humobi.structures import trajectory as tr
-from src.humobi.preprocessing.filters import stop_detection
-from src.humobi.tools.user_statistics import *
-from src.humobi.tools.processing import start_end
+from humobi.structures import trajectory as tr
+from humobi.preprocessing.filters import stop_detection
+from humobi.tools.user_statistics import *
+from humobi.tools.processing import start_end
 
 in_path = """converted_sample.csv"""
 df_sel = tr.TrajectoriesFrame(in_path, {'crs': 4326})  # ALREADY CONVERTED (SEE data_reading.py demo)

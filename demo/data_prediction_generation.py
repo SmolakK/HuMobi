@@ -1,7 +1,7 @@
-from src.humobi.misc.generators import *
-from src.humobi.predictors.wrapper import *
-from src.humobi.predictors.deep import *
-from src.humobi.measures.individual import *
+from humobi.misc.generators import *
+from humobi.predictors.wrapper import *
+from humobi.predictors.deep import *
+from humobi.measures.individual import *
 from sklearn.ensemble import RandomForestClassifier
 
 # ALSO GENERATE SOME DATA

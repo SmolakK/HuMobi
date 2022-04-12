@@ -1,7 +1,6 @@
-import os
-from src.humobi.structures import trajectory as tr
-from src.humobi.measures.individual import *
-from src.humobi.measures.collective import *
+from humobi.structures import trajectory as tr
+from humobi.measures.individual import *
+from humobi.measures.collective import *
 
 # LOAD DATA
 in_path = "aggregated_sample.csv"
