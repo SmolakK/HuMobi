@@ -107,6 +107,12 @@ df.to_geofeather("feather_path")
 df.to_shapefile("shape_path")
 ```
 
+`TrajectoriesFrame` overrides also data spatial transformation method `to_crs`, which can be used to reproject the data. To do that, simply call:
+```
+df.to_csr(dest_crs = 3857, cur_crs = 4326)
+```
+This will reproject TrajectoriesFrame from `EPSG:4326` to `EPSG:3857`. If `cur_crs` is not given, TrajectoriesFrame will used `crs` metadata.
+
 ## Data preprocessing
 
 Raw movement data should be preprocessed to remove noise, remove unimportant stops and extract necessary information. HuMobi library offers methods for data preprocessing, analyses, and filtering. This process consists of two steps. First, noisy data is removed and stop locations are detected. In the second step, stop locations are aggregated into stay-regions and converted to movement sequence. For methodology details see publication:
@@ -124,6 +130,8 @@ from humobi.tools.processing import start_end
 
 in_path = """converted_sample.csv"""
 df_sel = tr.TrajectoriesFrame(in_path, {'crs': 4326})  # ALREADY CONVERTED - WITH GEOMETRY AND MULTIINDEX, SAVED TO CSV (SEE data_reading.py demo)
+geom_cols = df_sel.geom_cols  # STORE GEOMETRY COLUMN
+crs = df_sel.crs  # STORE CRS
 ```
 
 ### Data (users) selection
@@ -198,3 +206,30 @@ df_sel = df_sel.sort_index(level=1)
 df_sel = tr.TrajectoriesFrame(df_sel, {'crs': crs, 'geom_cols': geom_cols})
 ```
 
+### Stop detection 
+
+Stop detection algorithm is simple to use. `preprcessing.filters.stop_detection` function allows to quickly detect stay-points, by simply:
+```
+stops = stop_detection(df_sel, distance_condition=300, time_condition='10min')
+```
+For details on algorithm see mentioned publication. There are two parameters to adjust - these are `distance_condition` (here it is 300 metres) and `time_condition` (here it is 10 minutes). `distance_condition` is always expressed in metres. Function temporally converts data to `EPSG:3857`. Note that it uses multithreading, so having multiple cores helps.
+
+`stop_detection` function adds a new boolean column `is_stop`. You can filter only stops using:
+```
+df_sel = stops[stops['is_stop'] is True]
+```
+
+It is also good to drop duplicates, as sometimes these may be created:
+```
+df_sel = df_sel.drop_duplicates()
+```
+
+Furthermore, to decrease data size, let's compress stops to a single row of data by adding `start` and `end` times of visits in these locations. To do that, call:
+```
+df_sel = start_end(df_sel)
+```
+Finally, TrajectoriesFrame will look like this:
+
+### Data aggregation
+
+After stay-point detection, data can be finally converted to movement sequences by spatial (stay-regions detection) and temporal aggregation.
