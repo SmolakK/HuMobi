@@ -1,0 +1,1010 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>src.humobi.preprocessing.spatial_aggregation API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>src.humobi.preprocessing.spatial_aggregation</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import numpy as np
+from shapely.geometry import Point
+from src.humobi.misc.utils import resolution_to_points, moving_average, to_labels
+from tqdm import tqdm
+import pandas as pd
+import geopandas as gpd
+import concurrent.futures as cf
+from itertools import repeat
+from src.humobi.structures.trajectory import TrajectoriesFrame
+
+
+class GridAggregation():
+        &#34;&#34;&#34;
+        A class for spatial aggregation of movement trajectories. This one uses a regular grid.
+        &#34;&#34;&#34;
+
+        def __init__(self, resolution=300, origin=True, x_min=None, x_max=None, y_min=None, y_max=None):
+                &#34;&#34;&#34;
+                Class initialisation. Depending on what is defined, the grid fits to the given data spatial extent of in the middle
+                of data.
+
+                Args:
+                        resolution (default = 300): grid resolution
+                        origin: Determines if the grid should be centered to the centroid of the data
+                        x_min: minimum x value of the grid
+                        x_max: maximum x value of the grid
+                        y_min: minimum y value of the grid
+                        y_max: maximum y value of the grid
+                &#34;&#34;&#34;
+                self._x_min = x_min
+                self._x_max = x_max
+                self._y_min = y_min
+                self._y_max = y_max
+
+                self._resolution = resolution
+                if isinstance(origin, bool):
+                        self._detect_origin = True
+                else:
+                        self._detect_origin = False
+                if x_min is None or x_max is None or y_min is None or y_max is None:
+                        self._detect_range = True
+                else:
+                        self._detect_range = False
+                if not self._detect_origin and not self._detect_range:
+                        raise AttributeError(&#34;Cannot set origin and range at the same time!&#34;)
+
+        @property
+        def resolution(self):
+                return self._resolution
+
+        @property
+        def x_min(self):
+                return self._x_min
+
+        @property
+        def x_max(self):
+                return self._x_max
+
+        @property
+        def y_min(self):
+                return self._y_min
+
+        @property
+        def y_max(self):
+                return self._y_max
+
+        def _aggregate_multi(self, x, y, centroid_x, centroid_y, row_index, val):
+                &#34;&#34;&#34;
+                Fast spatial aggregation of movement trajectories spatial aggregation. Multithread variant.
+
+                Args:
+                        x: grid x coordinates
+                        y: grid y coordinates
+                        centroid_x: grid x coordinates of centroids
+                        centroid_y: grid y coordinates of centroids
+                        row_index: data row index
+                        val: data row value
+
+                Returns:
+                        assigned geometry and row index
+                &#34;&#34;&#34;
+                lower_x = np.max(np.where((val.x &gt;= x)))
+                lower_y = np.max(np.where((val.y &gt;= y)))
+                if lower_x == len(centroid_x):
+                        assigned_x = centroid_x[lower_x - 1]
+                else:
+                        assigned_x = centroid_x[lower_x]
+                if lower_y == len(centroid_y):
+                        assigned_y = centroid_y[lower_y - 1]
+                else:
+                        assigned_y = centroid_y[lower_y]
+                return row_index, Point(assigned_x, assigned_y)
+
+        def _aggregate(self, x, y, centroid_x, centroid_y, val):
+                &#34;&#34;&#34;
+                Fast movement trajectories spatial aggregation
+                Args:
+                        x: grid x coordinates
+                        y: grid y coordinates
+                        centroid_x: grid x coordinates of centroids
+                        centroid_y: grid y coordinates of centroids
+                        row_index: data row index
+                        val: data row value
+
+                Returns:
+                        assigned geometry and row index
+                &#34;&#34;&#34;
+                lower_x = np.max(np.where((val.x &gt;= x)))
+                lower_y = np.max(np.where((val.y &gt;= y)))
+                if lower_x == len(centroid_x):
+                        assigned_x = centroid_x[lower_x - 1]
+                else:
+                        assigned_x = centroid_x[lower_x]
+                if lower_y == len(centroid_y):
+                        assigned_y = centroid_y[lower_y - 1]
+                else:
+                        assigned_y = centroid_y[lower_y]
+                return assigned_x, assigned_y
+
+        def aggregate(self, trajectories_frame, inplace=True, parralel=False):
+                &#34;&#34;&#34;
+                Aggregates TrajectoriesFrame object spatially.
+
+                Args:
+                        trajectories_frame: TrajectoriesFrame class object
+                        inplace: determines if coordinates should be overwritten. If false, a new column is added.
+                        parralel: determines if should uses multithreading (default = False, because it is slower for small data)
+
+                Returns:
+                        A TrajectoriesFrame with aggregated geometry.
+                &#34;&#34;&#34;
+                trajectories_copy = trajectories_frame.copy()
+                if self._detect_range and self._detect_origin:
+                        self._x_min = trajectories_frame[&#39;geometry&#39;].x.min()
+                        self._x_max = trajectories_frame[&#39;geometry&#39;].x.max()
+                        self._y_min = trajectories_frame[&#39;geometry&#39;].y.min()
+                        self._y_max = trajectories_frame[&#39;geometry&#39;].y.max()
+                x_points = resolution_to_points(self.resolution, self.x_max, self.x_min)
+                y_points = resolution_to_points(self.resolution, self.y_max, self.y_min)
+                x = np.linspace(self.x_min, self.x_max, x_points)
+                y = np.linspace(self.y_min, self.y_max, y_points)
+                centroid_x = moving_average(x)
+                centroid_y = moving_average(y)
+                agg_dict = {}
+                if parralel:
+                        with cf.ThreadPoolExecutor(max_workers=6) as executor:
+                                indis = [indi for indi, val in trajectories_frame[&#39;geometry&#39;].iteritems()]
+                                vals = [val for indi, val in trajectories_frame[&#39;geometry&#39;].iteritems()]
+                                results = list(tqdm(
+                                        executor.map(self._aggregate_multi, repeat(x), repeat(y), repeat(centroid_x), repeat(centroid_y),
+                                                     indis, vals), total=trajectories_frame.shape[0]))
+                        for result in results:
+                                agg_dict[result[0]] = result[1]
+                else:
+                        for indi, val in tqdm(trajectories_frame[&#39;geometry&#39;].iteritems(), total=trajectories_frame.shape[0]):
+                                if np.isnan(val.x):
+                                        agg_dict[indi] = Point(float(&#39;nan&#39;), float(&#39;nan&#39;))
+                                        continue
+                                assigned_x, assigned_y = self._aggregate(x, y, centroid_x, centroid_y, val)
+                                agg_dict[indi] = Point(assigned_x, assigned_y)
+                if inplace:
+                        trajectories_copy[&#39;geometry&#39;].update(pd.Series(agg_dict))
+                        trajectories_copy[trajectories_copy._geom_cols[0]] = trajectories_copy[&#34;geometry&#34;].x
+                        trajectories_copy[trajectories_copy._geom_cols[1]] = trajectories_copy[&#34;geometry&#34;].y
+                else:
+                        trajectories_copy[&#39;old_geometry&#39;] = trajectories_copy[&#39;geometry&#39;]
+                        trajectories_copy[&#39;geometry&#39;] = pd.Series(agg_dict)
+                        trajectories_copy[trajectories_copy._geom_cols[0]] = trajectories_copy[&#34;geometry&#34;].x
+                        trajectories_copy[trajectories_copy._geom_cols[1]] = trajectories_copy[&#34;geometry&#34;].y
+                        trajectories_copy[&#39;geometry&#39;] = trajectories_copy[&#39;old_geometry&#39;]
+                trajectories_copy = to_labels(trajectories_copy)
+                return trajectories_copy
+
+
+class ClusteringAggregator():
+        &#34;&#34;&#34;
+        A class for spatial aggregation of movement trajectories. This one uses clustering algorithms from sklearn library.
+        &#34;&#34;&#34;
+
+        def __init__(self, algorithm, **kwargs):
+                &#34;&#34;&#34;
+                Class initialisation. Accepts sklearn clustering algorithms&#39; classes and their keyword arguments.
+
+                Args:
+                        algorithm: Clustering algorithm from sklearn library.
+                        **kwargs: Any accepted kwargs.
+                &#34;&#34;&#34;
+                self._algorithm = algorithm(**kwargs)
+
+        @property
+        def algorithm(self):
+                return self._algorithm
+
+        def _user_aggregate(self, single_trajectory):
+                &#34;&#34;&#34;
+                Spatially aggregates single movement trajectory. Adds labels columns.
+
+                Args:
+                        single_trajectory: Single movement trajectory
+
+                Returns:
+                        An aggregated TrajectoriesFrame with labels column added.
+                &#34;&#34;&#34;
+                try:
+                        fited = self.algorithm.fit(single_trajectory)
+                except:
+                        raise ValueError
+                single_trajectory[&#39;labels&#39;] = fited.labels_
+                return single_trajectory
+
+        def _recalcuate_centres(self, single_trajectory):
+                &#34;&#34;&#34;
+                Based on labels, recalculates spatial coordinates of points to their clusters centers.
+
+                Args:
+                        single_trajectory: single movement trajectory
+
+                Returns:
+                        a TrajectoriesFrame with overwritten coordinates in lon and lat columns
+                &#34;&#34;&#34;
+                centres = single_trajectory.groupby(by=&#39;labels&#39;).apply(lambda x: x.mean())
+                single_trajectory = single_trajectory.join(centres, on=&#39;labels&#39;, rsuffix=&#39;_&#39;)
+                single_trajectory[&#39;lat&#39;] = single_trajectory[&#39;lat_&#39;]
+                single_trajectory[&#39;lon&#39;] = single_trajectory[&#39;lon_&#39;]
+                return single_trajectory
+
+        def aggregate(self, trajectories_frame, drop_noise=False, centres_as_geometry=True):
+                &#34;&#34;&#34;
+                General function for spatial data aggregation. It assigns labels to clusters and has additional options of
+                centers recalculation and data overwriting.
+
+                Args:
+                        trajectories_frame: TrajectoriesFrame object class
+                        drop_noise: Datermines if noise (-1 labels) should be drop
+                        centres_as_geometry: If true, centres of clusters are assigned as geometry
+                Raturns:
+                        A spatially aggregated TrajectoriesFrame
+                &#34;&#34;&#34;
+                if not hasattr(trajectories_frame, &#39;_geom_cols&#39;):
+                        trajectories_frame = TrajectoriesFrame(trajectories_frame)
+                coordinates_frame = trajectories_frame[[trajectories_frame._geom_cols[0], trajectories_frame._geom_cols[1]]]
+                clustered = coordinates_frame.groupby(level=0).progress_apply(lambda x: self._user_aggregate(x))
+                if drop_noise:
+                        clustered[clustered[&#39;labels&#39;] == -1] = None
+                        if len(clustered) == 0:
+                                return None
+                if centres_as_geometry:
+                        clustered = clustered.groupby(level=0).progress_apply(lambda x: self._recalcuate_centres(x))
+                        clustered[&#39;geometry&#39;] = [Point(*x) for x in
+                                                 zip(clustered.loc[:, &#39;lat&#39;],
+                                                     clustered.loc[:, &#39;lon&#39;])]
+                merged = pd.merge(clustered, trajectories_frame, left_index=True, right_index=True, how=&#39;outer&#39;,
+                                  suffixes=[&#39;&#39;, &#39;y&#39;])
+                merged = merged[[&#39;lat&#39;, &#39;lon&#39;, &#39;geometry&#39;, &#39;labels&#39;, &#39;start&#39;, &#39;end&#39;]]
+                merged[merged[&#39;labels&#39;] == -1] = None
+                trajectories_frame = TrajectoriesFrame(merged)
+                return trajectories_frame
+
+
+class LayerAggregator():
+        &#34;&#34;&#34;
+        A class for movement trajectories spatial aggregation. This one uses external data (spatial layer) to aggregate data.
+        &#34;&#34;&#34;
+
+        def __init__(self, layer, kwargs):
+                &#34;&#34;&#34;
+                Class initalisation.
+
+                Args:
+                layer: An external, spatial layer which will be used for aggregation
+                &#34;&#34;&#34;
+                self._layer = gpd.GeoDataFrame.from_file(layer, **kwargs)
+
+        @property
+        def layer(self):
+                return self._layer
+
+        def aggregate(self, trajectories_frame, dropoverwirte=True):
+                &#34;&#34;&#34;
+                Aggregates data to given spatial layer. Overwrites geometry.
+
+                Args:
+                        trajectories_frame: TrajectoriesFrame object class
+                        dropoverwirte: If true, points that were not assigned to any locationare removed.
+
+                Returns:
+                        An aggregated TrajectoriesFrame instance
+                &#34;&#34;&#34;
+                aggregated_frame = gpd.tools.sjoin(trajectories_frame.reset_index(), self.layer, how=&#39;left&#39;)
+                centroid_layer = self.layer[&#39;geometry&#39;].centroid
+                aggregated_frame = aggregated_frame[[&#34;ID&#34;, &#34;datetime&#34;, &#39;index_right&#39;]]
+                aggregated_frame = pd.merge(aggregated_frame, pd.DataFrame(centroid_layer), left_on=&#39;index_right&#39;,
+                                            right_index=True)
+                if dropoverwirte:
+                        trajectories_frame = trajectories_frame.join(aggregated_frame.set_index([&#39;ID&#39;, &#34;datetime&#34;]), how=&#39;inner&#39;)
+                else:
+                        trajectories_frame = trajectories_frame.join(aggregated_frame.set_index([&#39;ID&#39;, &#34;datetime&#34;]))
+                trajectories_frame[&#39;geometry&#39;] = trajectories_frame.iloc[:, -1]
+                return trajectories_frame</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="src.humobi.preprocessing.spatial_aggregation.ClusteringAggregator"><code class="flex name class">
+<span>class <span class="ident">ClusteringAggregator</span></span>
+<span>(</span><span>algorithm, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A class for spatial aggregation of movement trajectories. This one uses clustering algorithms from sklearn library.</p>
+<p>Class initialisation. Accepts sklearn clustering algorithms' classes and their keyword arguments.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>algorithm</code></strong></dt>
+<dd>Clustering algorithm from sklearn library.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any accepted kwargs.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ClusteringAggregator():
+        &#34;&#34;&#34;
+        A class for spatial aggregation of movement trajectories. This one uses clustering algorithms from sklearn library.
+        &#34;&#34;&#34;
+
+        def __init__(self, algorithm, **kwargs):
+                &#34;&#34;&#34;
+                Class initialisation. Accepts sklearn clustering algorithms&#39; classes and their keyword arguments.
+
+                Args:
+                        algorithm: Clustering algorithm from sklearn library.
+                        **kwargs: Any accepted kwargs.
+                &#34;&#34;&#34;
+                self._algorithm = algorithm(**kwargs)
+
+        @property
+        def algorithm(self):
+                return self._algorithm
+
+        def _user_aggregate(self, single_trajectory):
+                &#34;&#34;&#34;
+                Spatially aggregates single movement trajectory. Adds labels columns.
+
+                Args:
+                        single_trajectory: Single movement trajectory
+
+                Returns:
+                        An aggregated TrajectoriesFrame with labels column added.
+                &#34;&#34;&#34;
+                try:
+                        fited = self.algorithm.fit(single_trajectory)
+                except:
+                        raise ValueError
+                single_trajectory[&#39;labels&#39;] = fited.labels_
+                return single_trajectory
+
+        def _recalcuate_centres(self, single_trajectory):
+                &#34;&#34;&#34;
+                Based on labels, recalculates spatial coordinates of points to their clusters centers.
+
+                Args:
+                        single_trajectory: single movement trajectory
+
+                Returns:
+                        a TrajectoriesFrame with overwritten coordinates in lon and lat columns
+                &#34;&#34;&#34;
+                centres = single_trajectory.groupby(by=&#39;labels&#39;).apply(lambda x: x.mean())
+                single_trajectory = single_trajectory.join(centres, on=&#39;labels&#39;, rsuffix=&#39;_&#39;)
+                single_trajectory[&#39;lat&#39;] = single_trajectory[&#39;lat_&#39;]
+                single_trajectory[&#39;lon&#39;] = single_trajectory[&#39;lon_&#39;]
+                return single_trajectory
+
+        def aggregate(self, trajectories_frame, drop_noise=False, centres_as_geometry=True):
+                &#34;&#34;&#34;
+                General function for spatial data aggregation. It assigns labels to clusters and has additional options of
+                centers recalculation and data overwriting.
+
+                Args:
+                        trajectories_frame: TrajectoriesFrame object class
+                        drop_noise: Datermines if noise (-1 labels) should be drop
+                        centres_as_geometry: If true, centres of clusters are assigned as geometry
+                Raturns:
+                        A spatially aggregated TrajectoriesFrame
+                &#34;&#34;&#34;
+                if not hasattr(trajectories_frame, &#39;_geom_cols&#39;):
+                        trajectories_frame = TrajectoriesFrame(trajectories_frame)
+                coordinates_frame = trajectories_frame[[trajectories_frame._geom_cols[0], trajectories_frame._geom_cols[1]]]
+                clustered = coordinates_frame.groupby(level=0).progress_apply(lambda x: self._user_aggregate(x))
+                if drop_noise:
+                        clustered[clustered[&#39;labels&#39;] == -1] = None
+                        if len(clustered) == 0:
+                                return None
+                if centres_as_geometry:
+                        clustered = clustered.groupby(level=0).progress_apply(lambda x: self._recalcuate_centres(x))
+                        clustered[&#39;geometry&#39;] = [Point(*x) for x in
+                                                 zip(clustered.loc[:, &#39;lat&#39;],
+                                                     clustered.loc[:, &#39;lon&#39;])]
+                merged = pd.merge(clustered, trajectories_frame, left_index=True, right_index=True, how=&#39;outer&#39;,
+                                  suffixes=[&#39;&#39;, &#39;y&#39;])
+                merged = merged[[&#39;lat&#39;, &#39;lon&#39;, &#39;geometry&#39;, &#39;labels&#39;, &#39;start&#39;, &#39;end&#39;]]
+                merged[merged[&#39;labels&#39;] == -1] = None
+                trajectories_frame = TrajectoriesFrame(merged)
+                return trajectories_frame</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="src.humobi.preprocessing.spatial_aggregation.ClusteringAggregator.algorithm"><code class="name">var <span class="ident">algorithm</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def algorithm(self):
+        return self._algorithm</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="src.humobi.preprocessing.spatial_aggregation.ClusteringAggregator.aggregate"><code class="name flex">
+<span>def <span class="ident">aggregate</span></span>(<span>self, trajectories_frame, drop_noise=False, centres_as_geometry=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>General function for spatial data aggregation. It assigns labels to clusters and has additional options of
+centers recalculation and data overwriting.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame object class</dd>
+<dt><strong><code>drop_noise</code></strong></dt>
+<dd>Datermines if noise (-1 labels) should be drop</dd>
+<dt><strong><code>centres_as_geometry</code></strong></dt>
+<dd>If true, centres of clusters are assigned as geometry</dd>
+</dl>
+<h2 id="raturns">Raturns</h2>
+<p>A spatially aggregated TrajectoriesFrame</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def aggregate(self, trajectories_frame, drop_noise=False, centres_as_geometry=True):
+        &#34;&#34;&#34;
+        General function for spatial data aggregation. It assigns labels to clusters and has additional options of
+        centers recalculation and data overwriting.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame object class
+                drop_noise: Datermines if noise (-1 labels) should be drop
+                centres_as_geometry: If true, centres of clusters are assigned as geometry
+        Raturns:
+                A spatially aggregated TrajectoriesFrame
+        &#34;&#34;&#34;
+        if not hasattr(trajectories_frame, &#39;_geom_cols&#39;):
+                trajectories_frame = TrajectoriesFrame(trajectories_frame)
+        coordinates_frame = trajectories_frame[[trajectories_frame._geom_cols[0], trajectories_frame._geom_cols[1]]]
+        clustered = coordinates_frame.groupby(level=0).progress_apply(lambda x: self._user_aggregate(x))
+        if drop_noise:
+                clustered[clustered[&#39;labels&#39;] == -1] = None
+                if len(clustered) == 0:
+                        return None
+        if centres_as_geometry:
+                clustered = clustered.groupby(level=0).progress_apply(lambda x: self._recalcuate_centres(x))
+                clustered[&#39;geometry&#39;] = [Point(*x) for x in
+                                         zip(clustered.loc[:, &#39;lat&#39;],
+                                             clustered.loc[:, &#39;lon&#39;])]
+        merged = pd.merge(clustered, trajectories_frame, left_index=True, right_index=True, how=&#39;outer&#39;,
+                          suffixes=[&#39;&#39;, &#39;y&#39;])
+        merged = merged[[&#39;lat&#39;, &#39;lon&#39;, &#39;geometry&#39;, &#39;labels&#39;, &#39;start&#39;, &#39;end&#39;]]
+        merged[merged[&#39;labels&#39;] == -1] = None
+        trajectories_frame = TrajectoriesFrame(merged)
+        return trajectories_frame</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="src.humobi.preprocessing.spatial_aggregation.GridAggregation"><code class="flex name class">
+<span>class <span class="ident">GridAggregation</span></span>
+<span>(</span><span>resolution=300, origin=True, x_min=None, x_max=None, y_min=None, y_max=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A class for spatial aggregation of movement trajectories. This one uses a regular grid.</p>
+<p>Class initialisation. Depending on what is defined, the grid fits to the given data spatial extent of in the middle
+of data.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>resolution</code></strong> :&ensp;<code>default = 300</code></dt>
+<dd>grid resolution</dd>
+<dt><strong><code>origin</code></strong></dt>
+<dd>Determines if the grid should be centered to the centroid of the data</dd>
+<dt><strong><code>x_min</code></strong></dt>
+<dd>minimum x value of the grid</dd>
+<dt><strong><code>x_max</code></strong></dt>
+<dd>maximum x value of the grid</dd>
+<dt><strong><code>y_min</code></strong></dt>
+<dd>minimum y value of the grid</dd>
+<dt><strong><code>y_max</code></strong></dt>
+<dd>maximum y value of the grid</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GridAggregation():
+        &#34;&#34;&#34;
+        A class for spatial aggregation of movement trajectories. This one uses a regular grid.
+        &#34;&#34;&#34;
+
+        def __init__(self, resolution=300, origin=True, x_min=None, x_max=None, y_min=None, y_max=None):
+                &#34;&#34;&#34;
+                Class initialisation. Depending on what is defined, the grid fits to the given data spatial extent of in the middle
+                of data.
+
+                Args:
+                        resolution (default = 300): grid resolution
+                        origin: Determines if the grid should be centered to the centroid of the data
+                        x_min: minimum x value of the grid
+                        x_max: maximum x value of the grid
+                        y_min: minimum y value of the grid
+                        y_max: maximum y value of the grid
+                &#34;&#34;&#34;
+                self._x_min = x_min
+                self._x_max = x_max
+                self._y_min = y_min
+                self._y_max = y_max
+
+                self._resolution = resolution
+                if isinstance(origin, bool):
+                        self._detect_origin = True
+                else:
+                        self._detect_origin = False
+                if x_min is None or x_max is None or y_min is None or y_max is None:
+                        self._detect_range = True
+                else:
+                        self._detect_range = False
+                if not self._detect_origin and not self._detect_range:
+                        raise AttributeError(&#34;Cannot set origin and range at the same time!&#34;)
+
+        @property
+        def resolution(self):
+                return self._resolution
+
+        @property
+        def x_min(self):
+                return self._x_min
+
+        @property
+        def x_max(self):
+                return self._x_max
+
+        @property
+        def y_min(self):
+                return self._y_min
+
+        @property
+        def y_max(self):
+                return self._y_max
+
+        def _aggregate_multi(self, x, y, centroid_x, centroid_y, row_index, val):
+                &#34;&#34;&#34;
+                Fast spatial aggregation of movement trajectories spatial aggregation. Multithread variant.
+
+                Args:
+                        x: grid x coordinates
+                        y: grid y coordinates
+                        centroid_x: grid x coordinates of centroids
+                        centroid_y: grid y coordinates of centroids
+                        row_index: data row index
+                        val: data row value
+
+                Returns:
+                        assigned geometry and row index
+                &#34;&#34;&#34;
+                lower_x = np.max(np.where((val.x &gt;= x)))
+                lower_y = np.max(np.where((val.y &gt;= y)))
+                if lower_x == len(centroid_x):
+                        assigned_x = centroid_x[lower_x - 1]
+                else:
+                        assigned_x = centroid_x[lower_x]
+                if lower_y == len(centroid_y):
+                        assigned_y = centroid_y[lower_y - 1]
+                else:
+                        assigned_y = centroid_y[lower_y]
+                return row_index, Point(assigned_x, assigned_y)
+
+        def _aggregate(self, x, y, centroid_x, centroid_y, val):
+                &#34;&#34;&#34;
+                Fast movement trajectories spatial aggregation
+                Args:
+                        x: grid x coordinates
+                        y: grid y coordinates
+                        centroid_x: grid x coordinates of centroids
+                        centroid_y: grid y coordinates of centroids
+                        row_index: data row index
+                        val: data row value
+
+                Returns:
+                        assigned geometry and row index
+                &#34;&#34;&#34;
+                lower_x = np.max(np.where((val.x &gt;= x)))
+                lower_y = np.max(np.where((val.y &gt;= y)))
+                if lower_x == len(centroid_x):
+                        assigned_x = centroid_x[lower_x - 1]
+                else:
+                        assigned_x = centroid_x[lower_x]
+                if lower_y == len(centroid_y):
+                        assigned_y = centroid_y[lower_y - 1]
+                else:
+                        assigned_y = centroid_y[lower_y]
+                return assigned_x, assigned_y
+
+        def aggregate(self, trajectories_frame, inplace=True, parralel=False):
+                &#34;&#34;&#34;
+                Aggregates TrajectoriesFrame object spatially.
+
+                Args:
+                        trajectories_frame: TrajectoriesFrame class object
+                        inplace: determines if coordinates should be overwritten. If false, a new column is added.
+                        parralel: determines if should uses multithreading (default = False, because it is slower for small data)
+
+                Returns:
+                        A TrajectoriesFrame with aggregated geometry.
+                &#34;&#34;&#34;
+                trajectories_copy = trajectories_frame.copy()
+                if self._detect_range and self._detect_origin:
+                        self._x_min = trajectories_frame[&#39;geometry&#39;].x.min()
+                        self._x_max = trajectories_frame[&#39;geometry&#39;].x.max()
+                        self._y_min = trajectories_frame[&#39;geometry&#39;].y.min()
+                        self._y_max = trajectories_frame[&#39;geometry&#39;].y.max()
+                x_points = resolution_to_points(self.resolution, self.x_max, self.x_min)
+                y_points = resolution_to_points(self.resolution, self.y_max, self.y_min)
+                x = np.linspace(self.x_min, self.x_max, x_points)
+                y = np.linspace(self.y_min, self.y_max, y_points)
+                centroid_x = moving_average(x)
+                centroid_y = moving_average(y)
+                agg_dict = {}
+                if parralel:
+                        with cf.ThreadPoolExecutor(max_workers=6) as executor:
+                                indis = [indi for indi, val in trajectories_frame[&#39;geometry&#39;].iteritems()]
+                                vals = [val for indi, val in trajectories_frame[&#39;geometry&#39;].iteritems()]
+                                results = list(tqdm(
+                                        executor.map(self._aggregate_multi, repeat(x), repeat(y), repeat(centroid_x), repeat(centroid_y),
+                                                     indis, vals), total=trajectories_frame.shape[0]))
+                        for result in results:
+                                agg_dict[result[0]] = result[1]
+                else:
+                        for indi, val in tqdm(trajectories_frame[&#39;geometry&#39;].iteritems(), total=trajectories_frame.shape[0]):
+                                if np.isnan(val.x):
+                                        agg_dict[indi] = Point(float(&#39;nan&#39;), float(&#39;nan&#39;))
+                                        continue
+                                assigned_x, assigned_y = self._aggregate(x, y, centroid_x, centroid_y, val)
+                                agg_dict[indi] = Point(assigned_x, assigned_y)
+                if inplace:
+                        trajectories_copy[&#39;geometry&#39;].update(pd.Series(agg_dict))
+                        trajectories_copy[trajectories_copy._geom_cols[0]] = trajectories_copy[&#34;geometry&#34;].x
+                        trajectories_copy[trajectories_copy._geom_cols[1]] = trajectories_copy[&#34;geometry&#34;].y
+                else:
+                        trajectories_copy[&#39;old_geometry&#39;] = trajectories_copy[&#39;geometry&#39;]
+                        trajectories_copy[&#39;geometry&#39;] = pd.Series(agg_dict)
+                        trajectories_copy[trajectories_copy._geom_cols[0]] = trajectories_copy[&#34;geometry&#34;].x
+                        trajectories_copy[trajectories_copy._geom_cols[1]] = trajectories_copy[&#34;geometry&#34;].y
+                        trajectories_copy[&#39;geometry&#39;] = trajectories_copy[&#39;old_geometry&#39;]
+                trajectories_copy = to_labels(trajectories_copy)
+                return trajectories_copy</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="src.humobi.preprocessing.spatial_aggregation.GridAggregation.resolution"><code class="name">var <span class="ident">resolution</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def resolution(self):
+        return self._resolution</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.preprocessing.spatial_aggregation.GridAggregation.x_max"><code class="name">var <span class="ident">x_max</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def x_max(self):
+        return self._x_max</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.preprocessing.spatial_aggregation.GridAggregation.x_min"><code class="name">var <span class="ident">x_min</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def x_min(self):
+        return self._x_min</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.preprocessing.spatial_aggregation.GridAggregation.y_max"><code class="name">var <span class="ident">y_max</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def y_max(self):
+        return self._y_max</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.preprocessing.spatial_aggregation.GridAggregation.y_min"><code class="name">var <span class="ident">y_min</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def y_min(self):
+        return self._y_min</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="src.humobi.preprocessing.spatial_aggregation.GridAggregation.aggregate"><code class="name flex">
+<span>def <span class="ident">aggregate</span></span>(<span>self, trajectories_frame, inplace=True, parralel=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Aggregates TrajectoriesFrame object spatially.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+<dt><strong><code>inplace</code></strong></dt>
+<dd>determines if coordinates should be overwritten. If false, a new column is added.</dd>
+<dt><strong><code>parralel</code></strong></dt>
+<dd>determines if should uses multithreading (default = False, because it is slower for small data)</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A TrajectoriesFrame with aggregated geometry.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def aggregate(self, trajectories_frame, inplace=True, parralel=False):
+        &#34;&#34;&#34;
+        Aggregates TrajectoriesFrame object spatially.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+                inplace: determines if coordinates should be overwritten. If false, a new column is added.
+                parralel: determines if should uses multithreading (default = False, because it is slower for small data)
+
+        Returns:
+                A TrajectoriesFrame with aggregated geometry.
+        &#34;&#34;&#34;
+        trajectories_copy = trajectories_frame.copy()
+        if self._detect_range and self._detect_origin:
+                self._x_min = trajectories_frame[&#39;geometry&#39;].x.min()
+                self._x_max = trajectories_frame[&#39;geometry&#39;].x.max()
+                self._y_min = trajectories_frame[&#39;geometry&#39;].y.min()
+                self._y_max = trajectories_frame[&#39;geometry&#39;].y.max()
+        x_points = resolution_to_points(self.resolution, self.x_max, self.x_min)
+        y_points = resolution_to_points(self.resolution, self.y_max, self.y_min)
+        x = np.linspace(self.x_min, self.x_max, x_points)
+        y = np.linspace(self.y_min, self.y_max, y_points)
+        centroid_x = moving_average(x)
+        centroid_y = moving_average(y)
+        agg_dict = {}
+        if parralel:
+                with cf.ThreadPoolExecutor(max_workers=6) as executor:
+                        indis = [indi for indi, val in trajectories_frame[&#39;geometry&#39;].iteritems()]
+                        vals = [val for indi, val in trajectories_frame[&#39;geometry&#39;].iteritems()]
+                        results = list(tqdm(
+                                executor.map(self._aggregate_multi, repeat(x), repeat(y), repeat(centroid_x), repeat(centroid_y),
+                                             indis, vals), total=trajectories_frame.shape[0]))
+                for result in results:
+                        agg_dict[result[0]] = result[1]
+        else:
+                for indi, val in tqdm(trajectories_frame[&#39;geometry&#39;].iteritems(), total=trajectories_frame.shape[0]):
+                        if np.isnan(val.x):
+                                agg_dict[indi] = Point(float(&#39;nan&#39;), float(&#39;nan&#39;))
+                                continue
+                        assigned_x, assigned_y = self._aggregate(x, y, centroid_x, centroid_y, val)
+                        agg_dict[indi] = Point(assigned_x, assigned_y)
+        if inplace:
+                trajectories_copy[&#39;geometry&#39;].update(pd.Series(agg_dict))
+                trajectories_copy[trajectories_copy._geom_cols[0]] = trajectories_copy[&#34;geometry&#34;].x
+                trajectories_copy[trajectories_copy._geom_cols[1]] = trajectories_copy[&#34;geometry&#34;].y
+        else:
+                trajectories_copy[&#39;old_geometry&#39;] = trajectories_copy[&#39;geometry&#39;]
+                trajectories_copy[&#39;geometry&#39;] = pd.Series(agg_dict)
+                trajectories_copy[trajectories_copy._geom_cols[0]] = trajectories_copy[&#34;geometry&#34;].x
+                trajectories_copy[trajectories_copy._geom_cols[1]] = trajectories_copy[&#34;geometry&#34;].y
+                trajectories_copy[&#39;geometry&#39;] = trajectories_copy[&#39;old_geometry&#39;]
+        trajectories_copy = to_labels(trajectories_copy)
+        return trajectories_copy</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="src.humobi.preprocessing.spatial_aggregation.LayerAggregator"><code class="flex name class">
+<span>class <span class="ident">LayerAggregator</span></span>
+<span>(</span><span>layer, kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A class for movement trajectories spatial aggregation. This one uses external data (spatial layer) to aggregate data.</p>
+<p>Class initalisation.</p>
+<p>Args:
+layer: An external, spatial layer which will be used for aggregation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LayerAggregator():
+        &#34;&#34;&#34;
+        A class for movement trajectories spatial aggregation. This one uses external data (spatial layer) to aggregate data.
+        &#34;&#34;&#34;
+
+        def __init__(self, layer, kwargs):
+                &#34;&#34;&#34;
+                Class initalisation.
+
+                Args:
+                layer: An external, spatial layer which will be used for aggregation
+                &#34;&#34;&#34;
+                self._layer = gpd.GeoDataFrame.from_file(layer, **kwargs)
+
+        @property
+        def layer(self):
+                return self._layer
+
+        def aggregate(self, trajectories_frame, dropoverwirte=True):
+                &#34;&#34;&#34;
+                Aggregates data to given spatial layer. Overwrites geometry.
+
+                Args:
+                        trajectories_frame: TrajectoriesFrame object class
+                        dropoverwirte: If true, points that were not assigned to any locationare removed.
+
+                Returns:
+                        An aggregated TrajectoriesFrame instance
+                &#34;&#34;&#34;
+                aggregated_frame = gpd.tools.sjoin(trajectories_frame.reset_index(), self.layer, how=&#39;left&#39;)
+                centroid_layer = self.layer[&#39;geometry&#39;].centroid
+                aggregated_frame = aggregated_frame[[&#34;ID&#34;, &#34;datetime&#34;, &#39;index_right&#39;]]
+                aggregated_frame = pd.merge(aggregated_frame, pd.DataFrame(centroid_layer), left_on=&#39;index_right&#39;,
+                                            right_index=True)
+                if dropoverwirte:
+                        trajectories_frame = trajectories_frame.join(aggregated_frame.set_index([&#39;ID&#39;, &#34;datetime&#34;]), how=&#39;inner&#39;)
+                else:
+                        trajectories_frame = trajectories_frame.join(aggregated_frame.set_index([&#39;ID&#39;, &#34;datetime&#34;]))
+                trajectories_frame[&#39;geometry&#39;] = trajectories_frame.iloc[:, -1]
+                return trajectories_frame</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="src.humobi.preprocessing.spatial_aggregation.LayerAggregator.layer"><code class="name">var <span class="ident">layer</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def layer(self):
+        return self._layer</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="src.humobi.preprocessing.spatial_aggregation.LayerAggregator.aggregate"><code class="name flex">
+<span>def <span class="ident">aggregate</span></span>(<span>self, trajectories_frame, dropoverwirte=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Aggregates data to given spatial layer. Overwrites geometry.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame object class</dd>
+<dt><strong><code>dropoverwirte</code></strong></dt>
+<dd>If true, points that were not assigned to any locationare removed.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>An aggregated TrajectoriesFrame instance</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def aggregate(self, trajectories_frame, dropoverwirte=True):
+        &#34;&#34;&#34;
+        Aggregates data to given spatial layer. Overwrites geometry.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame object class
+                dropoverwirte: If true, points that were not assigned to any locationare removed.
+
+        Returns:
+                An aggregated TrajectoriesFrame instance
+        &#34;&#34;&#34;
+        aggregated_frame = gpd.tools.sjoin(trajectories_frame.reset_index(), self.layer, how=&#39;left&#39;)
+        centroid_layer = self.layer[&#39;geometry&#39;].centroid
+        aggregated_frame = aggregated_frame[[&#34;ID&#34;, &#34;datetime&#34;, &#39;index_right&#39;]]
+        aggregated_frame = pd.merge(aggregated_frame, pd.DataFrame(centroid_layer), left_on=&#39;index_right&#39;,
+                                    right_index=True)
+        if dropoverwirte:
+                trajectories_frame = trajectories_frame.join(aggregated_frame.set_index([&#39;ID&#39;, &#34;datetime&#34;]), how=&#39;inner&#39;)
+        else:
+                trajectories_frame = trajectories_frame.join(aggregated_frame.set_index([&#39;ID&#39;, &#34;datetime&#34;]))
+        trajectories_frame[&#39;geometry&#39;] = trajectories_frame.iloc[:, -1]
+        return trajectories_frame</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="src.humobi.preprocessing" href="index.html">src.humobi.preprocessing</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="src.humobi.preprocessing.spatial_aggregation.ClusteringAggregator" href="#src.humobi.preprocessing.spatial_aggregation.ClusteringAggregator">ClusteringAggregator</a></code></h4>
+<ul class="">
+<li><code><a title="src.humobi.preprocessing.spatial_aggregation.ClusteringAggregator.aggregate" href="#src.humobi.preprocessing.spatial_aggregation.ClusteringAggregator.aggregate">aggregate</a></code></li>
+<li><code><a title="src.humobi.preprocessing.spatial_aggregation.ClusteringAggregator.algorithm" href="#src.humobi.preprocessing.spatial_aggregation.ClusteringAggregator.algorithm">algorithm</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.humobi.preprocessing.spatial_aggregation.GridAggregation" href="#src.humobi.preprocessing.spatial_aggregation.GridAggregation">GridAggregation</a></code></h4>
+<ul class="two-column">
+<li><code><a title="src.humobi.preprocessing.spatial_aggregation.GridAggregation.aggregate" href="#src.humobi.preprocessing.spatial_aggregation.GridAggregation.aggregate">aggregate</a></code></li>
+<li><code><a title="src.humobi.preprocessing.spatial_aggregation.GridAggregation.resolution" href="#src.humobi.preprocessing.spatial_aggregation.GridAggregation.resolution">resolution</a></code></li>
+<li><code><a title="src.humobi.preprocessing.spatial_aggregation.GridAggregation.x_max" href="#src.humobi.preprocessing.spatial_aggregation.GridAggregation.x_max">x_max</a></code></li>
+<li><code><a title="src.humobi.preprocessing.spatial_aggregation.GridAggregation.x_min" href="#src.humobi.preprocessing.spatial_aggregation.GridAggregation.x_min">x_min</a></code></li>
+<li><code><a title="src.humobi.preprocessing.spatial_aggregation.GridAggregation.y_max" href="#src.humobi.preprocessing.spatial_aggregation.GridAggregation.y_max">y_max</a></code></li>
+<li><code><a title="src.humobi.preprocessing.spatial_aggregation.GridAggregation.y_min" href="#src.humobi.preprocessing.spatial_aggregation.GridAggregation.y_min">y_min</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.humobi.preprocessing.spatial_aggregation.LayerAggregator" href="#src.humobi.preprocessing.spatial_aggregation.LayerAggregator">LayerAggregator</a></code></h4>
+<ul class="">
+<li><code><a title="src.humobi.preprocessing.spatial_aggregation.LayerAggregator.aggregate" href="#src.humobi.preprocessing.spatial_aggregation.LayerAggregator.aggregate">aggregate</a></code></li>
+<li><code><a title="src.humobi.preprocessing.spatial_aggregation.LayerAggregator.layer" href="#src.humobi.preprocessing.spatial_aggregation.LayerAggregator.layer">layer</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

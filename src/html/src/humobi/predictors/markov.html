@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>src.humobi.predictors.markov API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>src.humobi.predictors.markov</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import numpy as np
+from tqdm import tqdm
+
+tqdm.pandas()
+
+
+def normalize_chain(dicto):
+        &#34;&#34;&#34;
+        Normalizes dictionary values. Used for the Markov Chain normalization.
+        :param dicto: dictionary to normalize
+        :return: normalized dictionary
+        &#34;&#34;&#34;
+        total = 1 / float(np.sum(list(dicto.values())))
+        for k, v in dicto.items():
+                dicto[k] = v * total
+        return dicto
+
+
+def build_single(sequence, state_size, state):
+        &#34;&#34;&#34;
+        A small temporary model for lower order Markov Chains called during prediction when previously unseen state is
+        encountered.
+        :param sequence: Sequence to learn
+        :param state_size: Order of the Markov Chain
+        :param state: Current state
+        :return: Lower order Markov Chain
+        &#34;&#34;&#34;
+        model = {}
+        for posnum in range(len(sequence) - state_size):
+                if tuple(sequence[posnum:posnum + state_size]) == state:
+                        next = sequence[posnum + state_size]
+                        if state not in model.keys():
+                                model[state] = {}
+                        if next not in model[state].keys():
+                                model[state][next] = 0
+                        model[state][next] += 1
+        return model
+
+
+class MarkovChain(object):
+        &#34;&#34;&#34;
+        Markov Chain class.
+        :param sequence: Sequence which is used for chain building
+        :param state_size: The order of the Markov Chain
+        &#34;&#34;&#34;
+
+        def __init__(self, sequence, state_size):
+                &#34;&#34;&#34;
+                Class initialization. Calls chain building (learning).
+                &#34;&#34;&#34;
+                self._state_size = state_size
+                self._sequence = sequence
+                self.model = self.build()
+
+        @property
+        def state_size(self):
+                return self._state_size
+
+        @property
+        def sequence(self):
+                return self._sequence
+
+        @sequence.setter
+        def sequence(self, value):
+                self._sequence = value
+
+        def build(self):
+                &#34;&#34;&#34;
+                Builds the Markov Chain. Returned model is not normalized as it is normalized during prediction.
+                :return: Markov Model
+                &#34;&#34;&#34;
+                model = {}  # the model is a dictionary
+                for posnum in range(len(self.sequence) - self.state_size):  # for each element in the sequence
+                        state = tuple(self.sequence[posnum:posnum + self.state_size])  # read current state, including order
+                        next = self.sequence[posnum + self.state_size]  # read the next symbol
+                        if state not in model.keys():  # if symbol not yet encountered
+                                model[state] = {}  # create a slot for it
+                        if next not in model[state].keys():  # if symbol encountered but the next state haven&#39;t been encountered yet for that symbol
+                                model[state][next] = 0  # create a slot for it
+                        model[state][next] += 1  # count +1 for that transition
+                return model
+
+        def move(self, state):
+                &#34;&#34;&#34;
+                Predict the next symbol based on the given state.
+                :param state: The state from which the Markov Chain will make prediction
+                :return: Predicted symbol
+                &#34;&#34;&#34;
+                state = tuple(state)  # current state - the model operates on tuples
+                if state not in self.model.keys():  # this whole if operates on the case when the state is not met and fits lower-order models
+                        for lower in range(1, self.state_size + 1):
+                                lower_state = state[lower::]
+                                lower_state_size = self.state_size - lower
+                                lower_state_sequence = [tuple(self.sequence[posnum:posnum + lower_state_size]) \
+                                                        for posnum in range(len(self.sequence) - lower_state_size)]
+                                if lower_state in lower_state_sequence:
+                                        break
+                                if len(lower_state) == 0:
+                                        return -1
+                        temp_model = build_single(self.sequence, lower_state_size, lower_state)  # builds temporal, smaller model
+                        transit = normalize_chain(temp_model[lower_state])
+                else:
+                        transit = normalize_chain(self.model[state])  # normalize chain
+                prediction = np.random.choice(list(transit.keys()), p=list(transit.values()))  # make prediction
+                return prediction
+
+        def move_from_build(self, horizon, update=False):
+                &#34;&#34;&#34;
+                Predict the next symbols based on the last seen state during training
+                :param horizon: How many symbols to predict
+                :param update: Whether the model should be updated by the new predictions (not recommended)
+                :return: Predicted symbols
+                &#34;&#34;&#34;
+                predicted_sequence = []
+                recent_state = self.sequence[-self.state_size:]
+                for steps in range(horizon):
+                        prediction = self.move(recent_state)
+                        predicted_sequence.append(prediction)
+                        recent_state.append(prediction)
+                        recent_state = recent_state[1:]
+                        if update:
+                                self.sequence += prediction
+                                self.build()
+                return np.array(predicted_sequence)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="src.humobi.predictors.markov.build_single"><code class="name flex">
+<span>def <span class="ident">build_single</span></span>(<span>sequence, state_size, state)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A small temporary model for lower order Markov Chains called during prediction when previously unseen state is
+encountered.
+:param sequence: Sequence to learn
+:param state_size: Order of the Markov Chain
+:param state: Current state
+:return: Lower order Markov Chain</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def build_single(sequence, state_size, state):
+        &#34;&#34;&#34;
+        A small temporary model for lower order Markov Chains called during prediction when previously unseen state is
+        encountered.
+        :param sequence: Sequence to learn
+        :param state_size: Order of the Markov Chain
+        :param state: Current state
+        :return: Lower order Markov Chain
+        &#34;&#34;&#34;
+        model = {}
+        for posnum in range(len(sequence) - state_size):
+                if tuple(sequence[posnum:posnum + state_size]) == state:
+                        next = sequence[posnum + state_size]
+                        if state not in model.keys():
+                                model[state] = {}
+                        if next not in model[state].keys():
+                                model[state][next] = 0
+                        model[state][next] += 1
+        return model</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.predictors.markov.normalize_chain"><code class="name flex">
+<span>def <span class="ident">normalize_chain</span></span>(<span>dicto)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Normalizes dictionary values. Used for the Markov Chain normalization.
+:param dicto: dictionary to normalize
+:return: normalized dictionary</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def normalize_chain(dicto):
+        &#34;&#34;&#34;
+        Normalizes dictionary values. Used for the Markov Chain normalization.
+        :param dicto: dictionary to normalize
+        :return: normalized dictionary
+        &#34;&#34;&#34;
+        total = 1 / float(np.sum(list(dicto.values())))
+        for k, v in dicto.items():
+                dicto[k] = v * total
+        return dicto</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="src.humobi.predictors.markov.MarkovChain"><code class="flex name class">
+<span>class <span class="ident">MarkovChain</span></span>
+<span>(</span><span>sequence, state_size)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Markov Chain class.
+:param sequence: Sequence which is used for chain building
+:param state_size: The order of the Markov Chain</p>
+<p>Class initialization. Calls chain building (learning).</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MarkovChain(object):
+        &#34;&#34;&#34;
+        Markov Chain class.
+        :param sequence: Sequence which is used for chain building
+        :param state_size: The order of the Markov Chain
+        &#34;&#34;&#34;
+
+        def __init__(self, sequence, state_size):
+                &#34;&#34;&#34;
+                Class initialization. Calls chain building (learning).
+                &#34;&#34;&#34;
+                self._state_size = state_size
+                self._sequence = sequence
+                self.model = self.build()
+
+        @property
+        def state_size(self):
+                return self._state_size
+
+        @property
+        def sequence(self):
+                return self._sequence
+
+        @sequence.setter
+        def sequence(self, value):
+                self._sequence = value
+
+        def build(self):
+                &#34;&#34;&#34;
+                Builds the Markov Chain. Returned model is not normalized as it is normalized during prediction.
+                :return: Markov Model
+                &#34;&#34;&#34;
+                model = {}  # the model is a dictionary
+                for posnum in range(len(self.sequence) - self.state_size):  # for each element in the sequence
+                        state = tuple(self.sequence[posnum:posnum + self.state_size])  # read current state, including order
+                        next = self.sequence[posnum + self.state_size]  # read the next symbol
+                        if state not in model.keys():  # if symbol not yet encountered
+                                model[state] = {}  # create a slot for it
+                        if next not in model[state].keys():  # if symbol encountered but the next state haven&#39;t been encountered yet for that symbol
+                                model[state][next] = 0  # create a slot for it
+                        model[state][next] += 1  # count +1 for that transition
+                return model
+
+        def move(self, state):
+                &#34;&#34;&#34;
+                Predict the next symbol based on the given state.
+                :param state: The state from which the Markov Chain will make prediction
+                :return: Predicted symbol
+                &#34;&#34;&#34;
+                state = tuple(state)  # current state - the model operates on tuples
+                if state not in self.model.keys():  # this whole if operates on the case when the state is not met and fits lower-order models
+                        for lower in range(1, self.state_size + 1):
+                                lower_state = state[lower::]
+                                lower_state_size = self.state_size - lower
+                                lower_state_sequence = [tuple(self.sequence[posnum:posnum + lower_state_size]) \
+                                                        for posnum in range(len(self.sequence) - lower_state_size)]
+                                if lower_state in lower_state_sequence:
+                                        break
+                                if len(lower_state) == 0:
+                                        return -1
+                        temp_model = build_single(self.sequence, lower_state_size, lower_state)  # builds temporal, smaller model
+                        transit = normalize_chain(temp_model[lower_state])
+                else:
+                        transit = normalize_chain(self.model[state])  # normalize chain
+                prediction = np.random.choice(list(transit.keys()), p=list(transit.values()))  # make prediction
+                return prediction
+
+        def move_from_build(self, horizon, update=False):
+                &#34;&#34;&#34;
+                Predict the next symbols based on the last seen state during training
+                :param horizon: How many symbols to predict
+                :param update: Whether the model should be updated by the new predictions (not recommended)
+                :return: Predicted symbols
+                &#34;&#34;&#34;
+                predicted_sequence = []
+                recent_state = self.sequence[-self.state_size:]
+                for steps in range(horizon):
+                        prediction = self.move(recent_state)
+                        predicted_sequence.append(prediction)
+                        recent_state.append(prediction)
+                        recent_state = recent_state[1:]
+                        if update:
+                                self.sequence += prediction
+                                self.build()
+                return np.array(predicted_sequence)</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="src.humobi.predictors.markov.MarkovChain.sequence"><code class="name">var <span class="ident">sequence</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def sequence(self):
+        return self._sequence</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.predictors.markov.MarkovChain.state_size"><code class="name">var <span class="ident">state_size</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def state_size(self):
+        return self._state_size</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="src.humobi.predictors.markov.MarkovChain.build"><code class="name flex">
+<span>def <span class="ident">build</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Builds the Markov Chain. Returned model is not normalized as it is normalized during prediction.
+:return: Markov Model</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def build(self):
+        &#34;&#34;&#34;
+        Builds the Markov Chain. Returned model is not normalized as it is normalized during prediction.
+        :return: Markov Model
+        &#34;&#34;&#34;
+        model = {}  # the model is a dictionary
+        for posnum in range(len(self.sequence) - self.state_size):  # for each element in the sequence
+                state = tuple(self.sequence[posnum:posnum + self.state_size])  # read current state, including order
+                next = self.sequence[posnum + self.state_size]  # read the next symbol
+                if state not in model.keys():  # if symbol not yet encountered
+                        model[state] = {}  # create a slot for it
+                if next not in model[state].keys():  # if symbol encountered but the next state haven&#39;t been encountered yet for that symbol
+                        model[state][next] = 0  # create a slot for it
+                model[state][next] += 1  # count +1 for that transition
+        return model</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.predictors.markov.MarkovChain.move"><code class="name flex">
+<span>def <span class="ident">move</span></span>(<span>self, state)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Predict the next symbol based on the given state.
+:param state: The state from which the Markov Chain will make prediction
+:return: Predicted symbol</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def move(self, state):
+        &#34;&#34;&#34;
+        Predict the next symbol based on the given state.
+        :param state: The state from which the Markov Chain will make prediction
+        :return: Predicted symbol
+        &#34;&#34;&#34;
+        state = tuple(state)  # current state - the model operates on tuples
+        if state not in self.model.keys():  # this whole if operates on the case when the state is not met and fits lower-order models
+                for lower in range(1, self.state_size + 1):
+                        lower_state = state[lower::]
+                        lower_state_size = self.state_size - lower
+                        lower_state_sequence = [tuple(self.sequence[posnum:posnum + lower_state_size]) \
+                                                for posnum in range(len(self.sequence) - lower_state_size)]
+                        if lower_state in lower_state_sequence:
+                                break
+                        if len(lower_state) == 0:
+                                return -1
+                temp_model = build_single(self.sequence, lower_state_size, lower_state)  # builds temporal, smaller model
+                transit = normalize_chain(temp_model[lower_state])
+        else:
+                transit = normalize_chain(self.model[state])  # normalize chain
+        prediction = np.random.choice(list(transit.keys()), p=list(transit.values()))  # make prediction
+        return prediction</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.predictors.markov.MarkovChain.move_from_build"><code class="name flex">
+<span>def <span class="ident">move_from_build</span></span>(<span>self, horizon, update=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Predict the next symbols based on the last seen state during training
+:param horizon: How many symbols to predict
+:param update: Whether the model should be updated by the new predictions (not recommended)
+:return: Predicted symbols</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def move_from_build(self, horizon, update=False):
+        &#34;&#34;&#34;
+        Predict the next symbols based on the last seen state during training
+        :param horizon: How many symbols to predict
+        :param update: Whether the model should be updated by the new predictions (not recommended)
+        :return: Predicted symbols
+        &#34;&#34;&#34;
+        predicted_sequence = []
+        recent_state = self.sequence[-self.state_size:]
+        for steps in range(horizon):
+                prediction = self.move(recent_state)
+                predicted_sequence.append(prediction)
+                recent_state.append(prediction)
+                recent_state = recent_state[1:]
+                if update:
+                        self.sequence += prediction
+                        self.build()
+        return np.array(predicted_sequence)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="src.humobi.predictors" href="index.html">src.humobi.predictors</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="src.humobi.predictors.markov.build_single" href="#src.humobi.predictors.markov.build_single">build_single</a></code></li>
+<li><code><a title="src.humobi.predictors.markov.normalize_chain" href="#src.humobi.predictors.markov.normalize_chain">normalize_chain</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="src.humobi.predictors.markov.MarkovChain" href="#src.humobi.predictors.markov.MarkovChain">MarkovChain</a></code></h4>
+<ul class="">
+<li><code><a title="src.humobi.predictors.markov.MarkovChain.build" href="#src.humobi.predictors.markov.MarkovChain.build">build</a></code></li>
+<li><code><a title="src.humobi.predictors.markov.MarkovChain.move" href="#src.humobi.predictors.markov.MarkovChain.move">move</a></code></li>
+<li><code><a title="src.humobi.predictors.markov.MarkovChain.move_from_build" href="#src.humobi.predictors.markov.MarkovChain.move_from_build">move_from_build</a></code></li>
+<li><code><a title="src.humobi.predictors.markov.MarkovChain.sequence" href="#src.humobi.predictors.markov.MarkovChain.sequence">sequence</a></code></li>
+<li><code><a title="src.humobi.predictors.markov.MarkovChain.state_size" href="#src.humobi.predictors.markov.MarkovChain.state_size">state_size</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

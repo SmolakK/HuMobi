@@ -1,0 +1,1642 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>src.humobi.measures.individual API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>src.humobi.measures.individual</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># IMPORTS
+from src.humobi.preprocessing.temporal_aggregation import TemporalAggregator
+import numpy as np
+import pandas as pd
+from src.humobi.tools.processing import groupwise_normalise, groupwise_expansion
+from src.humobi.misc.utils import *
+from src.humobi.misc.utils import _repeatfinder_dense, _repeatfinder_sparse, _repeatfinder_equally_sparse, \
+        _global_align, _iterative_global_align
+from tqdm import tqdm
+from src.humobi.structures.trajectory import TrajectoriesFrame
+tqdm.pandas()
+import concurrent.futures as cf
+from math import ceil
+from random import sample
+from scipy.optimize import curve_fit
+from sklearn.metrics import r2_score
+
+
+def num_of_distinct_locations(trajectories_frame):
+        &#34;&#34;&#34;
+        Returns a number of distinct location in the trajectory. First looks for &#39;labels&#39; column.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with the number of unique locations for each user
+        &#34;&#34;&#34;
+        if isinstance(trajectories_frame, pd.DataFrame):
+                return trajectories_frame.groupby(level=0).progress_apply(lambda x: len(pd.unique(x[&#39;labels&#39;])))
+        else:
+                return trajectories_frame.groupby(level=0).progress_apply(lambda x: pd.unique(x).shape[0])
+
+
+def visitation_frequency(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates visitiation frequency for each user in the TrajectoriesFrame.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with the visitation frequency for each user and for each location. Sorted descendingly.
+        &#34;&#34;&#34;
+        lat_col = trajectories_frame._geom_cols[0]
+        lon_col = trajectories_frame._geom_cols[1]
+        frequencies = trajectories_frame.groupby(level=0).progress_apply(
+                lambda x: x.groupby([lat_col, lon_col]).count()).iloc[:, 0]
+        frequencies = frequencies.groupby(level=0).progress_apply(lambda x: x.sort_values(ascending=False))
+        frequencies = groupwise_normalise(frequencies)
+        return frequencies
+
+
+def _filter_distinct_locations(trajectories_frame):
+        to_concat = []
+        for ind, vals in tqdm(trajectories_frame.groupby(level=0), total=len(trajectories_frame.groupby(level=0)) ):
+                if len(vals) == 1:
+                        to_concat.append(uniq)
+                        continue
+                else:
+                        uniq = (vals[&#39;geometry&#39;][vals[&#39;geometry&#39;].is_valid].drop_duplicates())
+                        to_concat.append(uniq)
+        return pd.concat(to_concat)
+
+
+def distinct_locations_over_time(trajectories_frame, time_unit=&#39;1H&#39;, reaggregate=False):
+        &#34;&#34;&#34;
+        Calculates the number of distinct location visited in the movement trajectory over time.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+                time_unit: determines the time unit for the metric
+                reaggregate: if true, data are first reagregated to given time unit
+
+        Returns:
+                a Series with the number of unique locations visited up to each time step in the movement trajectory
+        &#34;&#34;&#34;
+        if reaggregate:
+                temp_agg = TemporalAggregator(time_unit)
+                trajectories_frame = temp_agg.aggregate(trajectories_frame)
+        trajectories_frame = _filter_distinct_locations(trajectories_frame)
+        distinct_locations = trajectories_frame.groupby(level=0).resample(time_unit, level=1).count()
+        distinct_locations = distinct_locations.groupby(level=0).cumsum()
+        return distinct_locations
+
+
+def jump_lengths(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates jump lengths between each step in the trajectory
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with jump lengths between consecutive records
+        &#34;&#34;&#34;
+        jumps = trajectories_frame.dropna().geometry.groupby(level=0).progress_apply(lambda x: x.distance(x.shift()))
+        return jumps
+
+
+def nonzero_trips(trajectories_frame):
+        &#34;&#34;&#34;
+        Counts all trips that had distance larger than 0.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with a count of nonzero trips for each user
+        &#34;&#34;&#34;
+        jumps = jump_lengths(trajectories_frame).dropna().droplevel(1)
+        return jumps[jumps != 0].groupby(by=&#34;user_id&#34;).count()
+
+
+def self_transitions(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates the number of self transitions for each user
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Retruns
+                a Series with the number of self transitions for each user
+        &#34;&#34;&#34;
+        if isinstance(trajectories_frame, pd.Series):
+                self_transitions_mask = (trajectories_frame == trajectories_frame.shift())
+        else:
+                if not hasattr(trajectories_frame, &#39;_geom_cols&#39;):
+                        trajectories_frame = TrajectoriesFrame(trajectories_frame)
+                coordinates_frame = trajectories_frame[[trajectories_frame._geom_cols[0], trajectories_frame._geom_cols[1]]]
+                self_transitions_mask = (coordinates_frame == coordinates_frame.shift()).all(axis=1)
+        empty_mask = (~self_transitions_mask).groupby(level=0).progress_apply(lambda x: x.all())
+        empty_mask = empty_mask[empty_mask == True].index
+        self_transitions_only = trajectories_frame[self_transitions_mask]
+        empty_self_transitions = pd.DataFrame([0 for x in range(len(empty_mask))], index=empty_mask)
+        if isinstance(trajectories_frame, pd.Series):
+                self_transitions_only = self_transitions_only.groupby(level=0).count()
+        else:
+                self_transitions_only = self_transitions_only.groupby(level=0).count()[self_transitions_only.columns[0]]
+        if len(empty_self_transitions) &gt; 0:
+                self_transitions_only.append(empty_self_transitions.iloc[:, 0]).sort_index()
+        return self_transitions_only
+
+
+def waiting_times(trajectories_frame, time_unit=&#39;h&#39;):
+        &#34;&#34;&#34;
+        Calculates waiting times for each transition in TrajectoriesFrame
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+                time_unit: time unit in which waiting times will be expressed
+
+        Returns:
+                A series with waiting times for each transition for each user
+        &#34;&#34;&#34;
+        trajectories_frame = trajectories_frame.dropna()
+        transitions_only = trajectories_frame[
+                trajectories_frame.geometry.groupby(level=0).progress_apply(lambda x: x.shift(-1) != x)]
+        transitions_only[&#39;dt&#39;] = transitions_only.index.get_level_values(1)
+        times = transitions_only.groupby(level=0).dt.progress_apply(lambda x: (x - x.shift()).astype(&#39;timedelta64[%s]&#39; % time_unit))
+        return times
+
+
+def center_of_mass(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates a center of mass for each user&#39;s trajectory
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a GeoSeries with centers of mass of each user&#39;s trajectory
+        &#34;&#34;&#34;
+        return trajectories_frame.dissolve(by=trajectories_frame.index.get_level_values(0)).centroid
+
+
+def radius_of_gyration(trajectories_frame, time_evolution=True):
+        &#34;&#34;&#34;
+        Calculates radii of gyration for each user. Optionally uses time steps to express their growth.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+                time_evolution: If true, radii of gyration are calculated over time
+
+        Returns:
+                a Series with radii of gyration for each user
+        &#34;&#34;&#34;
+        mean_locs = center_of_mass(trajectories_frame)
+        to_concat_dict = {}
+        to_concat_list = []
+        for ind, vals in tqdm(trajectories_frame.groupby(level=0), total=len(trajectories_frame.groupby(level=0))):
+                vals = vals.dropna()
+                rog_ind = vals.distance(mean_locs.loc[ind]) ** 2
+                if time_evolution:
+                        rog_ind = groupwise_expansion(np.sqrt(rog_ind))
+                        to_concat_list.append(rog_ind)
+                else:
+                        rog_ind = np.sqrt(rog_ind.mean())
+                        to_concat_dict[ind] = rog_ind
+        if time_evolution:
+                radius = pd.concat(to_concat_list)
+        else:
+                radius = pd.DataFrame.from_dict(to_concat_dict, orient=&#39;index&#39;)
+        return radius
+
+
+def mean_square_displacement(trajectories_frame, from_center=False, time_evolution=True, reference_locs=None):
+        &#34;&#34;&#34;
+        Calculates mean square displacements for each user. Optionally uses time steps to express their growth.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+                from_center: If true, displacement is calculated from the trajectory ceneter, if false - from the first point
+                time_evolution: If true, mean square displacements are calculated over time
+                reference_locs: allows to give reference locations for each trajectory explicitly
+
+        Returns:
+                a Series with mean square displacements for each user
+        &#34;&#34;&#34;
+        to_concat_dict = {}
+        to_concat_list = []
+        if reference_locs is None:
+                if from_center:
+                        reference_locs = center_of_mass(trajectories_frame)
+                else:
+                        reference_locs = trajectories_frame.groupby(level=0).head(1).droplevel(1).geometry
+        for ind, vals in tqdm(trajectories_frame.groupby(level=0), total=len(trajectories_frame.groupby(level=0))):
+                vals = vals.dropna()
+                msd_ind = (vals.distance(reference_locs.loc[ind]) ** 2)
+                if time_evolution:
+                        msd_ind = groupwise_expansion(msd_ind)
+                        to_concat_list.append(msd_ind)
+                else:
+                        msd_ind = msd_ind.mean()
+                        to_concat_dict[ind] = msd_ind
+        if time_evolution:
+                msd = pd.concat(to_concat_list)
+        else:
+                msd = pd.DataFrame.from_dict(to_concat_dict, orient=&#39;index&#39;)
+        return msd
+
+
+def return_time(trajectories_frame, time_unit=&#39;h&#39;, by_place=False):
+        &#34;&#34;&#34;
+        Calculates return times for each unique location in each user&#39;s trajectory.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+                time_unit: time unit in which return times will be expressed
+                by_place: If true, return times are expressed for each place globally
+
+        Returns:
+                a Series with return times
+        &#34;&#34;&#34;
+        if not hasattr(trajectories_frame, &#39;_geom_cols&#39;):
+                trajectories_frame = TrajectoriesFrame(trajectories_frame)
+        lat_col = trajectories_frame[trajectories_frame._geom_cols[0]]
+        lon_col = trajectories_frame[trajectories_frame._geom_cols[1]]
+        trajectories_frame[&#39;datetime_temp&#39;] = trajectories_frame.index.get_level_values(1)
+        to_concat = []
+        for ind, vals in tqdm(trajectories_frame.groupby(level=0), total=len(trajectories_frame.groupby(level=0))):
+                concat_level = {}
+                for place, vals2 in vals.groupby([lat_col, lon_col]):
+                        shifts = (vals2.datetime_temp - vals2.datetime_temp.shift()).astype(&#39;timedelta64[%s]&#39; % time_unit)
+                        concat_level[place] = shifts
+                to_concat.append(pd.concat(concat_level))
+        return_times = pd.concat(to_concat)
+        if by_place:
+                return_times = return_times.groupby(level=2).progress_apply(
+                        lambda x: x.groupby(level=[0, 1]).agg([&#39;count&#39;, &#39;mean&#39;]).dropna())
+                return_times = return_times.groupby(level=0).progress_apply(lambda x: x.sort_values(&#39;count&#39;, ascending=False))
+        else:
+                return_times = return_times.groupby(level=2).progress_apply(lambda x: x.sort_values(ascending=False)).droplevel(
+                        [1, 2])
+        return return_times
+
+
+def random_entropy(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates random entropy for each user in TrajectoriesFrame
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with random entropies for each user
+        &#34;&#34;&#34;
+        return trajectories_frame.groupby(level=0).progress_apply(lambda x: np.log2(len(pd.unique(x.geometry))))
+
+
+def unc_entropy(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates uncorrelated entropy for each user in TrajectoriesFrame
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with uncorrelated entropies for each user
+        &#34;&#34;&#34;
+        frequencies = visitation_frequency(trajectories_frame)
+        return frequencies.groupby(level=0).progress_apply(lambda x: -np.sum([pk * np.log2(pk) for pk in x if pk != 0]))
+
+
+def _fit_func(x, a, b, c):
+        return a * np.exp(b * x) + c
+
+
+def _real_entropy(indi, gs):
+        &#34;&#34;&#34;
+        Calculates actual entropy for series of symbols
+
+        Args:
+                indi: unique identifier
+                gs: series of symbols
+
+        Returns:
+                a unique identifier and entropy value
+        &#34;&#34;&#34;
+        return indi, np.power(np.mean(matchfinder(gs)), -1) * np.log2(len(gs))
+
+
+def _real_scalling_entropy(indi, trace, estimation_method=&#39;unc&#39;):
+        &#34;&#34;&#34;
+        Calculates actual entropy for trajectories. If trajectory has missing data, uses estimation. Uncorrelated entropy-based
+        estimation is used.
+
+        Args:
+                indi: unique identifier
+                trace: movement trajectory
+
+        Returns:
+                a unique identifier and actual entropy
+        &#34;&#34;&#34;
+        empty_fraction = trace.isnull().sum() / trace.shape[0]
+        if empty_fraction &lt; .15:
+                return _real_entropy(indi, trace)
+        elif empty_fraction &gt;.9:
+                raise ValueError(&#34;Fraction of missing records (q = %f) to high to estimate real entropy!&#34; % empty_fraction)
+        estimation_step = ceil((.9 - empty_fraction) / .05)
+        range_to_empty = [empty_fraction + .05 * x for x in range(estimation_step)]
+        scaling_features = []
+        uncs = []
+        real_qs = []
+        if estimation_method == &#39;unc&#39;:
+                visit_freq = trace.value_counts() / trace.shape[0]  # FOR UNCORRELATED ENTROPY-BASED ESTIMATION
+                Sunc_baseline = -np.sum(visit_freq * np.log2(visit_freq))  # FOR UNCORRELATED ENTROPY-BASED ESTIMATION
+        elif estimation_method == &#39;shuff&#39;:
+                Sunc_baseline = np.power(np.mean(matchfinder(trace.sample(frac=1).reset_index(drop=True))), -1) * \
+                                np.log2(len(
+                                        trace.sample(frac=1).reset_index(drop=True)))  # FOR SHUFFLED TRAJECTORY-BASED ESTIMATION
+        for q in range_to_empty[1:]:
+                trace_copy2 = trace.copy()
+                points_to_remove = sample(set(trace_copy2[~trace_copy2.isnull()].index),
+                                          int(round((q - empty_fraction) * len(trace_copy2))))
+                trace_copy2.loc[points_to_remove] = None
+                Strue = np.power(np.mean(matchfinder(trace_copy2)), -1) * np.log2(len(trace_copy2))
+                trace_shuffled = trace_copy2.sample(frac=1).reset_index(drop=True)
+                if estimation_method == &#39;unc&#39;:
+                        visit_freq = trace_copy2.value_counts() / trace_copy2.shape[0]  # FOR UNCORRELATED ENTROPY-BASED ESTIMATION
+                        Sunc = -np.sum(visit_freq * np.log2(visit_freq))  # FOR UNCORRELATED ENTROPY-BASED ESTIMATION
+                elif estimation_method == &#39;shuff&#39;:
+                        Sunc = np.power(np.mean(matchfinder(trace_shuffled)), -1) * np.log2(len(trace_shuffled)) # FOR SHUFFLED TRAJECTORY-BASED ESTIMATION
+                scaling_features.append(np.log2(Strue / Sunc))
+                uncs.append(Sunc)
+                real_qs.append(sum(trace_copy2.isnull()) / len(trace_copy2))
+        try:
+                popt, pcov = curve_fit(_fit_func, real_qs, scaling_features, maxfev=12000, p0=[0.1, 2, 0.1])
+                if sum(scaling_features) == 0 and r2_score(scaling_features, [_fit_func(x, *popt) for x in real_qs]) &lt; .9:
+                        a, b = np.polyfit(real_qs, scaling_features, 1)
+                        return indi, np.power(2, b) * Sunc_baseline
+                else:
+                        return indi, np.power(2, _fit_func(0, *popt)) * Sunc_baseline
+        except:
+                a, b = np.polyfit(real_qs, scaling_features, 1)
+                return indi, np.power(2, b) * Sunc_baseline
+
+
+def real_entropy(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates an actual entropy for each user in TrajectoriesFrame
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with actual entropies for each user
+        &#34;&#34;&#34;
+        result_dic = {}
+        with cf.ThreadPoolExecutor() as executor:
+                try:
+                        args = [val.labels for indi, val in trajectories_frame.groupby(level=0)]
+                except KeyError:
+                        args = [val for indi, val in trajectories_frame.groupby(level=0)]
+                ids = [indi for indi, val in trajectories_frame.groupby(level=0)]
+                results = list(tqdm(executor.map(_real_scalling_entropy, ids, args), total=len(ids)))
+        for result in results:
+                result_dic[result[0]] = result[1]
+        return pd.Series(np.fromiter(result_dic.values(), dtype=float), index=np.fromiter(result_dic.keys(), dtype=int))
+
+
+def random_predictability(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates random entropy and predictability.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with random entropy and predictability for each user
+        &#34;&#34;&#34;
+        distinct_locations = num_of_distinct_locations(trajectories_frame)
+        rand_ent = random_entropy(trajectories_frame)
+        merged = pd.DataFrame([distinct_locations, rand_ent], index=[&#39;locations&#39;, &#39;entropy&#39;])
+        return merged.progress_apply(lambda x: fano_inequality(x[&#39;locations&#39;], x[&#39;entropy&#39;])), rand_ent
+
+
+def unc_predictability(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates uncorrelated entropy and predictability.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with uncorrelated entropy and predictability for each user
+        &#34;&#34;&#34;
+        distinct_locations = num_of_distinct_locations(trajectories_frame)
+        unc_ent = unc_entropy(trajectories_frame)
+        merged = pd.DataFrame([distinct_locations, unc_ent], index=[&#39;locations&#39;, &#39;entropy&#39;])
+        return merged.progress_apply(lambda x: fano_inequality(x[&#39;locations&#39;], x[&#39;entropy&#39;])), unc_ent
+
+
+def real_predictability(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates actual entropy and predictability.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with actual entropy and predictability for each user
+        &#34;&#34;&#34;
+        distinct_locations = num_of_distinct_locations(trajectories_frame)
+        real_ent = real_entropy(trajectories_frame)
+        merged = pd.DataFrame([distinct_locations, real_ent], index=[&#39;locations&#39;, &#39;entropy&#39;])
+        return merged.progress_apply(lambda x: fano_inequality(x[&#39;locations&#39;], x[&#39;entropy&#39;])), real_ent
+
+
+def stationarity(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates the stationarity according to Teixeira et al. (2019) as the average stay length in the location.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with stationarity values for each user
+        &#34;&#34;&#34;
+        trajectories_frame = trajectories_frame.dropna()
+        stationarity_frame = trajectories_frame.labels.groupby(level=0).apply(
+                lambda x: x.groupby((x != x.shift()).cumsum()).size()-1)
+        stationarity_frame = stationarity_frame.groupby(&#39;user_id&#39;).sum()
+        size_frame = trajectories_frame.groupby(level=0).apply(lambda x: x.size)
+        return stationarity_frame/size_frame
+
+
+def regularity(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates the regularity according to Teixeira et al. (2019) as the ratio of sequence lenght and the number of
+        unique symbols
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with regularity values for each user
+        &#34;&#34;&#34;
+        regul = trajectories_frame.groupby(level=0).progress_apply(lambda x: len(x)) / num_of_distinct_locations(
+                trajectories_frame)
+        return regul
+
+
+def _repeatability_dense(indi, S1, S2):
+        S1 = S1.values
+        S2 = S2.values
+        return indi, _repeatfinder_dense(S1, S2)
+
+
+def _repeatability_sparse(indi, S1, S2):
+        S1 = S1.values
+        S2 = S2.values
+        return indi, _repeatfinder_sparse(S1, S2)
+
+
+def _repeatability_equally_sparse(indi, S1, S2):
+        S1 = S1.values
+        S2 = S2.values
+        return indi, _repeatfinder_equally_sparse(S1,S2)
+
+
+def _global_alignment(indi, S1, S2):
+        S1 = S1.values
+        S2 = S2.values
+        return indi, _global_align(S1, S2)
+
+
+def _iterative_global_alignment(indi, S1, S2):
+        S1 = S1.values
+        S2 = S2.values
+        return indi, _iterative_global_align(S1, S2)
+
+
+def repeatability_sparse(train_frame, test_frame):
+        &#34;&#34;&#34;
+        Calculates the sparse repeatability metric proposed in the paper Smolak et al. (2022) as the number of
+        transitions repeating in two sequences in the same order. Matched transitions can be separated by a gap of any size.
+        Returns normalised values.
+
+        Args:
+                train_frame: TrajectoriesFrame class object with the training data
+                test_frame:TrajectoriesFrame class object with the test data
+
+        Returns:
+                a Series with sparse repeatability values for each user
+        &#34;&#34;&#34;
+        result_dic = {}
+        with cf.ThreadPoolExecutor() as executor:
+                args_train = [val.labels for indi, val in train_frame.groupby(level=0)]
+                args_test = [val.labels for indi, val in test_frame.groupby(level=0)]
+                ids = [indi for indi, val in test_frame.groupby(level=0)]
+                results = list(tqdm(executor.map(_repeatability_sparse, ids, args_train, args_test), total=len(ids)))
+        for result in results:
+                result_dic[result[0]] = result[1]
+        return pd.Series(np.fromiter(result_dic.values(), dtype=float), index = np.fromiter(result_dic.keys(), dtype = int))
+
+
+def repeatability_dense(train_frame, test_frame):
+        &#34;&#34;&#34;
+        Calculates the dense repeatability metric proposed in the paper Smolak et al. (2022) as the number of
+        transitions repeating in two sequences in the same order. Matched transitions cannot be separated by a gap.
+        Returns normalised values.
+
+        Args:
+                train_frame: TrajectoriesFrame class object with the training data
+                test_frame:TrajectoriesFrame class object with the test data
+
+        Returns:
+                a Series with dense repeatability values for each user
+        &#34;&#34;&#34;
+        result_dic = {}
+        with cf.ThreadPoolExecutor() as executor:
+                args_train = [val.labels for indi, val in train_frame.groupby(level=0)]
+                args_test = [val.labels for indi, val in test_frame.groupby(level=0)]
+                ids = [indi for indi, val in test_frame.groupby(level=0)]
+                results = list(tqdm(executor.map(_repeatability_dense, ids, args_train, args_test), total=len(ids)))
+        for result in results:
+                result_dic[result[0]] = result[1]
+        return pd.Series(np.fromiter(result_dic.values(), dtype=float), index=np.fromiter(result_dic.keys(), dtype=int))
+
+
+def repeatability_equally_sparse(train_frame, test_frame):
+        &#34;&#34;&#34;
+        Calculates the equally sparse repeatability metric proposed in the paper Smolak et al. (2022) as the number of
+        transitions repeating in two sequences in the same order. Matched transitions can be separated by a gap of any size.
+        Matched transitions HAVE TO BE spearated by the gap of the same size.
+        Returns normalised values.
+
+        Args:
+                train_frame: TrajectoriesFrame class object with the training data
+                test_frame:TrajectoriesFrame class object with the test data
+
+        Returns:
+                a Series with equally sparse repeatability values for each user
+        &#34;&#34;&#34;
+        result_dic = {}
+        with cf.ThreadPoolExecutor() as executor:
+                args_train = [val.labels for indi, val in train_frame.groupby(level=0)]
+                args_test = [val.labels for indi, val in test_frame.groupby(level=0)]
+                ids = [indi for indi, val in test_frame.groupby(level=0)]
+                results = list(tqdm(executor.map(_repeatability_equally_sparse, ids, args_train, args_test), total=len(ids)))
+        for result in results:
+                result_dic[result[0]] = result[1]
+        return pd.Series(np.fromiter(result_dic.values(), dtype=float), index = np.fromiter(result_dic.keys(), dtype = int))
+
+
+def global_alignment(train_frame, test_frame):
+        &#34;&#34;&#34;
+        Calculates the global alignment metric proposed in the paper Smolak et al. (2022) through the application of the
+        Needleman-Wunsch algorithm on sequences for pairwise matching.
+        Returns normalised values.
+
+        Args:
+                train_frame: TrajectoriesFrame class object with the training data
+                test_frame: TrajectoriesFrame class object with the test data
+
+        Returns:
+                a Series with global alginment metric values for each user
+        &#34;&#34;&#34;
+        result_dic = {}
+        with cf.ThreadPoolExecutor() as executor:
+                args_train = [val.labels for indi, val in train_frame.groupby(level=0)]
+                args_test = [val.labels for indi, val in test_frame.groupby(level=0)]
+                ids = [indi for indi, val in test_frame.groupby(level=0)]
+                results = list(tqdm(executor.map(_global_alignment, ids, args_train, args_test), total=len(ids)))
+        for result in results:
+                result_dic[result[0]] = result[1]
+        return pd.Series(np.fromiter(result_dic.values(), dtype=float), index = np.fromiter(result_dic.keys(), dtype = int))
+
+
+def iterative_global_alignment(train_frame, test_frame):
+        &#34;&#34;&#34;
+        Calculates the iterative global alignment metric proposed in the paper Smolak et al. (2022) through the application 
+        of the Needleman-Wunsch algorithm on sequences for pairwise matching with the iterative approach.
+        Returns normalised values.
+
+        Args:
+                train_frame: TrajectoriesFrame class object with the training data
+                test_frame: TrajectoriesFrame class object with the test data
+
+        Returns:
+                a Series with global alginment metric values for each user
+        &#34;&#34;&#34;
+        result_dic = {}
+        with cf.ThreadPoolExecutor() as executor:
+                args_train = [val.labels for indi, val in train_frame.groupby(level=0)]
+                args_test = [val.labels for indi, val in test_frame.groupby(level=0)]
+                ids = [indi for indi, val in test_frame.groupby(level=0)]
+                results = list(tqdm(executor.map(_iterative_global_alignment, ids, args_train, args_test), total=len(ids)))
+        for result in results:
+                result_dic[result[0]] = result[1]
+        return pd.Series(np.fromiter(result_dic.values(), dtype=float), index = np.fromiter(result_dic.keys(), dtype = int))</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="src.humobi.measures.individual.center_of_mass"><code class="name flex">
+<span>def <span class="ident">center_of_mass</span></span>(<span>trajectories_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates a center of mass for each user's trajectory</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a GeoSeries with centers of mass of each user's trajectory</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def center_of_mass(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates a center of mass for each user&#39;s trajectory
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a GeoSeries with centers of mass of each user&#39;s trajectory
+        &#34;&#34;&#34;
+        return trajectories_frame.dissolve(by=trajectories_frame.index.get_level_values(0)).centroid</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.distinct_locations_over_time"><code class="name flex">
+<span>def <span class="ident">distinct_locations_over_time</span></span>(<span>trajectories_frame, time_unit='1H', reaggregate=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the number of distinct location visited in the movement trajectory over time.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+<dt><strong><code>time_unit</code></strong></dt>
+<dd>determines the time unit for the metric</dd>
+<dt><strong><code>reaggregate</code></strong></dt>
+<dd>if true, data are first reagregated to given time unit</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a Series with the number of unique locations visited up to each time step in the movement trajectory</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def distinct_locations_over_time(trajectories_frame, time_unit=&#39;1H&#39;, reaggregate=False):
+        &#34;&#34;&#34;
+        Calculates the number of distinct location visited in the movement trajectory over time.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+                time_unit: determines the time unit for the metric
+                reaggregate: if true, data are first reagregated to given time unit
+
+        Returns:
+                a Series with the number of unique locations visited up to each time step in the movement trajectory
+        &#34;&#34;&#34;
+        if reaggregate:
+                temp_agg = TemporalAggregator(time_unit)
+                trajectories_frame = temp_agg.aggregate(trajectories_frame)
+        trajectories_frame = _filter_distinct_locations(trajectories_frame)
+        distinct_locations = trajectories_frame.groupby(level=0).resample(time_unit, level=1).count()
+        distinct_locations = distinct_locations.groupby(level=0).cumsum()
+        return distinct_locations</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.global_alignment"><code class="name flex">
+<span>def <span class="ident">global_alignment</span></span>(<span>train_frame, test_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the global alignment metric proposed in the paper Smolak et al. (2022) through the application of the
+Needleman-Wunsch algorithm on sequences for pairwise matching.
+Returns normalised values.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>train_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object with the training data</dd>
+<dt><strong><code>test_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object with the test data</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a Series with global alginment metric values for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def global_alignment(train_frame, test_frame):
+        &#34;&#34;&#34;
+        Calculates the global alignment metric proposed in the paper Smolak et al. (2022) through the application of the
+        Needleman-Wunsch algorithm on sequences for pairwise matching.
+        Returns normalised values.
+
+        Args:
+                train_frame: TrajectoriesFrame class object with the training data
+                test_frame: TrajectoriesFrame class object with the test data
+
+        Returns:
+                a Series with global alginment metric values for each user
+        &#34;&#34;&#34;
+        result_dic = {}
+        with cf.ThreadPoolExecutor() as executor:
+                args_train = [val.labels for indi, val in train_frame.groupby(level=0)]
+                args_test = [val.labels for indi, val in test_frame.groupby(level=0)]
+                ids = [indi for indi, val in test_frame.groupby(level=0)]
+                results = list(tqdm(executor.map(_global_alignment, ids, args_train, args_test), total=len(ids)))
+        for result in results:
+                result_dic[result[0]] = result[1]
+        return pd.Series(np.fromiter(result_dic.values(), dtype=float), index = np.fromiter(result_dic.keys(), dtype = int))</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.iterative_global_alignment"><code class="name flex">
+<span>def <span class="ident">iterative_global_alignment</span></span>(<span>train_frame, test_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the iterative global alignment metric proposed in the paper Smolak et al. (2022) through the application
+of the Needleman-Wunsch algorithm on sequences for pairwise matching with the iterative approach.
+Returns normalised values.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>train_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object with the training data</dd>
+<dt><strong><code>test_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object with the test data</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a Series with global alginment metric values for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def iterative_global_alignment(train_frame, test_frame):
+        &#34;&#34;&#34;
+        Calculates the iterative global alignment metric proposed in the paper Smolak et al. (2022) through the application 
+        of the Needleman-Wunsch algorithm on sequences for pairwise matching with the iterative approach.
+        Returns normalised values.
+
+        Args:
+                train_frame: TrajectoriesFrame class object with the training data
+                test_frame: TrajectoriesFrame class object with the test data
+
+        Returns:
+                a Series with global alginment metric values for each user
+        &#34;&#34;&#34;
+        result_dic = {}
+        with cf.ThreadPoolExecutor() as executor:
+                args_train = [val.labels for indi, val in train_frame.groupby(level=0)]
+                args_test = [val.labels for indi, val in test_frame.groupby(level=0)]
+                ids = [indi for indi, val in test_frame.groupby(level=0)]
+                results = list(tqdm(executor.map(_iterative_global_alignment, ids, args_train, args_test), total=len(ids)))
+        for result in results:
+                result_dic[result[0]] = result[1]
+        return pd.Series(np.fromiter(result_dic.values(), dtype=float), index = np.fromiter(result_dic.keys(), dtype = int))</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.jump_lengths"><code class="name flex">
+<span>def <span class="ident">jump_lengths</span></span>(<span>trajectories_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates jump lengths between each step in the trajectory</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a Series with jump lengths between consecutive records</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def jump_lengths(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates jump lengths between each step in the trajectory
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with jump lengths between consecutive records
+        &#34;&#34;&#34;
+        jumps = trajectories_frame.dropna().geometry.groupby(level=0).progress_apply(lambda x: x.distance(x.shift()))
+        return jumps</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.mean_square_displacement"><code class="name flex">
+<span>def <span class="ident">mean_square_displacement</span></span>(<span>trajectories_frame, from_center=False, time_evolution=True, reference_locs=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates mean square displacements for each user. Optionally uses time steps to express their growth.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+<dt><strong><code>from_center</code></strong></dt>
+<dd>If true, displacement is calculated from the trajectory ceneter, if false - from the first point</dd>
+<dt><strong><code>time_evolution</code></strong></dt>
+<dd>If true, mean square displacements are calculated over time</dd>
+<dt><strong><code>reference_locs</code></strong></dt>
+<dd>allows to give reference locations for each trajectory explicitly</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a Series with mean square displacements for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mean_square_displacement(trajectories_frame, from_center=False, time_evolution=True, reference_locs=None):
+        &#34;&#34;&#34;
+        Calculates mean square displacements for each user. Optionally uses time steps to express their growth.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+                from_center: If true, displacement is calculated from the trajectory ceneter, if false - from the first point
+                time_evolution: If true, mean square displacements are calculated over time
+                reference_locs: allows to give reference locations for each trajectory explicitly
+
+        Returns:
+                a Series with mean square displacements for each user
+        &#34;&#34;&#34;
+        to_concat_dict = {}
+        to_concat_list = []
+        if reference_locs is None:
+                if from_center:
+                        reference_locs = center_of_mass(trajectories_frame)
+                else:
+                        reference_locs = trajectories_frame.groupby(level=0).head(1).droplevel(1).geometry
+        for ind, vals in tqdm(trajectories_frame.groupby(level=0), total=len(trajectories_frame.groupby(level=0))):
+                vals = vals.dropna()
+                msd_ind = (vals.distance(reference_locs.loc[ind]) ** 2)
+                if time_evolution:
+                        msd_ind = groupwise_expansion(msd_ind)
+                        to_concat_list.append(msd_ind)
+                else:
+                        msd_ind = msd_ind.mean()
+                        to_concat_dict[ind] = msd_ind
+        if time_evolution:
+                msd = pd.concat(to_concat_list)
+        else:
+                msd = pd.DataFrame.from_dict(to_concat_dict, orient=&#39;index&#39;)
+        return msd</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.nonzero_trips"><code class="name flex">
+<span>def <span class="ident">nonzero_trips</span></span>(<span>trajectories_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Counts all trips that had distance larger than 0.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a Series with a count of nonzero trips for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def nonzero_trips(trajectories_frame):
+        &#34;&#34;&#34;
+        Counts all trips that had distance larger than 0.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with a count of nonzero trips for each user
+        &#34;&#34;&#34;
+        jumps = jump_lengths(trajectories_frame).dropna().droplevel(1)
+        return jumps[jumps != 0].groupby(by=&#34;user_id&#34;).count()</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.num_of_distinct_locations"><code class="name flex">
+<span>def <span class="ident">num_of_distinct_locations</span></span>(<span>trajectories_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a number of distinct location in the trajectory. First looks for 'labels' column.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a Series with the number of unique locations for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def num_of_distinct_locations(trajectories_frame):
+        &#34;&#34;&#34;
+        Returns a number of distinct location in the trajectory. First looks for &#39;labels&#39; column.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with the number of unique locations for each user
+        &#34;&#34;&#34;
+        if isinstance(trajectories_frame, pd.DataFrame):
+                return trajectories_frame.groupby(level=0).progress_apply(lambda x: len(pd.unique(x[&#39;labels&#39;])))
+        else:
+                return trajectories_frame.groupby(level=0).progress_apply(lambda x: pd.unique(x).shape[0])</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.radius_of_gyration"><code class="name flex">
+<span>def <span class="ident">radius_of_gyration</span></span>(<span>trajectories_frame, time_evolution=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates radii of gyration for each user. Optionally uses time steps to express their growth.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+<dt><strong><code>time_evolution</code></strong></dt>
+<dd>If true, radii of gyration are calculated over time</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a Series with radii of gyration for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def radius_of_gyration(trajectories_frame, time_evolution=True):
+        &#34;&#34;&#34;
+        Calculates radii of gyration for each user. Optionally uses time steps to express their growth.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+                time_evolution: If true, radii of gyration are calculated over time
+
+        Returns:
+                a Series with radii of gyration for each user
+        &#34;&#34;&#34;
+        mean_locs = center_of_mass(trajectories_frame)
+        to_concat_dict = {}
+        to_concat_list = []
+        for ind, vals in tqdm(trajectories_frame.groupby(level=0), total=len(trajectories_frame.groupby(level=0))):
+                vals = vals.dropna()
+                rog_ind = vals.distance(mean_locs.loc[ind]) ** 2
+                if time_evolution:
+                        rog_ind = groupwise_expansion(np.sqrt(rog_ind))
+                        to_concat_list.append(rog_ind)
+                else:
+                        rog_ind = np.sqrt(rog_ind.mean())
+                        to_concat_dict[ind] = rog_ind
+        if time_evolution:
+                radius = pd.concat(to_concat_list)
+        else:
+                radius = pd.DataFrame.from_dict(to_concat_dict, orient=&#39;index&#39;)
+        return radius</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.random_entropy"><code class="name flex">
+<span>def <span class="ident">random_entropy</span></span>(<span>trajectories_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates random entropy for each user in TrajectoriesFrame</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a Series with random entropies for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def random_entropy(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates random entropy for each user in TrajectoriesFrame
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with random entropies for each user
+        &#34;&#34;&#34;
+        return trajectories_frame.groupby(level=0).progress_apply(lambda x: np.log2(len(pd.unique(x.geometry))))</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.random_predictability"><code class="name flex">
+<span>def <span class="ident">random_predictability</span></span>(<span>trajectories_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates random entropy and predictability.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a Series with random entropy and predictability for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def random_predictability(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates random entropy and predictability.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with random entropy and predictability for each user
+        &#34;&#34;&#34;
+        distinct_locations = num_of_distinct_locations(trajectories_frame)
+        rand_ent = random_entropy(trajectories_frame)
+        merged = pd.DataFrame([distinct_locations, rand_ent], index=[&#39;locations&#39;, &#39;entropy&#39;])
+        return merged.progress_apply(lambda x: fano_inequality(x[&#39;locations&#39;], x[&#39;entropy&#39;])), rand_ent</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.real_entropy"><code class="name flex">
+<span>def <span class="ident">real_entropy</span></span>(<span>trajectories_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates an actual entropy for each user in TrajectoriesFrame</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a Series with actual entropies for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def real_entropy(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates an actual entropy for each user in TrajectoriesFrame
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with actual entropies for each user
+        &#34;&#34;&#34;
+        result_dic = {}
+        with cf.ThreadPoolExecutor() as executor:
+                try:
+                        args = [val.labels for indi, val in trajectories_frame.groupby(level=0)]
+                except KeyError:
+                        args = [val for indi, val in trajectories_frame.groupby(level=0)]
+                ids = [indi for indi, val in trajectories_frame.groupby(level=0)]
+                results = list(tqdm(executor.map(_real_scalling_entropy, ids, args), total=len(ids)))
+        for result in results:
+                result_dic[result[0]] = result[1]
+        return pd.Series(np.fromiter(result_dic.values(), dtype=float), index=np.fromiter(result_dic.keys(), dtype=int))</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.real_predictability"><code class="name flex">
+<span>def <span class="ident">real_predictability</span></span>(<span>trajectories_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates actual entropy and predictability.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a Series with actual entropy and predictability for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def real_predictability(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates actual entropy and predictability.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with actual entropy and predictability for each user
+        &#34;&#34;&#34;
+        distinct_locations = num_of_distinct_locations(trajectories_frame)
+        real_ent = real_entropy(trajectories_frame)
+        merged = pd.DataFrame([distinct_locations, real_ent], index=[&#39;locations&#39;, &#39;entropy&#39;])
+        return merged.progress_apply(lambda x: fano_inequality(x[&#39;locations&#39;], x[&#39;entropy&#39;])), real_ent</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.regularity"><code class="name flex">
+<span>def <span class="ident">regularity</span></span>(<span>trajectories_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the regularity according to Teixeira et al. (2019) as the ratio of sequence lenght and the number of
+unique symbols</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a Series with regularity values for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def regularity(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates the regularity according to Teixeira et al. (2019) as the ratio of sequence lenght and the number of
+        unique symbols
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with regularity values for each user
+        &#34;&#34;&#34;
+        regul = trajectories_frame.groupby(level=0).progress_apply(lambda x: len(x)) / num_of_distinct_locations(
+                trajectories_frame)
+        return regul</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.repeatability_dense"><code class="name flex">
+<span>def <span class="ident">repeatability_dense</span></span>(<span>train_frame, test_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the dense repeatability metric proposed in the paper Smolak et al. (2022) as the number of
+transitions repeating in two sequences in the same order. Matched transitions cannot be separated by a gap.
+Returns normalised values.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>train_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object with the training data</dd>
+</dl>
+<p>test_frame:TrajectoriesFrame class object with the test data</p>
+<h2 id="returns">Returns</h2>
+<p>a Series with dense repeatability values for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def repeatability_dense(train_frame, test_frame):
+        &#34;&#34;&#34;
+        Calculates the dense repeatability metric proposed in the paper Smolak et al. (2022) as the number of
+        transitions repeating in two sequences in the same order. Matched transitions cannot be separated by a gap.
+        Returns normalised values.
+
+        Args:
+                train_frame: TrajectoriesFrame class object with the training data
+                test_frame:TrajectoriesFrame class object with the test data
+
+        Returns:
+                a Series with dense repeatability values for each user
+        &#34;&#34;&#34;
+        result_dic = {}
+        with cf.ThreadPoolExecutor() as executor:
+                args_train = [val.labels for indi, val in train_frame.groupby(level=0)]
+                args_test = [val.labels for indi, val in test_frame.groupby(level=0)]
+                ids = [indi for indi, val in test_frame.groupby(level=0)]
+                results = list(tqdm(executor.map(_repeatability_dense, ids, args_train, args_test), total=len(ids)))
+        for result in results:
+                result_dic[result[0]] = result[1]
+        return pd.Series(np.fromiter(result_dic.values(), dtype=float), index=np.fromiter(result_dic.keys(), dtype=int))</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.repeatability_equally_sparse"><code class="name flex">
+<span>def <span class="ident">repeatability_equally_sparse</span></span>(<span>train_frame, test_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the equally sparse repeatability metric proposed in the paper Smolak et al. (2022) as the number of
+transitions repeating in two sequences in the same order. Matched transitions can be separated by a gap of any size.
+Matched transitions HAVE TO BE spearated by the gap of the same size.
+Returns normalised values.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>train_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object with the training data</dd>
+</dl>
+<p>test_frame:TrajectoriesFrame class object with the test data</p>
+<h2 id="returns">Returns</h2>
+<p>a Series with equally sparse repeatability values for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def repeatability_equally_sparse(train_frame, test_frame):
+        &#34;&#34;&#34;
+        Calculates the equally sparse repeatability metric proposed in the paper Smolak et al. (2022) as the number of
+        transitions repeating in two sequences in the same order. Matched transitions can be separated by a gap of any size.
+        Matched transitions HAVE TO BE spearated by the gap of the same size.
+        Returns normalised values.
+
+        Args:
+                train_frame: TrajectoriesFrame class object with the training data
+                test_frame:TrajectoriesFrame class object with the test data
+
+        Returns:
+                a Series with equally sparse repeatability values for each user
+        &#34;&#34;&#34;
+        result_dic = {}
+        with cf.ThreadPoolExecutor() as executor:
+                args_train = [val.labels for indi, val in train_frame.groupby(level=0)]
+                args_test = [val.labels for indi, val in test_frame.groupby(level=0)]
+                ids = [indi for indi, val in test_frame.groupby(level=0)]
+                results = list(tqdm(executor.map(_repeatability_equally_sparse, ids, args_train, args_test), total=len(ids)))
+        for result in results:
+                result_dic[result[0]] = result[1]
+        return pd.Series(np.fromiter(result_dic.values(), dtype=float), index = np.fromiter(result_dic.keys(), dtype = int))</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.repeatability_sparse"><code class="name flex">
+<span>def <span class="ident">repeatability_sparse</span></span>(<span>train_frame, test_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the sparse repeatability metric proposed in the paper Smolak et al. (2022) as the number of
+transitions repeating in two sequences in the same order. Matched transitions can be separated by a gap of any size.
+Returns normalised values.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>train_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object with the training data</dd>
+</dl>
+<p>test_frame:TrajectoriesFrame class object with the test data</p>
+<h2 id="returns">Returns</h2>
+<p>a Series with sparse repeatability values for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def repeatability_sparse(train_frame, test_frame):
+        &#34;&#34;&#34;
+        Calculates the sparse repeatability metric proposed in the paper Smolak et al. (2022) as the number of
+        transitions repeating in two sequences in the same order. Matched transitions can be separated by a gap of any size.
+        Returns normalised values.
+
+        Args:
+                train_frame: TrajectoriesFrame class object with the training data
+                test_frame:TrajectoriesFrame class object with the test data
+
+        Returns:
+                a Series with sparse repeatability values for each user
+        &#34;&#34;&#34;
+        result_dic = {}
+        with cf.ThreadPoolExecutor() as executor:
+                args_train = [val.labels for indi, val in train_frame.groupby(level=0)]
+                args_test = [val.labels for indi, val in test_frame.groupby(level=0)]
+                ids = [indi for indi, val in test_frame.groupby(level=0)]
+                results = list(tqdm(executor.map(_repeatability_sparse, ids, args_train, args_test), total=len(ids)))
+        for result in results:
+                result_dic[result[0]] = result[1]
+        return pd.Series(np.fromiter(result_dic.values(), dtype=float), index = np.fromiter(result_dic.keys(), dtype = int))</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.return_time"><code class="name flex">
+<span>def <span class="ident">return_time</span></span>(<span>trajectories_frame, time_unit='h', by_place=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates return times for each unique location in each user's trajectory.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+<dt><strong><code>time_unit</code></strong></dt>
+<dd>time unit in which return times will be expressed</dd>
+<dt><strong><code>by_place</code></strong></dt>
+<dd>If true, return times are expressed for each place globally</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a Series with return times</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def return_time(trajectories_frame, time_unit=&#39;h&#39;, by_place=False):
+        &#34;&#34;&#34;
+        Calculates return times for each unique location in each user&#39;s trajectory.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+                time_unit: time unit in which return times will be expressed
+                by_place: If true, return times are expressed for each place globally
+
+        Returns:
+                a Series with return times
+        &#34;&#34;&#34;
+        if not hasattr(trajectories_frame, &#39;_geom_cols&#39;):
+                trajectories_frame = TrajectoriesFrame(trajectories_frame)
+        lat_col = trajectories_frame[trajectories_frame._geom_cols[0]]
+        lon_col = trajectories_frame[trajectories_frame._geom_cols[1]]
+        trajectories_frame[&#39;datetime_temp&#39;] = trajectories_frame.index.get_level_values(1)
+        to_concat = []
+        for ind, vals in tqdm(trajectories_frame.groupby(level=0), total=len(trajectories_frame.groupby(level=0))):
+                concat_level = {}
+                for place, vals2 in vals.groupby([lat_col, lon_col]):
+                        shifts = (vals2.datetime_temp - vals2.datetime_temp.shift()).astype(&#39;timedelta64[%s]&#39; % time_unit)
+                        concat_level[place] = shifts
+                to_concat.append(pd.concat(concat_level))
+        return_times = pd.concat(to_concat)
+        if by_place:
+                return_times = return_times.groupby(level=2).progress_apply(
+                        lambda x: x.groupby(level=[0, 1]).agg([&#39;count&#39;, &#39;mean&#39;]).dropna())
+                return_times = return_times.groupby(level=0).progress_apply(lambda x: x.sort_values(&#39;count&#39;, ascending=False))
+        else:
+                return_times = return_times.groupby(level=2).progress_apply(lambda x: x.sort_values(ascending=False)).droplevel(
+                        [1, 2])
+        return return_times</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.self_transitions"><code class="name flex">
+<span>def <span class="ident">self_transitions</span></span>(<span>trajectories_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the number of self transitions for each user</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+</dl>
+<p>Retruns
+a Series with the number of self transitions for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def self_transitions(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates the number of self transitions for each user
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Retruns
+                a Series with the number of self transitions for each user
+        &#34;&#34;&#34;
+        if isinstance(trajectories_frame, pd.Series):
+                self_transitions_mask = (trajectories_frame == trajectories_frame.shift())
+        else:
+                if not hasattr(trajectories_frame, &#39;_geom_cols&#39;):
+                        trajectories_frame = TrajectoriesFrame(trajectories_frame)
+                coordinates_frame = trajectories_frame[[trajectories_frame._geom_cols[0], trajectories_frame._geom_cols[1]]]
+                self_transitions_mask = (coordinates_frame == coordinates_frame.shift()).all(axis=1)
+        empty_mask = (~self_transitions_mask).groupby(level=0).progress_apply(lambda x: x.all())
+        empty_mask = empty_mask[empty_mask == True].index
+        self_transitions_only = trajectories_frame[self_transitions_mask]
+        empty_self_transitions = pd.DataFrame([0 for x in range(len(empty_mask))], index=empty_mask)
+        if isinstance(trajectories_frame, pd.Series):
+                self_transitions_only = self_transitions_only.groupby(level=0).count()
+        else:
+                self_transitions_only = self_transitions_only.groupby(level=0).count()[self_transitions_only.columns[0]]
+        if len(empty_self_transitions) &gt; 0:
+                self_transitions_only.append(empty_self_transitions.iloc[:, 0]).sort_index()
+        return self_transitions_only</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.stationarity"><code class="name flex">
+<span>def <span class="ident">stationarity</span></span>(<span>trajectories_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the stationarity according to Teixeira et al. (2019) as the average stay length in the location.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a Series with stationarity values for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def stationarity(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates the stationarity according to Teixeira et al. (2019) as the average stay length in the location.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with stationarity values for each user
+        &#34;&#34;&#34;
+        trajectories_frame = trajectories_frame.dropna()
+        stationarity_frame = trajectories_frame.labels.groupby(level=0).apply(
+                lambda x: x.groupby((x != x.shift()).cumsum()).size()-1)
+        stationarity_frame = stationarity_frame.groupby(&#39;user_id&#39;).sum()
+        size_frame = trajectories_frame.groupby(level=0).apply(lambda x: x.size)
+        return stationarity_frame/size_frame</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.unc_entropy"><code class="name flex">
+<span>def <span class="ident">unc_entropy</span></span>(<span>trajectories_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates uncorrelated entropy for each user in TrajectoriesFrame</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a Series with uncorrelated entropies for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def unc_entropy(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates uncorrelated entropy for each user in TrajectoriesFrame
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with uncorrelated entropies for each user
+        &#34;&#34;&#34;
+        frequencies = visitation_frequency(trajectories_frame)
+        return frequencies.groupby(level=0).progress_apply(lambda x: -np.sum([pk * np.log2(pk) for pk in x if pk != 0]))</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.unc_predictability"><code class="name flex">
+<span>def <span class="ident">unc_predictability</span></span>(<span>trajectories_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates uncorrelated entropy and predictability.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a Series with uncorrelated entropy and predictability for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def unc_predictability(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates uncorrelated entropy and predictability.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with uncorrelated entropy and predictability for each user
+        &#34;&#34;&#34;
+        distinct_locations = num_of_distinct_locations(trajectories_frame)
+        unc_ent = unc_entropy(trajectories_frame)
+        merged = pd.DataFrame([distinct_locations, unc_ent], index=[&#39;locations&#39;, &#39;entropy&#39;])
+        return merged.progress_apply(lambda x: fano_inequality(x[&#39;locations&#39;], x[&#39;entropy&#39;])), unc_ent</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.visitation_frequency"><code class="name flex">
+<span>def <span class="ident">visitation_frequency</span></span>(<span>trajectories_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates visitiation frequency for each user in the TrajectoriesFrame.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>a Series with the visitation frequency for each user and for each location. Sorted descendingly.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def visitation_frequency(trajectories_frame):
+        &#34;&#34;&#34;
+        Calculates visitiation frequency for each user in the TrajectoriesFrame.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+
+        Returns:
+                a Series with the visitation frequency for each user and for each location. Sorted descendingly.
+        &#34;&#34;&#34;
+        lat_col = trajectories_frame._geom_cols[0]
+        lon_col = trajectories_frame._geom_cols[1]
+        frequencies = trajectories_frame.groupby(level=0).progress_apply(
+                lambda x: x.groupby([lat_col, lon_col]).count()).iloc[:, 0]
+        frequencies = frequencies.groupby(level=0).progress_apply(lambda x: x.sort_values(ascending=False))
+        frequencies = groupwise_normalise(frequencies)
+        return frequencies</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.measures.individual.waiting_times"><code class="name flex">
+<span>def <span class="ident">waiting_times</span></span>(<span>trajectories_frame, time_unit='h')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates waiting times for each transition in TrajectoriesFrame</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+<dt><strong><code>time_unit</code></strong></dt>
+<dd>time unit in which waiting times will be expressed</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A series with waiting times for each transition for each user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def waiting_times(trajectories_frame, time_unit=&#39;h&#39;):
+        &#34;&#34;&#34;
+        Calculates waiting times for each transition in TrajectoriesFrame
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+                time_unit: time unit in which waiting times will be expressed
+
+        Returns:
+                A series with waiting times for each transition for each user
+        &#34;&#34;&#34;
+        trajectories_frame = trajectories_frame.dropna()
+        transitions_only = trajectories_frame[
+                trajectories_frame.geometry.groupby(level=0).progress_apply(lambda x: x.shift(-1) != x)]
+        transitions_only[&#39;dt&#39;] = transitions_only.index.get_level_values(1)
+        times = transitions_only.groupby(level=0).dt.progress_apply(lambda x: (x - x.shift()).astype(&#39;timedelta64[%s]&#39; % time_unit))
+        return times</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="src.humobi.measures" href="index.html">src.humobi.measures</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="src.humobi.measures.individual.center_of_mass" href="#src.humobi.measures.individual.center_of_mass">center_of_mass</a></code></li>
+<li><code><a title="src.humobi.measures.individual.distinct_locations_over_time" href="#src.humobi.measures.individual.distinct_locations_over_time">distinct_locations_over_time</a></code></li>
+<li><code><a title="src.humobi.measures.individual.global_alignment" href="#src.humobi.measures.individual.global_alignment">global_alignment</a></code></li>
+<li><code><a title="src.humobi.measures.individual.iterative_global_alignment" href="#src.humobi.measures.individual.iterative_global_alignment">iterative_global_alignment</a></code></li>
+<li><code><a title="src.humobi.measures.individual.jump_lengths" href="#src.humobi.measures.individual.jump_lengths">jump_lengths</a></code></li>
+<li><code><a title="src.humobi.measures.individual.mean_square_displacement" href="#src.humobi.measures.individual.mean_square_displacement">mean_square_displacement</a></code></li>
+<li><code><a title="src.humobi.measures.individual.nonzero_trips" href="#src.humobi.measures.individual.nonzero_trips">nonzero_trips</a></code></li>
+<li><code><a title="src.humobi.measures.individual.num_of_distinct_locations" href="#src.humobi.measures.individual.num_of_distinct_locations">num_of_distinct_locations</a></code></li>
+<li><code><a title="src.humobi.measures.individual.radius_of_gyration" href="#src.humobi.measures.individual.radius_of_gyration">radius_of_gyration</a></code></li>
+<li><code><a title="src.humobi.measures.individual.random_entropy" href="#src.humobi.measures.individual.random_entropy">random_entropy</a></code></li>
+<li><code><a title="src.humobi.measures.individual.random_predictability" href="#src.humobi.measures.individual.random_predictability">random_predictability</a></code></li>
+<li><code><a title="src.humobi.measures.individual.real_entropy" href="#src.humobi.measures.individual.real_entropy">real_entropy</a></code></li>
+<li><code><a title="src.humobi.measures.individual.real_predictability" href="#src.humobi.measures.individual.real_predictability">real_predictability</a></code></li>
+<li><code><a title="src.humobi.measures.individual.regularity" href="#src.humobi.measures.individual.regularity">regularity</a></code></li>
+<li><code><a title="src.humobi.measures.individual.repeatability_dense" href="#src.humobi.measures.individual.repeatability_dense">repeatability_dense</a></code></li>
+<li><code><a title="src.humobi.measures.individual.repeatability_equally_sparse" href="#src.humobi.measures.individual.repeatability_equally_sparse">repeatability_equally_sparse</a></code></li>
+<li><code><a title="src.humobi.measures.individual.repeatability_sparse" href="#src.humobi.measures.individual.repeatability_sparse">repeatability_sparse</a></code></li>
+<li><code><a title="src.humobi.measures.individual.return_time" href="#src.humobi.measures.individual.return_time">return_time</a></code></li>
+<li><code><a title="src.humobi.measures.individual.self_transitions" href="#src.humobi.measures.individual.self_transitions">self_transitions</a></code></li>
+<li><code><a title="src.humobi.measures.individual.stationarity" href="#src.humobi.measures.individual.stationarity">stationarity</a></code></li>
+<li><code><a title="src.humobi.measures.individual.unc_entropy" href="#src.humobi.measures.individual.unc_entropy">unc_entropy</a></code></li>
+<li><code><a title="src.humobi.measures.individual.unc_predictability" href="#src.humobi.measures.individual.unc_predictability">unc_predictability</a></code></li>
+<li><code><a title="src.humobi.measures.individual.visitation_frequency" href="#src.humobi.measures.individual.visitation_frequency">visitation_frequency</a></code></li>
+<li><code><a title="src.humobi.measures.individual.waiting_times" href="#src.humobi.measures.individual.waiting_times">waiting_times</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

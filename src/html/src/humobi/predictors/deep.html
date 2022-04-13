@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>src.humobi.predictors.deep API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>src.humobi.predictors.deep</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import tensorflow as tf
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import KFold
+
+
+def gen(x_data, n_splits):
+        &#34;&#34;&#34;
+        Generates data for learning.
+
+        Args:
+                x_data: DataFrame of data for learning
+                n_splits: the number of splits
+
+        Returns:
+                training and testing datasets
+        &#34;&#34;&#34;
+        for train_index, test_index in KFold(n_splits).split(x_data):
+                x_train, x_test = x_data[train_index], x_data[test_index]
+                yield x_train, x_test
+
+
+def split_input_target(chunk):
+        &#34;&#34;&#34;
+        Splits data into chunks of inputs and target values.
+
+        Args:
+                chunk: chunk to split
+
+        Returns:
+                split data
+        &#34;&#34;&#34;
+        # for the example: hello
+        input_text = chunk[:-1]  # hell
+        target_text = chunk[1:]  # ello
+        return input_text, target_text  # hell, ello
+
+
+class GRUModel2(tf.keras.Model):
+        &#34;&#34;&#34;
+        GRU Model (2 GRU layers + embedding + dropout layer)
+
+        Args:
+                vocab_size: Vocabulary size - the number of unique places in sequence
+                embedding_dim: The size of embedding layer
+                rnn_units: The number of rnn units on a hidden layer
+                dropout: Dropout size
+                batch_size: Size of a single batch
+        &#34;&#34;&#34;
+
+        def __init__(self, vocab_size, embedding_dim, rnn_units, dropout, batch_size):
+                &#34;&#34;&#34;
+                Layer structure.
+                &#34;&#34;&#34;
+                super().__init__(self)
+                self.embedding = tf.keras.layers.Embedding(vocab_size, embedding_dim, batch_input_shape=(batch_size,vocab_size))
+                self.gru = tf.keras.layers.GRU(rnn_units,
+                                               return_sequences=True,
+                                               return_state=True, batch_input_shape=(batch_size, X.shape[1], X.shape[2]))
+                self.gru2 = tf.keras.layers.GRU(rnn_units,
+                                                return_sequences=True,
+                                                return_state=True, batch_input_shape=(batch_size, X.shape[1], X.shape[2]))
+                self.drop = tf.keras.layers.Dropout(dropout)
+                self.dense = tf.keras.layers.Dense(vocab_size, activation=&#39;softmax&#39;)
+
+        def call(self, inputs, states=None, return_state=False, training=False):
+                &#34;&#34;&#34;
+                Constructs the network for training.
+
+                Args:
+                        inputs: Input vectors
+                        states: Initial states. If none, no initial state is set.
+                        return_state (default = False): Boolean. Whether to return the last state in addition to the output.
+                        training (default = False): Boolean. Indicating whether the layer should behave in training mode or in inference mode
+
+                Returns:
+                        The GRU network
+                &#34;&#34;&#34;
+                x = inputs
+                x = self.embedding(x)
+                if states is None:
+                        states = self.gru.get_initial_state(x)
+                x, states = self.gru(x, initial_state=states, training=training)
+                x, states = self.gru2(x, initial_state=states, training=training)
+                x = self.drop(x, training=training)
+                x = self.dense(x)
+
+                if return_state:
+                        return x, states
+                else:
+                        return x
+
+
+class GRUModel(tf.keras.Model):
+        &#34;&#34;&#34;
+                GRU Model (1 GRU layer + embedding + dropout layer)
+
+        Args:
+                vocab_size: Vocabulary size - the number of unique places in sequence
+                embedding_dim: The size of embedding layer
+                rnn_units: The number of rnn units on a hidden layer
+                dropout: Dropout size
+                batch_size: Size of a single batch
+        &#34;&#34;&#34;
+
+        def __init__(self, vocab_size, embedding_dim, rnn_units, dropout, batch_size):
+                super().__init__(self)
+                self.embedding = tf.keras.layers.Embedding(vocab_size, embedding_dim)
+                self.gru = tf.keras.layers.GRU(rnn_units,
+                                               return_sequences=True,
+                                               return_state=True, stateful=True)
+                self.drop = tf.keras.layers.Dropout(dropout)
+                self.dense = tf.keras.layers.Dense(vocab_size, activation=&#39;softmax&#39;)
+
+        def call(self, inputs, states=None, return_state=False, training=False):
+                &#34;&#34;&#34;
+                Constructs the network for training.
+
+                Args:
+                        inputs: Input vectors
+                        states: Initial states. If none, no initial state is set.
+                        return_state (default = False): Boolean. Whether to return the last state in addition to the output.
+                        training (default = False): Boolean. Indicating whether the layer should behave in training mode or in inference mode
+
+                Returns:
+                        The GRU network
+                &#34;&#34;&#34;
+                x = inputs
+                x = self.embedding(x)
+                if states is None:
+                        states = self.gru.get_initial_state(x)
+                x, states = self.gru(x, initial_state=states, training=training)
+                x = self.drop(x, training=training)
+                x = self.dense(x, training=training)
+
+                if return_state:
+                        return x, states
+                else:
+                        return x
+
+
+def loss(labels, logits):
+        &#34;&#34;&#34;
+        The loss function - categorical crossentropy.
+
+        Args:
+                labels: ground truth values
+                logits: predictions encoded as probability distribution
+
+        Returns:
+                loss values
+        &#34;&#34;&#34;
+        return tf.keras.losses.sparse_categorical_crossentropy(labels, logits, from_logits=True)
+
+
+class DeepPred():
+        &#34;&#34;&#34;
+        Deep-learning based sequence prediction model
+
+        Args:
+                model: Name of the model to use. Available: GRU (single layer), GRU2 (GRU double layer), LSTM (single layer)
+                data: Data for prediction - whole dataset, including test. Do not split it.
+                split_ratio: Test ratio for data split
+                folds: The number of folds in cross-validation of the model
+                window_size: Window size, also referenced as the size of a lookback. The number of previous symbols considered
+                during prediction.
+                batch_size: The size of a batch for a single network
+                embedding_dim: The size of an embedding layer (the number of nodes)
+                rnn_units:  The number of RNN layer&#39;s units
+        &#34;&#34;&#34;
+
+        def __init__(self, model, data, split_ratio=.8, folds=5, window_size=2, batch_size=1, embedding_dim=1024,
+                     rnn_units=1024):
+                &#34;&#34;&#34;
+                Class initialisation. Runs data preparation - slicing into training and test sets.
+                &#34;&#34;&#34;
+                self.model = model
+                self.data = data
+                self.split_ratio = split_ratio
+                self.folds = folds
+                self.window_size = window_size
+                self.batch_size = batch_size
+                self.embedding_dim = embedding_dim
+                self.rnn_units = rnn_units
+                self.scores = {}
+                self._prepare()
+
+        def _prepare(self):
+                &#34;&#34;&#34;
+                Prepares data for prediction - splits data into train and test sets.
+                &#34;&#34;&#34;
+                data_len = self.data.groupby(level=0).apply(lambda x: len(x))
+                cut_index = round(self.split_ratio * data_len).astype(int)
+                data_train = self.data.groupby(level=0).apply(
+                        lambda x: x.labels.iloc[:cut_index.loc[x.index.get_level_values(0)[0]]])
+                data_test = self.data.groupby(level=0).apply(
+                        lambda x: x.labels.iloc[cut_index.loc[x.index.get_level_values(0)[0]] - self.window_size:])
+                self.data = (data_train, data_test)
+
+        def _user_learn(self, tr_data, ts_data):
+                ts_dataset = tf.data.Dataset.from_tensor_slices(ts_data)  # transform test set into tensor
+                if self.folds != 1:  # if there is more than single fold
+                        train_folds = [(tf.data.Dataset.from_tensor_slices(x), tf.data.Dataset.from_tensor_slices(y)) for x, y in
+                                       gen(tr_data, self.folds)]  # then split data into the list folds
+                else:  # if there is a single fold
+                        train_folds = [[(tf.data.Dataset.from_tensor_slices(x), tf.data.Dataset.from_tensor_slices(y)) for x, y in
+                                        gen(tr_data, 2)][0]]  # make it a one set of data
+                self.s_regions = np.hstack([tr_data, ts_data]).max() + 1  # read the number of unique symbols from the dataset
+                sequences_train = [dataset_train[0].batch(self.window_size + 1, drop_remainder=True) for dataset_train in
+                                   train_folds]  # prepare the batches of sequences for training
+                sequences_val = [dataset_train[1].batch(self.window_size + 1, drop_remainder=True) for dataset_train in
+                                 train_folds]  # prepare the batches of sequences for validation
+                sequences_test = ts_dataset.batch(self.window_size + 1, drop_remainder=True)  # prepare the batches of
+                # sequences for tests
+                dataset_train = [t.map(split_input_target) for t in sequences_train]  # and convert them using the windowing algorithm
+                dataset_val = [v.map(split_input_target) for v in sequences_val]
+                dataset_test = sequences_test.map(split_input_target)  # data test is split but not used - just for debugging
+                data_tr = [t.shuffle(1000).batch(self.batch_size, drop_remainder=True) for t in
+                           dataset_train]  # shuffle the data for training and batch
+                data_val = [v.shuffle(1000).batch(self.batch_size, drop_remainder=True) for v in
+                            dataset_val]  # shuffle the data for testing and batch
+                fold = 1  # the counter of folds
+                callback = tf.keras.callbacks.EarlyStopping(monitor=&#39;val_loss&#39;, patience=2)  # initialise the EarlyStopping mechanism
+                # Initialiase selected models - the dropout rate is fixed
+                if self.model == &#34;GRU&#34;:
+                        model = GRUModel(self.s_regions, self.embedding_dim, self.rnn_units, 0.2, self.batch_size)
+                elif self.model == &#34;GRU2&#34;:
+                        model = GRUModel2(self.s_regions, self.embedding_dim, self.rnn_units, 0.2, self.batch_size)
+                model.compile(optimizer=&#39;adam&#39;, loss=loss, metrics=[&#39;accuracy&#39;])  # compile the model
+                for x, v in zip(data_tr, data_val):  # the CV training process
+                        print(&#34;FOLD:{}&#34;.format(fold))
+                        self.history = model.fit(x, epochs=30, validation_data=v, callbacks=[callback], batch_size=self.batch_size)
+                        fold += 1
+                model.reset_states()
+                return model
+
+        def learn_predict(self):
+                &#34;&#34;&#34;
+                Trains the network and makes prediction on the test set. The prediction is given a fixed temperature = 0.1, you
+                can change it here. The higher the more random are predictions. However, small temperature can cause network
+                to stuck in an infinite loop.
+                &#34;&#34;&#34;
+                result_dic = {}
+                train = self.data[0].groupby(level=0)
+                test = self.data[1].groupby(level=0)
+                for tr, ts in zip(train, test):
+                        uid = tr[0]
+                        tr_data = tr[1].values.astype(int)
+                        ts_data = ts[1].values.astype(int)
+                        user_model = self._user_learn(tr_data, ts_data)
+                        stabs = []
+                        temperature = .1 # TEMPERATURE
+                        for stab in range(10):
+                                forecast = []
+                                for x in range(len(ts_data) - self.window_size):
+                                        y = tf.expand_dims(ts_data[x:x + self.window_size], 0)
+                                        predictions = user_model.predict(y, batch_size=self.batch_size)
+                                        predictions = np.squeeze(predictions, 0)
+                                        predictions = predictions / temperature
+                                        predicted_id = tf.random.categorical(predictions, num_samples=1)[-1, 0].numpy()
+                                        forecast.append(predicted_id)
+                                stabs.append(sum(forecast == ts_data[self.window_size:]) / len(forecast))
+                        print(np.mean(stabs))
+                        result_dic[uid] = np.mean(stabs)
+                self.scores = pd.DataFrame.from_dict(result_dic, orient=&#39;index&#39;)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="src.humobi.predictors.deep.gen"><code class="name flex">
+<span>def <span class="ident">gen</span></span>(<span>x_data, n_splits)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generates data for learning.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>x_data</code></strong></dt>
+<dd>DataFrame of data for learning</dd>
+<dt><strong><code>n_splits</code></strong></dt>
+<dd>the number of splits</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>training and testing datasets</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def gen(x_data, n_splits):
+        &#34;&#34;&#34;
+        Generates data for learning.
+
+        Args:
+                x_data: DataFrame of data for learning
+                n_splits: the number of splits
+
+        Returns:
+                training and testing datasets
+        &#34;&#34;&#34;
+        for train_index, test_index in KFold(n_splits).split(x_data):
+                x_train, x_test = x_data[train_index], x_data[test_index]
+                yield x_train, x_test</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.predictors.deep.loss"><code class="name flex">
+<span>def <span class="ident">loss</span></span>(<span>labels, logits)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The loss function - categorical crossentropy.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>labels</code></strong></dt>
+<dd>ground truth values</dd>
+<dt><strong><code>logits</code></strong></dt>
+<dd>predictions encoded as probability distribution</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>loss values</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def loss(labels, logits):
+        &#34;&#34;&#34;
+        The loss function - categorical crossentropy.
+
+        Args:
+                labels: ground truth values
+                logits: predictions encoded as probability distribution
+
+        Returns:
+                loss values
+        &#34;&#34;&#34;
+        return tf.keras.losses.sparse_categorical_crossentropy(labels, logits, from_logits=True)</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.predictors.deep.split_input_target"><code class="name flex">
+<span>def <span class="ident">split_input_target</span></span>(<span>chunk)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Splits data into chunks of inputs and target values.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>chunk</code></strong></dt>
+<dd>chunk to split</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>split data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def split_input_target(chunk):
+        &#34;&#34;&#34;
+        Splits data into chunks of inputs and target values.
+
+        Args:
+                chunk: chunk to split
+
+        Returns:
+                split data
+        &#34;&#34;&#34;
+        # for the example: hello
+        input_text = chunk[:-1]  # hell
+        target_text = chunk[1:]  # ello
+        return input_text, target_text  # hell, ello</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="src.humobi.predictors.deep.DeepPred"><code class="flex name class">
+<span>class <span class="ident">DeepPred</span></span>
+<span>(</span><span>model, data, split_ratio=0.8, folds=5, window_size=2, batch_size=1, embedding_dim=1024, rnn_units=1024)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Deep-learning based sequence prediction model</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>model</code></strong></dt>
+<dd>Name of the model to use. Available: GRU (single layer), GRU2 (GRU double layer), LSTM (single layer)</dd>
+<dt><strong><code>data</code></strong></dt>
+<dd>Data for prediction - whole dataset, including test. Do not split it.</dd>
+<dt><strong><code>split_ratio</code></strong></dt>
+<dd>Test ratio for data split</dd>
+<dt><strong><code>folds</code></strong></dt>
+<dd>The number of folds in cross-validation of the model</dd>
+<dt><strong><code>window_size</code></strong></dt>
+<dd>Window size, also referenced as the size of a lookback. The number of previous symbols considered</dd>
+<dt>during prediction.</dt>
+<dt><strong><code>batch_size</code></strong></dt>
+<dd>The size of a batch for a single network</dd>
+<dt><strong><code>embedding_dim</code></strong></dt>
+<dd>The size of an embedding layer (the number of nodes)</dd>
+<dt><strong><code>rnn_units</code></strong></dt>
+<dd>The number of RNN layer's units</dd>
+</dl>
+<p>Class initialisation. Runs data preparation - slicing into training and test sets.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DeepPred():
+        &#34;&#34;&#34;
+        Deep-learning based sequence prediction model
+
+        Args:
+                model: Name of the model to use. Available: GRU (single layer), GRU2 (GRU double layer), LSTM (single layer)
+                data: Data for prediction - whole dataset, including test. Do not split it.
+                split_ratio: Test ratio for data split
+                folds: The number of folds in cross-validation of the model
+                window_size: Window size, also referenced as the size of a lookback. The number of previous symbols considered
+                during prediction.
+                batch_size: The size of a batch for a single network
+                embedding_dim: The size of an embedding layer (the number of nodes)
+                rnn_units:  The number of RNN layer&#39;s units
+        &#34;&#34;&#34;
+
+        def __init__(self, model, data, split_ratio=.8, folds=5, window_size=2, batch_size=1, embedding_dim=1024,
+                     rnn_units=1024):
+                &#34;&#34;&#34;
+                Class initialisation. Runs data preparation - slicing into training and test sets.
+                &#34;&#34;&#34;
+                self.model = model
+                self.data = data
+                self.split_ratio = split_ratio
+                self.folds = folds
+                self.window_size = window_size
+                self.batch_size = batch_size
+                self.embedding_dim = embedding_dim
+                self.rnn_units = rnn_units
+                self.scores = {}
+                self._prepare()
+
+        def _prepare(self):
+                &#34;&#34;&#34;
+                Prepares data for prediction - splits data into train and test sets.
+                &#34;&#34;&#34;
+                data_len = self.data.groupby(level=0).apply(lambda x: len(x))
+                cut_index = round(self.split_ratio * data_len).astype(int)
+                data_train = self.data.groupby(level=0).apply(
+                        lambda x: x.labels.iloc[:cut_index.loc[x.index.get_level_values(0)[0]]])
+                data_test = self.data.groupby(level=0).apply(
+                        lambda x: x.labels.iloc[cut_index.loc[x.index.get_level_values(0)[0]] - self.window_size:])
+                self.data = (data_train, data_test)
+
+        def _user_learn(self, tr_data, ts_data):
+                ts_dataset = tf.data.Dataset.from_tensor_slices(ts_data)  # transform test set into tensor
+                if self.folds != 1:  # if there is more than single fold
+                        train_folds = [(tf.data.Dataset.from_tensor_slices(x), tf.data.Dataset.from_tensor_slices(y)) for x, y in
+                                       gen(tr_data, self.folds)]  # then split data into the list folds
+                else:  # if there is a single fold
+                        train_folds = [[(tf.data.Dataset.from_tensor_slices(x), tf.data.Dataset.from_tensor_slices(y)) for x, y in
+                                        gen(tr_data, 2)][0]]  # make it a one set of data
+                self.s_regions = np.hstack([tr_data, ts_data]).max() + 1  # read the number of unique symbols from the dataset
+                sequences_train = [dataset_train[0].batch(self.window_size + 1, drop_remainder=True) for dataset_train in
+                                   train_folds]  # prepare the batches of sequences for training
+                sequences_val = [dataset_train[1].batch(self.window_size + 1, drop_remainder=True) for dataset_train in
+                                 train_folds]  # prepare the batches of sequences for validation
+                sequences_test = ts_dataset.batch(self.window_size + 1, drop_remainder=True)  # prepare the batches of
+                # sequences for tests
+                dataset_train = [t.map(split_input_target) for t in sequences_train]  # and convert them using the windowing algorithm
+                dataset_val = [v.map(split_input_target) for v in sequences_val]
+                dataset_test = sequences_test.map(split_input_target)  # data test is split but not used - just for debugging
+                data_tr = [t.shuffle(1000).batch(self.batch_size, drop_remainder=True) for t in
+                           dataset_train]  # shuffle the data for training and batch
+                data_val = [v.shuffle(1000).batch(self.batch_size, drop_remainder=True) for v in
+                            dataset_val]  # shuffle the data for testing and batch
+                fold = 1  # the counter of folds
+                callback = tf.keras.callbacks.EarlyStopping(monitor=&#39;val_loss&#39;, patience=2)  # initialise the EarlyStopping mechanism
+                # Initialiase selected models - the dropout rate is fixed
+                if self.model == &#34;GRU&#34;:
+                        model = GRUModel(self.s_regions, self.embedding_dim, self.rnn_units, 0.2, self.batch_size)
+                elif self.model == &#34;GRU2&#34;:
+                        model = GRUModel2(self.s_regions, self.embedding_dim, self.rnn_units, 0.2, self.batch_size)
+                model.compile(optimizer=&#39;adam&#39;, loss=loss, metrics=[&#39;accuracy&#39;])  # compile the model
+                for x, v in zip(data_tr, data_val):  # the CV training process
+                        print(&#34;FOLD:{}&#34;.format(fold))
+                        self.history = model.fit(x, epochs=30, validation_data=v, callbacks=[callback], batch_size=self.batch_size)
+                        fold += 1
+                model.reset_states()
+                return model
+
+        def learn_predict(self):
+                &#34;&#34;&#34;
+                Trains the network and makes prediction on the test set. The prediction is given a fixed temperature = 0.1, you
+                can change it here. The higher the more random are predictions. However, small temperature can cause network
+                to stuck in an infinite loop.
+                &#34;&#34;&#34;
+                result_dic = {}
+                train = self.data[0].groupby(level=0)
+                test = self.data[1].groupby(level=0)
+                for tr, ts in zip(train, test):
+                        uid = tr[0]
+                        tr_data = tr[1].values.astype(int)
+                        ts_data = ts[1].values.astype(int)
+                        user_model = self._user_learn(tr_data, ts_data)
+                        stabs = []
+                        temperature = .1 # TEMPERATURE
+                        for stab in range(10):
+                                forecast = []
+                                for x in range(len(ts_data) - self.window_size):
+                                        y = tf.expand_dims(ts_data[x:x + self.window_size], 0)
+                                        predictions = user_model.predict(y, batch_size=self.batch_size)
+                                        predictions = np.squeeze(predictions, 0)
+                                        predictions = predictions / temperature
+                                        predicted_id = tf.random.categorical(predictions, num_samples=1)[-1, 0].numpy()
+                                        forecast.append(predicted_id)
+                                stabs.append(sum(forecast == ts_data[self.window_size:]) / len(forecast))
+                        print(np.mean(stabs))
+                        result_dic[uid] = np.mean(stabs)
+                self.scores = pd.DataFrame.from_dict(result_dic, orient=&#39;index&#39;)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="src.humobi.predictors.deep.DeepPred.learn_predict"><code class="name flex">
+<span>def <span class="ident">learn_predict</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Trains the network and makes prediction on the test set. The prediction is given a fixed temperature = 0.1, you
+can change it here. The higher the more random are predictions. However, small temperature can cause network
+to stuck in an infinite loop.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def learn_predict(self):
+        &#34;&#34;&#34;
+        Trains the network and makes prediction on the test set. The prediction is given a fixed temperature = 0.1, you
+        can change it here. The higher the more random are predictions. However, small temperature can cause network
+        to stuck in an infinite loop.
+        &#34;&#34;&#34;
+        result_dic = {}
+        train = self.data[0].groupby(level=0)
+        test = self.data[1].groupby(level=0)
+        for tr, ts in zip(train, test):
+                uid = tr[0]
+                tr_data = tr[1].values.astype(int)
+                ts_data = ts[1].values.astype(int)
+                user_model = self._user_learn(tr_data, ts_data)
+                stabs = []
+                temperature = .1 # TEMPERATURE
+                for stab in range(10):
+                        forecast = []
+                        for x in range(len(ts_data) - self.window_size):
+                                y = tf.expand_dims(ts_data[x:x + self.window_size], 0)
+                                predictions = user_model.predict(y, batch_size=self.batch_size)
+                                predictions = np.squeeze(predictions, 0)
+                                predictions = predictions / temperature
+                                predicted_id = tf.random.categorical(predictions, num_samples=1)[-1, 0].numpy()
+                                forecast.append(predicted_id)
+                        stabs.append(sum(forecast == ts_data[self.window_size:]) / len(forecast))
+                print(np.mean(stabs))
+                result_dic[uid] = np.mean(stabs)
+        self.scores = pd.DataFrame.from_dict(result_dic, orient=&#39;index&#39;)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="src.humobi.predictors.deep.GRUModel"><code class="flex name class">
+<span>class <span class="ident">GRUModel</span></span>
+<span>(</span><span>vocab_size, embedding_dim, rnn_units, dropout, batch_size)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>GRU Model (1 GRU layer + embedding + dropout layer)</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>vocab_size</code></strong></dt>
+<dd>Vocabulary size - the number of unique places in sequence</dd>
+<dt><strong><code>embedding_dim</code></strong></dt>
+<dd>The size of embedding layer</dd>
+<dt><strong><code>rnn_units</code></strong></dt>
+<dd>The number of rnn units on a hidden layer</dd>
+<dt><strong><code>dropout</code></strong></dt>
+<dd>Dropout size</dd>
+<dt><strong><code>batch_size</code></strong></dt>
+<dd>Size of a single batch</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GRUModel(tf.keras.Model):
+        &#34;&#34;&#34;
+                GRU Model (1 GRU layer + embedding + dropout layer)
+
+        Args:
+                vocab_size: Vocabulary size - the number of unique places in sequence
+                embedding_dim: The size of embedding layer
+                rnn_units: The number of rnn units on a hidden layer
+                dropout: Dropout size
+                batch_size: Size of a single batch
+        &#34;&#34;&#34;
+
+        def __init__(self, vocab_size, embedding_dim, rnn_units, dropout, batch_size):
+                super().__init__(self)
+                self.embedding = tf.keras.layers.Embedding(vocab_size, embedding_dim)
+                self.gru = tf.keras.layers.GRU(rnn_units,
+                                               return_sequences=True,
+                                               return_state=True, stateful=True)
+                self.drop = tf.keras.layers.Dropout(dropout)
+                self.dense = tf.keras.layers.Dense(vocab_size, activation=&#39;softmax&#39;)
+
+        def call(self, inputs, states=None, return_state=False, training=False):
+                &#34;&#34;&#34;
+                Constructs the network for training.
+
+                Args:
+                        inputs: Input vectors
+                        states: Initial states. If none, no initial state is set.
+                        return_state (default = False): Boolean. Whether to return the last state in addition to the output.
+                        training (default = False): Boolean. Indicating whether the layer should behave in training mode or in inference mode
+
+                Returns:
+                        The GRU network
+                &#34;&#34;&#34;
+                x = inputs
+                x = self.embedding(x)
+                if states is None:
+                        states = self.gru.get_initial_state(x)
+                x, states = self.gru(x, initial_state=states, training=training)
+                x = self.drop(x, training=training)
+                x = self.dense(x, training=training)
+
+                if return_state:
+                        return x, states
+                else:
+                        return x</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>tensorflow.python.keras.engine.training.Model</li>
+<li>tensorflow.python.keras.engine.base_layer.Layer</li>
+<li>tensorflow.python.module.module.Module</li>
+<li>tensorflow.python.training.tracking.tracking.AutoTrackable</li>
+<li>tensorflow.python.training.tracking.base.Trackable</li>
+<li>tensorflow.python.keras.utils.version_utils.LayerVersionSelector</li>
+<li>tensorflow.python.keras.utils.version_utils.ModelVersionSelector</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="src.humobi.predictors.deep.GRUModel.call"><code class="name flex">
+<span>def <span class="ident">call</span></span>(<span>self, inputs, states=None, return_state=False, training=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Constructs the network for training.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>inputs</code></strong></dt>
+<dd>Input vectors</dd>
+<dt><strong><code>states</code></strong></dt>
+<dd>Initial states. If none, no initial state is set.</dd>
+<dt><strong><code>return_state</code></strong> :&ensp;<code>default = False</code></dt>
+<dd>Boolean. Whether to return the last state in addition to the output.</dd>
+<dt><strong><code>training</code></strong> :&ensp;<code>default = False</code></dt>
+<dd>Boolean. Indicating whether the layer should behave in training mode or in inference mode</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The GRU network</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def call(self, inputs, states=None, return_state=False, training=False):
+        &#34;&#34;&#34;
+        Constructs the network for training.
+
+        Args:
+                inputs: Input vectors
+                states: Initial states. If none, no initial state is set.
+                return_state (default = False): Boolean. Whether to return the last state in addition to the output.
+                training (default = False): Boolean. Indicating whether the layer should behave in training mode or in inference mode
+
+        Returns:
+                The GRU network
+        &#34;&#34;&#34;
+        x = inputs
+        x = self.embedding(x)
+        if states is None:
+                states = self.gru.get_initial_state(x)
+        x, states = self.gru(x, initial_state=states, training=training)
+        x = self.drop(x, training=training)
+        x = self.dense(x, training=training)
+
+        if return_state:
+                return x, states
+        else:
+                return x</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="src.humobi.predictors.deep.GRUModel2"><code class="flex name class">
+<span>class <span class="ident">GRUModel2</span></span>
+<span>(</span><span>vocab_size, embedding_dim, rnn_units, dropout, batch_size)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>GRU Model (2 GRU layers + embedding + dropout layer)</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>vocab_size</code></strong></dt>
+<dd>Vocabulary size - the number of unique places in sequence</dd>
+<dt><strong><code>embedding_dim</code></strong></dt>
+<dd>The size of embedding layer</dd>
+<dt><strong><code>rnn_units</code></strong></dt>
+<dd>The number of rnn units on a hidden layer</dd>
+<dt><strong><code>dropout</code></strong></dt>
+<dd>Dropout size</dd>
+<dt><strong><code>batch_size</code></strong></dt>
+<dd>Size of a single batch</dd>
+</dl>
+<p>Layer structure.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GRUModel2(tf.keras.Model):
+        &#34;&#34;&#34;
+        GRU Model (2 GRU layers + embedding + dropout layer)
+
+        Args:
+                vocab_size: Vocabulary size - the number of unique places in sequence
+                embedding_dim: The size of embedding layer
+                rnn_units: The number of rnn units on a hidden layer
+                dropout: Dropout size
+                batch_size: Size of a single batch
+        &#34;&#34;&#34;
+
+        def __init__(self, vocab_size, embedding_dim, rnn_units, dropout, batch_size):
+                &#34;&#34;&#34;
+                Layer structure.
+                &#34;&#34;&#34;
+                super().__init__(self)
+                self.embedding = tf.keras.layers.Embedding(vocab_size, embedding_dim, batch_input_shape=(batch_size,vocab_size))
+                self.gru = tf.keras.layers.GRU(rnn_units,
+                                               return_sequences=True,
+                                               return_state=True, batch_input_shape=(batch_size, X.shape[1], X.shape[2]))
+                self.gru2 = tf.keras.layers.GRU(rnn_units,
+                                                return_sequences=True,
+                                                return_state=True, batch_input_shape=(batch_size, X.shape[1], X.shape[2]))
+                self.drop = tf.keras.layers.Dropout(dropout)
+                self.dense = tf.keras.layers.Dense(vocab_size, activation=&#39;softmax&#39;)
+
+        def call(self, inputs, states=None, return_state=False, training=False):
+                &#34;&#34;&#34;
+                Constructs the network for training.
+
+                Args:
+                        inputs: Input vectors
+                        states: Initial states. If none, no initial state is set.
+                        return_state (default = False): Boolean. Whether to return the last state in addition to the output.
+                        training (default = False): Boolean. Indicating whether the layer should behave in training mode or in inference mode
+
+                Returns:
+                        The GRU network
+                &#34;&#34;&#34;
+                x = inputs
+                x = self.embedding(x)
+                if states is None:
+                        states = self.gru.get_initial_state(x)
+                x, states = self.gru(x, initial_state=states, training=training)
+                x, states = self.gru2(x, initial_state=states, training=training)
+                x = self.drop(x, training=training)
+                x = self.dense(x)
+
+                if return_state:
+                        return x, states
+                else:
+                        return x</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>tensorflow.python.keras.engine.training.Model</li>
+<li>tensorflow.python.keras.engine.base_layer.Layer</li>
+<li>tensorflow.python.module.module.Module</li>
+<li>tensorflow.python.training.tracking.tracking.AutoTrackable</li>
+<li>tensorflow.python.training.tracking.base.Trackable</li>
+<li>tensorflow.python.keras.utils.version_utils.LayerVersionSelector</li>
+<li>tensorflow.python.keras.utils.version_utils.ModelVersionSelector</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="src.humobi.predictors.deep.GRUModel2.call"><code class="name flex">
+<span>def <span class="ident">call</span></span>(<span>self, inputs, states=None, return_state=False, training=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Constructs the network for training.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>inputs</code></strong></dt>
+<dd>Input vectors</dd>
+<dt><strong><code>states</code></strong></dt>
+<dd>Initial states. If none, no initial state is set.</dd>
+<dt><strong><code>return_state</code></strong> :&ensp;<code>default = False</code></dt>
+<dd>Boolean. Whether to return the last state in addition to the output.</dd>
+<dt><strong><code>training</code></strong> :&ensp;<code>default = False</code></dt>
+<dd>Boolean. Indicating whether the layer should behave in training mode or in inference mode</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The GRU network</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def call(self, inputs, states=None, return_state=False, training=False):
+        &#34;&#34;&#34;
+        Constructs the network for training.
+
+        Args:
+                inputs: Input vectors
+                states: Initial states. If none, no initial state is set.
+                return_state (default = False): Boolean. Whether to return the last state in addition to the output.
+                training (default = False): Boolean. Indicating whether the layer should behave in training mode or in inference mode
+
+        Returns:
+                The GRU network
+        &#34;&#34;&#34;
+        x = inputs
+        x = self.embedding(x)
+        if states is None:
+                states = self.gru.get_initial_state(x)
+        x, states = self.gru(x, initial_state=states, training=training)
+        x, states = self.gru2(x, initial_state=states, training=training)
+        x = self.drop(x, training=training)
+        x = self.dense(x)
+
+        if return_state:
+                return x, states
+        else:
+                return x</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="src.humobi.predictors" href="index.html">src.humobi.predictors</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="src.humobi.predictors.deep.gen" href="#src.humobi.predictors.deep.gen">gen</a></code></li>
+<li><code><a title="src.humobi.predictors.deep.loss" href="#src.humobi.predictors.deep.loss">loss</a></code></li>
+<li><code><a title="src.humobi.predictors.deep.split_input_target" href="#src.humobi.predictors.deep.split_input_target">split_input_target</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="src.humobi.predictors.deep.DeepPred" href="#src.humobi.predictors.deep.DeepPred">DeepPred</a></code></h4>
+<ul class="">
+<li><code><a title="src.humobi.predictors.deep.DeepPred.learn_predict" href="#src.humobi.predictors.deep.DeepPred.learn_predict">learn_predict</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.humobi.predictors.deep.GRUModel" href="#src.humobi.predictors.deep.GRUModel">GRUModel</a></code></h4>
+<ul class="">
+<li><code><a title="src.humobi.predictors.deep.GRUModel.call" href="#src.humobi.predictors.deep.GRUModel.call">call</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.humobi.predictors.deep.GRUModel2" href="#src.humobi.predictors.deep.GRUModel2">GRUModel2</a></code></h4>
+<ul class="">
+<li><code><a title="src.humobi.predictors.deep.GRUModel2.call" href="#src.humobi.predictors.deep.GRUModel2.call">call</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

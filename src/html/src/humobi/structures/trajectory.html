@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>src.humobi.structures.trajectory API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>src.humobi.structures.trajectory</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import pandas as pd
+import geopandas as gpd
+import numpy as np
+import re
+import geofeather as gf
+import warnings
+
+
+def infer_datetime(trajectories_frame):
+        &#34;&#34;&#34;
+        This function infers the timestamp column index.
+
+        Args:
+                trajectories_frame (TrajectoriesFrame): TrajectoriesFrame class object
+
+        Returns:
+                date column index and time column index or datetime column index
+        &#34;&#34;&#34;
+        single_row = trajectories_frame.head(1)
+        date_col = None
+        time_col = None
+        for name, val in single_row.iteritems():
+                val = val.iloc[0]
+                if re.match(r&#34;.+(\/).+(\/).+&#34;, str(val)):
+                        date_col = name
+                elif re.match(r&#34;.+(-).+(-).+&#34;, str(val)):
+                        date_col = name
+                if re.match(r&#34;.{1,2}(:).{1,2}(:).{1,2}&#34;, str(val)):
+                        time_col = name
+
+        if date_col == time_col:
+                return date_col
+        elif isinstance(date_col, str) or isinstance(date_col, int) and time_col is None:
+                return date_col
+        else:
+                return date_col, time_col
+
+
+def infer_geometry(trajectories_frame):
+        &#34;&#34;&#34;
+        This function infers the index of column with geometry
+        
+        Args:
+                trajectories_frame (TrajectoriesFrame): TrajectoriesFrame class object
+        
+        Returns:
+                geometry column index
+        &#34;&#34;&#34;
+        latitude_column = None
+        longitude_column = None
+        if trajectories_frame.columns.dtype is &#39;str&#39; or trajectories_frame.columns.is_object():
+                try:
+                        latitude_column = [x for x in trajectories_frame.columns if &#39;lat&#39; in x.lower()][0]
+                except:
+                        pass
+                try:
+                        longitude_column = [x for x in trajectories_frame.columns if &#39;lon&#39; in x.lower()][0]
+                except:
+                        pass
+        if not latitude_column or not longitude_column:
+                try:
+                        longitude_column, latitude_column = trajectories_frame.columns[
+                                trajectories_frame.dtypes == &#39;float64&#39;].values
+                        warnings.warn(&#34;TrajectoriesFrame: Selecting first two columns of float&#34;)
+                except:
+                        trajectories_frame[&#39;lat&#39;] = 0
+                        trajectories_frame[&#39;lon&#39;] = 0
+                        latitude_column = &#39;lat&#39;
+                        longitude_column = &#39;lon&#39;
+                        warnings.warn(&#34;TrajectoriesFrame: No coordinates, adding empty floats&#34;)
+        return longitude_column, latitude_column
+
+
+def infer_id(trajectories_frame):
+        &#34;&#34;&#34;
+        This function infers the index of column with user identifier
+
+        Args:
+                trajectories_frame (TrajectoriesFrame): TrajectoriesFrame class object
+
+        Returns:
+                identifier column index
+        &#34;&#34;&#34;
+        if trajectories_frame.columns.dtype is &#39;str&#39; or trajectories_frame.columns.is_object():
+                try:
+                        id_col = [x for x in trajectories_frame.columns if &#39;id&#39; in x.lower()][0]
+                        return id_col
+                except:
+                        samples = trajectories_frame.sample(1000)
+                        id_col = np.argmax([samples.groupby(x).size().mean() for x in samples.columns])
+                        id_col = trajectories_frame.columns[id_col]
+                        warnings.warn(&#34;ID column was infered but to avoid mistakes ensure that TrajectoriesFrame contains an ID &#34;
+                                      &#34;column (with id in the name) and reread the frame!&#34;)
+                        return id_col
+
+
+class TrajectoriesFrame(gpd.GeoDataFrame):
+        &#34;&#34;&#34;
+        This is a basic class of TrajectoriesFrame. It stores user traces with MultiIndex - sorted by ID, and by timestamp.
+        This class inherits from GeoPandas DataFrame, therefore has geographical properties.
+        &#34;&#34;&#34;
+
+        _metadata = [&#39;_crs&#39;, &#39;_geom_cols&#39;, ]
+
+        @property
+        def _constructor(self):
+                def _c(data):
+                        return TrajectoriesFrame(data).__finalize__(self)
+
+                return _c
+
+        def __init__(self, data=None, params={}):
+                &#34;&#34;&#34;
+                Creates TrajectoriesFrame from input - can be DataFrame or file path
+
+                Args:
+                        data: DataFrame or file path
+                        params: dictionary of parameters accepted by DataFrame class
+                &#34;&#34;&#34;
+                try:
+                        self._crs = data.crs
+                except AttributeError:
+                        self._crs = params.pop(&#39;crs&#39;, None)
+
+                if isinstance(data, str):
+                        data = pd.read_csv(data, **params)
+
+                columns_user_defined = params.pop(&#39;columns&#39;, None)
+                self._geom_cols = params.pop(&#39;geom_cols&#39;, None)
+
+                if isinstance(data, pd.DataFrame):
+                        if not data.index.nlevels &gt; 1:
+                                if len(data.select_dtypes(include=[np.datetime64])) &gt; 1:
+                                        if &#39;datetime&#39; in data.columns:
+                                                date_cols = &#39;datetime&#39;
+                                        elif &#39;time&#39; in data.columns:
+                                                date_cols = &#39;time&#39;
+                                        else:
+                                                date_cols = infer_datetime(data)
+                                        if isinstance(date_cols, str) or isinstance(date_cols, int):
+                                                data[&#34;datetime&#34;] = pd.to_datetime(data[date_cols])
+                                        else:
+                                                data[&#34;datetime&#34;] = pd.to_datetime(data[date_cols[0]] + &#34; &#34; + data[date_cols[1]])
+                                id_col = infer_id(data)
+                                data[&#39;user_id&#39;] = data[id_col]
+                                data = data.set_index([&#39;user_id&#39;, &#34;datetime&#34;])
+                        if self._geom_cols is None:
+                                self._geom_cols = infer_geometry(data)
+
+                        data = gpd.GeoDataFrame(data, geometry=gpd.points_from_xy(*[data[x] for x in self._geom_cols]),
+                                                crs=self._crs)
+
+                super().__init__(data)
+
+                if columns_user_defined:
+                        data.columns = columns_user_defined
+
+                if isinstance(data, gpd.GeoDataFrame):
+                        self.crs = self._crs
+                        self.geom_cols = self._geom_cols
+
+        @property
+        def _base_class_view(self):
+                &#34;&#34;&#34;
+                Forces DataFrame view in debugging mode for some IDEs.
+                &#34;&#34;&#34;
+                return pd.DataFrame(self)
+
+        def to_geofeather(self, path):
+                &#34;&#34;&#34;
+                Writes TarjectoriesFrame to geofeather file
+
+                Args:
+                        path: write path
+
+                Returns:
+                        file path
+                &#34;&#34;&#34;
+                gf.to_geofeather(self.reset_index(), path)
+                return path
+
+        @classmethod
+        def from_geofeather(self, path):
+                &#34;&#34;&#34;
+                Reads from geofeather file
+
+                Args:
+                        path: file path
+
+                Returns:
+                        TrajectoriesFrame object
+                &#34;&#34;&#34;
+                return TrajectoriesFrame(gf.from_geofeather(path))
+
+        def to_shapefile(self, path):
+                &#34;&#34;&#34;
+                Writes TrajectoriesFrame to shapefile
+
+                Args:
+                        path: write path
+
+                Returns:
+                        file path
+                &#34;&#34;&#34;
+                warnings.warn(&#34;Saving to shapefile forces conversion of datetime into string&#34;)
+                self = self.reset_index()
+                self[&#39;datetime&#39;] = str(self[&#39;datetime&#39;])
+                self.to_file(path)
+                return path
+
+        def uloc(self, uid):
+                &#34;&#34;&#34;
+                Returns a part of TrajectoriesFrame for user ID
+
+                Args:
+                        uid: user id
+
+                Returns:
+                        TrajectoriesFrame of selected users
+                &#34;&#34;&#34;
+                return self.loc[uid]
+
+        def get_users(self):
+                &#34;&#34;&#34;
+                Returns all the users&#39; IDs
+
+                Returns:
+                        Array of all users&#39; identifiers
+                &#34;&#34;&#34;
+                return self.index.get_level_values(0).unique().values
+
+        def to_crs(self, dest_crs, cur_crs=None):
+                &#34;&#34;&#34;
+                Transforms geometry of TrajectoryFrame into different Coordinate Reference System.
+
+                Args:
+                        dest_crs: CRS to which TrajectoriesFrame will be converted
+                        cur_crs (default=None): Current CRS of a TrajectoryFrame. If not determined, CRS will be read from the metadata.
+
+                Returns:
+                        Converted TrajectoryFrame. This also alters the instance itself.
+                &#34;&#34;&#34;
+                if cur_crs is None:
+                        cur_crs = self.crs
+                self = super(TrajectoriesFrame, self).to_crs(dest_crs)
+                self[[x for x in self._geom_cols]] = pd.concat([self.geometry.x, self.geometry.y], axis=1)
+                return self</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="src.humobi.structures.trajectory.infer_datetime"><code class="name flex">
+<span>def <span class="ident">infer_datetime</span></span>(<span>trajectories_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This function infers the timestamp column index.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong> :&ensp;<code><a title="src.humobi.structures.trajectory.TrajectoriesFrame" href="#src.humobi.structures.trajectory.TrajectoriesFrame">TrajectoriesFrame</a></code></dt>
+<dd>TrajectoriesFrame class object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>date column index and time column index or datetime column index</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def infer_datetime(trajectories_frame):
+        &#34;&#34;&#34;
+        This function infers the timestamp column index.
+
+        Args:
+                trajectories_frame (TrajectoriesFrame): TrajectoriesFrame class object
+
+        Returns:
+                date column index and time column index or datetime column index
+        &#34;&#34;&#34;
+        single_row = trajectories_frame.head(1)
+        date_col = None
+        time_col = None
+        for name, val in single_row.iteritems():
+                val = val.iloc[0]
+                if re.match(r&#34;.+(\/).+(\/).+&#34;, str(val)):
+                        date_col = name
+                elif re.match(r&#34;.+(-).+(-).+&#34;, str(val)):
+                        date_col = name
+                if re.match(r&#34;.{1,2}(:).{1,2}(:).{1,2}&#34;, str(val)):
+                        time_col = name
+
+        if date_col == time_col:
+                return date_col
+        elif isinstance(date_col, str) or isinstance(date_col, int) and time_col is None:
+                return date_col
+        else:
+                return date_col, time_col</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.structures.trajectory.infer_geometry"><code class="name flex">
+<span>def <span class="ident">infer_geometry</span></span>(<span>trajectories_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This function infers the index of column with geometry</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong> :&ensp;<code><a title="src.humobi.structures.trajectory.TrajectoriesFrame" href="#src.humobi.structures.trajectory.TrajectoriesFrame">TrajectoriesFrame</a></code></dt>
+<dd>TrajectoriesFrame class object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>geometry column index</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def infer_geometry(trajectories_frame):
+        &#34;&#34;&#34;
+        This function infers the index of column with geometry
+        
+        Args:
+                trajectories_frame (TrajectoriesFrame): TrajectoriesFrame class object
+        
+        Returns:
+                geometry column index
+        &#34;&#34;&#34;
+        latitude_column = None
+        longitude_column = None
+        if trajectories_frame.columns.dtype is &#39;str&#39; or trajectories_frame.columns.is_object():
+                try:
+                        latitude_column = [x for x in trajectories_frame.columns if &#39;lat&#39; in x.lower()][0]
+                except:
+                        pass
+                try:
+                        longitude_column = [x for x in trajectories_frame.columns if &#39;lon&#39; in x.lower()][0]
+                except:
+                        pass
+        if not latitude_column or not longitude_column:
+                try:
+                        longitude_column, latitude_column = trajectories_frame.columns[
+                                trajectories_frame.dtypes == &#39;float64&#39;].values
+                        warnings.warn(&#34;TrajectoriesFrame: Selecting first two columns of float&#34;)
+                except:
+                        trajectories_frame[&#39;lat&#39;] = 0
+                        trajectories_frame[&#39;lon&#39;] = 0
+                        latitude_column = &#39;lat&#39;
+                        longitude_column = &#39;lon&#39;
+                        warnings.warn(&#34;TrajectoriesFrame: No coordinates, adding empty floats&#34;)
+        return longitude_column, latitude_column</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.structures.trajectory.infer_id"><code class="name flex">
+<span>def <span class="ident">infer_id</span></span>(<span>trajectories_frame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This function infers the index of column with user identifier</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong> :&ensp;<code><a title="src.humobi.structures.trajectory.TrajectoriesFrame" href="#src.humobi.structures.trajectory.TrajectoriesFrame">TrajectoriesFrame</a></code></dt>
+<dd>TrajectoriesFrame class object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>identifier column index</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def infer_id(trajectories_frame):
+        &#34;&#34;&#34;
+        This function infers the index of column with user identifier
+
+        Args:
+                trajectories_frame (TrajectoriesFrame): TrajectoriesFrame class object
+
+        Returns:
+                identifier column index
+        &#34;&#34;&#34;
+        if trajectories_frame.columns.dtype is &#39;str&#39; or trajectories_frame.columns.is_object():
+                try:
+                        id_col = [x for x in trajectories_frame.columns if &#39;id&#39; in x.lower()][0]
+                        return id_col
+                except:
+                        samples = trajectories_frame.sample(1000)
+                        id_col = np.argmax([samples.groupby(x).size().mean() for x in samples.columns])
+                        id_col = trajectories_frame.columns[id_col]
+                        warnings.warn(&#34;ID column was infered but to avoid mistakes ensure that TrajectoriesFrame contains an ID &#34;
+                                      &#34;column (with id in the name) and reread the frame!&#34;)
+                        return id_col</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="src.humobi.structures.trajectory.TrajectoriesFrame"><code class="flex name class">
+<span>class <span class="ident">TrajectoriesFrame</span></span>
+<span>(</span><span>data=None, params={})</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This is a basic class of TrajectoriesFrame. It stores user traces with MultiIndex - sorted by ID, and by timestamp.
+This class inherits from GeoPandas DataFrame, therefore has geographical properties.</p>
+<p>Creates TrajectoriesFrame from input - can be DataFrame or file path</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong></dt>
+<dd>DataFrame or file path</dd>
+<dt><strong><code>params</code></strong></dt>
+<dd>dictionary of parameters accepted by DataFrame class</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TrajectoriesFrame(gpd.GeoDataFrame):
+        &#34;&#34;&#34;
+        This is a basic class of TrajectoriesFrame. It stores user traces with MultiIndex - sorted by ID, and by timestamp.
+        This class inherits from GeoPandas DataFrame, therefore has geographical properties.
+        &#34;&#34;&#34;
+
+        _metadata = [&#39;_crs&#39;, &#39;_geom_cols&#39;, ]
+
+        @property
+        def _constructor(self):
+                def _c(data):
+                        return TrajectoriesFrame(data).__finalize__(self)
+
+                return _c
+
+        def __init__(self, data=None, params={}):
+                &#34;&#34;&#34;
+                Creates TrajectoriesFrame from input - can be DataFrame or file path
+
+                Args:
+                        data: DataFrame or file path
+                        params: dictionary of parameters accepted by DataFrame class
+                &#34;&#34;&#34;
+                try:
+                        self._crs = data.crs
+                except AttributeError:
+                        self._crs = params.pop(&#39;crs&#39;, None)
+
+                if isinstance(data, str):
+                        data = pd.read_csv(data, **params)
+
+                columns_user_defined = params.pop(&#39;columns&#39;, None)
+                self._geom_cols = params.pop(&#39;geom_cols&#39;, None)
+
+                if isinstance(data, pd.DataFrame):
+                        if not data.index.nlevels &gt; 1:
+                                if len(data.select_dtypes(include=[np.datetime64])) &gt; 1:
+                                        if &#39;datetime&#39; in data.columns:
+                                                date_cols = &#39;datetime&#39;
+                                        elif &#39;time&#39; in data.columns:
+                                                date_cols = &#39;time&#39;
+                                        else:
+                                                date_cols = infer_datetime(data)
+                                        if isinstance(date_cols, str) or isinstance(date_cols, int):
+                                                data[&#34;datetime&#34;] = pd.to_datetime(data[date_cols])
+                                        else:
+                                                data[&#34;datetime&#34;] = pd.to_datetime(data[date_cols[0]] + &#34; &#34; + data[date_cols[1]])
+                                id_col = infer_id(data)
+                                data[&#39;user_id&#39;] = data[id_col]
+                                data = data.set_index([&#39;user_id&#39;, &#34;datetime&#34;])
+                        if self._geom_cols is None:
+                                self._geom_cols = infer_geometry(data)
+
+                        data = gpd.GeoDataFrame(data, geometry=gpd.points_from_xy(*[data[x] for x in self._geom_cols]),
+                                                crs=self._crs)
+
+                super().__init__(data)
+
+                if columns_user_defined:
+                        data.columns = columns_user_defined
+
+                if isinstance(data, gpd.GeoDataFrame):
+                        self.crs = self._crs
+                        self.geom_cols = self._geom_cols
+
+        @property
+        def _base_class_view(self):
+                &#34;&#34;&#34;
+                Forces DataFrame view in debugging mode for some IDEs.
+                &#34;&#34;&#34;
+                return pd.DataFrame(self)
+
+        def to_geofeather(self, path):
+                &#34;&#34;&#34;
+                Writes TarjectoriesFrame to geofeather file
+
+                Args:
+                        path: write path
+
+                Returns:
+                        file path
+                &#34;&#34;&#34;
+                gf.to_geofeather(self.reset_index(), path)
+                return path
+
+        @classmethod
+        def from_geofeather(self, path):
+                &#34;&#34;&#34;
+                Reads from geofeather file
+
+                Args:
+                        path: file path
+
+                Returns:
+                        TrajectoriesFrame object
+                &#34;&#34;&#34;
+                return TrajectoriesFrame(gf.from_geofeather(path))
+
+        def to_shapefile(self, path):
+                &#34;&#34;&#34;
+                Writes TrajectoriesFrame to shapefile
+
+                Args:
+                        path: write path
+
+                Returns:
+                        file path
+                &#34;&#34;&#34;
+                warnings.warn(&#34;Saving to shapefile forces conversion of datetime into string&#34;)
+                self = self.reset_index()
+                self[&#39;datetime&#39;] = str(self[&#39;datetime&#39;])
+                self.to_file(path)
+                return path
+
+        def uloc(self, uid):
+                &#34;&#34;&#34;
+                Returns a part of TrajectoriesFrame for user ID
+
+                Args:
+                        uid: user id
+
+                Returns:
+                        TrajectoriesFrame of selected users
+                &#34;&#34;&#34;
+                return self.loc[uid]
+
+        def get_users(self):
+                &#34;&#34;&#34;
+                Returns all the users&#39; IDs
+
+                Returns:
+                        Array of all users&#39; identifiers
+                &#34;&#34;&#34;
+                return self.index.get_level_values(0).unique().values
+
+        def to_crs(self, dest_crs, cur_crs=None):
+                &#34;&#34;&#34;
+                Transforms geometry of TrajectoryFrame into different Coordinate Reference System.
+
+                Args:
+                        dest_crs: CRS to which TrajectoriesFrame will be converted
+                        cur_crs (default=None): Current CRS of a TrajectoryFrame. If not determined, CRS will be read from the metadata.
+
+                Returns:
+                        Converted TrajectoryFrame. This also alters the instance itself.
+                &#34;&#34;&#34;
+                if cur_crs is None:
+                        cur_crs = self.crs
+                self = super(TrajectoriesFrame, self).to_crs(dest_crs)
+                self[[x for x in self._geom_cols]] = pd.concat([self.geometry.x, self.geometry.y], axis=1)
+                return self</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>geopandas.geodataframe.GeoDataFrame</li>
+<li>geopandas.base.GeoPandasBase</li>
+<li>pandas.core.frame.DataFrame</li>
+<li>pandas.core.generic.NDFrame</li>
+<li>pandas.core.base.PandasObject</li>
+<li>pandas.core.accessor.DirNamesMixin</li>
+<li>pandas.core.base.SelectionMixin</li>
+<li>pandas.core.indexing.IndexingMixin</li>
+</ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="src.humobi.structures.trajectory.TrajectoriesFrame.from_geofeather"><code class="name flex">
+<span>def <span class="ident">from_geofeather</span></span>(<span>path)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reads from geofeather file</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>path</code></strong></dt>
+<dd>file path</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>TrajectoriesFrame object</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def from_geofeather(self, path):
+        &#34;&#34;&#34;
+        Reads from geofeather file
+
+        Args:
+                path: file path
+
+        Returns:
+                TrajectoriesFrame object
+        &#34;&#34;&#34;
+        return TrajectoriesFrame(gf.from_geofeather(path))</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="src.humobi.structures.trajectory.TrajectoriesFrame.columns"><code class="name">var <span class="ident">columns</span> : pandas.core.indexes.base.Index</code></dt>
+<dd>
+<div class="desc"><p>The column labels of the DataFrame.</p></div>
+</dd>
+<dt id="src.humobi.structures.trajectory.TrajectoriesFrame.index"><code class="name">var <span class="ident">index</span> : pandas.core.indexes.base.Index</code></dt>
+<dd>
+<div class="desc"><p>The index (row labels) of the DataFrame.</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="src.humobi.structures.trajectory.TrajectoriesFrame.get_users"><code class="name flex">
+<span>def <span class="ident">get_users</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns all the users' IDs</p>
+<h2 id="returns">Returns</h2>
+<p>Array of all users' identifiers</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_users(self):
+        &#34;&#34;&#34;
+        Returns all the users&#39; IDs
+
+        Returns:
+                Array of all users&#39; identifiers
+        &#34;&#34;&#34;
+        return self.index.get_level_values(0).unique().values</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.structures.trajectory.TrajectoriesFrame.to_crs"><code class="name flex">
+<span>def <span class="ident">to_crs</span></span>(<span>self, dest_crs, cur_crs=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Transforms geometry of TrajectoryFrame into different Coordinate Reference System.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>dest_crs</code></strong></dt>
+<dd>CRS to which TrajectoriesFrame will be converted</dd>
+<dt><strong><code>cur_crs</code></strong> :&ensp;<code>default=None</code></dt>
+<dd>Current CRS of a TrajectoryFrame. If not determined, CRS will be read from the metadata.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Converted TrajectoryFrame. This also alters the instance itself.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_crs(self, dest_crs, cur_crs=None):
+        &#34;&#34;&#34;
+        Transforms geometry of TrajectoryFrame into different Coordinate Reference System.
+
+        Args:
+                dest_crs: CRS to which TrajectoriesFrame will be converted
+                cur_crs (default=None): Current CRS of a TrajectoryFrame. If not determined, CRS will be read from the metadata.
+
+        Returns:
+                Converted TrajectoryFrame. This also alters the instance itself.
+        &#34;&#34;&#34;
+        if cur_crs is None:
+                cur_crs = self.crs
+        self = super(TrajectoriesFrame, self).to_crs(dest_crs)
+        self[[x for x in self._geom_cols]] = pd.concat([self.geometry.x, self.geometry.y], axis=1)
+        return self</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.structures.trajectory.TrajectoriesFrame.to_geofeather"><code class="name flex">
+<span>def <span class="ident">to_geofeather</span></span>(<span>self, path)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Writes TarjectoriesFrame to geofeather file</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>path</code></strong></dt>
+<dd>write path</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>file path</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_geofeather(self, path):
+        &#34;&#34;&#34;
+        Writes TarjectoriesFrame to geofeather file
+
+        Args:
+                path: write path
+
+        Returns:
+                file path
+        &#34;&#34;&#34;
+        gf.to_geofeather(self.reset_index(), path)
+        return path</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.structures.trajectory.TrajectoriesFrame.to_shapefile"><code class="name flex">
+<span>def <span class="ident">to_shapefile</span></span>(<span>self, path)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Writes TrajectoriesFrame to shapefile</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>path</code></strong></dt>
+<dd>write path</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>file path</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_shapefile(self, path):
+        &#34;&#34;&#34;
+        Writes TrajectoriesFrame to shapefile
+
+        Args:
+                path: write path
+
+        Returns:
+                file path
+        &#34;&#34;&#34;
+        warnings.warn(&#34;Saving to shapefile forces conversion of datetime into string&#34;)
+        self = self.reset_index()
+        self[&#39;datetime&#39;] = str(self[&#39;datetime&#39;])
+        self.to_file(path)
+        return path</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.structures.trajectory.TrajectoriesFrame.uloc"><code class="name flex">
+<span>def <span class="ident">uloc</span></span>(<span>self, uid)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a part of TrajectoriesFrame for user ID</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>uid</code></strong></dt>
+<dd>user id</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>TrajectoriesFrame of selected users</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def uloc(self, uid):
+        &#34;&#34;&#34;
+        Returns a part of TrajectoriesFrame for user ID
+
+        Args:
+                uid: user id
+
+        Returns:
+                TrajectoriesFrame of selected users
+        &#34;&#34;&#34;
+        return self.loc[uid]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="src.humobi.structures" href="index.html">src.humobi.structures</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="src.humobi.structures.trajectory.infer_datetime" href="#src.humobi.structures.trajectory.infer_datetime">infer_datetime</a></code></li>
+<li><code><a title="src.humobi.structures.trajectory.infer_geometry" href="#src.humobi.structures.trajectory.infer_geometry">infer_geometry</a></code></li>
+<li><code><a title="src.humobi.structures.trajectory.infer_id" href="#src.humobi.structures.trajectory.infer_id">infer_id</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="src.humobi.structures.trajectory.TrajectoriesFrame" href="#src.humobi.structures.trajectory.TrajectoriesFrame">TrajectoriesFrame</a></code></h4>
+<ul class="two-column">
+<li><code><a title="src.humobi.structures.trajectory.TrajectoriesFrame.columns" href="#src.humobi.structures.trajectory.TrajectoriesFrame.columns">columns</a></code></li>
+<li><code><a title="src.humobi.structures.trajectory.TrajectoriesFrame.from_geofeather" href="#src.humobi.structures.trajectory.TrajectoriesFrame.from_geofeather">from_geofeather</a></code></li>
+<li><code><a title="src.humobi.structures.trajectory.TrajectoriesFrame.get_users" href="#src.humobi.structures.trajectory.TrajectoriesFrame.get_users">get_users</a></code></li>
+<li><code><a title="src.humobi.structures.trajectory.TrajectoriesFrame.index" href="#src.humobi.structures.trajectory.TrajectoriesFrame.index">index</a></code></li>
+<li><code><a title="src.humobi.structures.trajectory.TrajectoriesFrame.to_crs" href="#src.humobi.structures.trajectory.TrajectoriesFrame.to_crs">to_crs</a></code></li>
+<li><code><a title="src.humobi.structures.trajectory.TrajectoriesFrame.to_geofeather" href="#src.humobi.structures.trajectory.TrajectoriesFrame.to_geofeather">to_geofeather</a></code></li>
+<li><code><a title="src.humobi.structures.trajectory.TrajectoriesFrame.to_shapefile" href="#src.humobi.structures.trajectory.TrajectoriesFrame.to_shapefile">to_shapefile</a></code></li>
+<li><code><a title="src.humobi.structures.trajectory.TrajectoriesFrame.uloc" href="#src.humobi.structures.trajectory.TrajectoriesFrame.uloc">uloc</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

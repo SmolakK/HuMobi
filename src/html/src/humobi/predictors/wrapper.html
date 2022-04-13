@@ -1,0 +1,1338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>src.humobi.predictors.wrapper API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>src.humobi.predictors.wrapper</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import numpy as np
+import pandas as pd
+from src.humobi.misc.utils import to_labels
+from tqdm import tqdm
+tqdm.pandas()
+from src.humobi.predictors.markov import MarkovChain
+from src.humobi.predictors.sparse import Sparse
+from sklearn.model_selection import TimeSeriesSplit
+import itertools
+from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.model_selection import RandomizedSearchCV
+import concurrent.futures as cf
+
+
+def iterate_random_values(S, n_check):
+        &#34;&#34;&#34;
+        Takes a random combination of items of a given size.
+
+        Args:
+                S: The dictionary of items
+                n_check: Size of combination
+
+        Returns:
+                A random combination
+        &#34;&#34;&#34;
+        keys, values = zip(*S.items())
+        combs = [dict(zip(keys, row)) for row in itertools.product(*values)]
+        combs = np.random.choice(combs, n_check)
+        return combs
+
+
+class Splitter():
+        &#34;&#34;&#34;
+        This is a Splitter class responsible for data preparation for shallow machine learning-based models from sklearn library.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+                split_ratio: The ratio of training data
+                horizon: Window size - determines how many previous symbols are considered by the model when predicting
+                n_splits: The number of splits for cross-validation process
+        &#34;&#34;&#34;
+
+        def __init__(self, trajectories_frame, split_ratio, horizon, n_splits):
+                &#34;&#34;&#34;
+                Class initialisation. Calls data splitting routine, hence after initialisation data is already prepared.
+                &#34;&#34;&#34;
+                self._data = trajectories_frame
+                self._test_ratio = 1-split_ratio
+                if horizon &lt; 1:
+                        raise ValueError(&#34;Horizon value has to be a positive integer&#34;)
+                self._horizon = horizon
+                self._n_splits = n_splits
+                self.cv_data = []
+                self._stride_data()
+
+        @property
+        def data(self):
+                return self._data
+
+        @property
+        def test_ratio(self):
+                return self._test_ratio
+
+        @property
+        def horizon(self):
+                return self._horizon
+
+        def _test_split(self, X, Y):
+                &#34;&#34;&#34;
+                Splits test data into training and testing sets. Uses windowed data.
+
+                Args:
+                        X: Windowed features
+                        Y: Windowed targets
+
+                Returns:
+                        Training and testing sets of data
+                &#34;&#34;&#34;
+                train_frame_X = X.groupby(level=0).progress_apply(lambda x: x.iloc[:round(len(x) * self.test_ratio)]).droplevel(
+                        1)
+                train_frame_Y = Y.groupby(level=0).progress_apply(lambda x: x.iloc[:round(len(x) * self.test_ratio)]).droplevel(
+                        1)
+                test_frame_X = X.groupby(level=0).progress_apply(lambda x: x.iloc[round(len(x) * self.test_ratio):]).droplevel(
+                        1)
+                test_frame_Y = Y.groupby(level=0).progress_apply(lambda x: x.iloc[round(len(x) * self.test_ratio):]).droplevel(
+                        1)
+                return train_frame_X, train_frame_Y, test_frame_X, test_frame_Y
+
+        def _cv_split(self, frame_X, frame_Y, n_splits=5):
+                &#34;&#34;&#34;
+                Splits training data into the training and validation sets using cross-validation approach.
+
+                Args:
+                        frame_X: Training features
+                        frame_Y: Training targets
+                        n_splits: The number of splits to be applied
+                &#34;&#34;&#34;
+                for n in range(1, n_splits + 1):
+                        train_set_X = frame_X.groupby(level=0).apply(
+                                lambda x: x.iloc[:round(x.shape[0] * (n / (n_splits + 1)))]).droplevel(0)
+                        train_set_Y = frame_Y.groupby(level=0).apply(
+                                lambda x: x.iloc[:round(x.shape[0] * (n / (n_splits + 1)))]).droplevel(0)
+                        val_set_X = frame_X.groupby(level=0).apply(lambda x: x.iloc[round(x.shape[0] * (n / (n_splits + 1))):round(
+                                x.shape[0] * ((n + 1) / (n_splits + 1)))]).droplevel(0)
+                        val_set_Y = frame_Y.groupby(level=0).apply(lambda x: x.iloc[round(
+                                x.shape[0] * (n / (n_splits + 1))):round(
+                                x.shape[0] * ((n + 1) / (n_splits + 1)))]).droplevel(0)
+                        self.cv_data.append((train_set_X, train_set_Y, val_set_X, val_set_Y))
+
+        def _stride_data_single(self, frame):
+                &#34;&#34;&#34;
+                Uses windowing algorithm to prepare time-series data from sequences to prediction. Takes labels and horizon size
+                to create chunks of data.
+
+                Args:
+                        frame: TrajectoriesFrame of single user
+
+                Returns:
+                        Chunks of data in a DataFrame - features and targets
+                &#34;&#34;&#34;
+                to_concat = []
+                for uid, traj in frame.groupby(level=0):
+                        traj = traj.reset_index()
+                        for x in range(1, self.horizon + 1):
+                                traj[&#39;labels{}&#39;.format(x)] = traj[&#39;labels&#39;].shift(-x)
+                        traj[&#39;datetime&#39;] = traj[&#39;datetime&#39;].shift(-self.horizon)
+                        traj = traj.set_index([&#39;user_id&#39;, &#39;datetime&#39;])
+                        to_concat.append(traj[:-self.horizon])
+                frame_ready = pd.concat(to_concat)
+                frame_X = frame_ready.iloc[:, :self.horizon]
+                frame_Y = frame_ready.iloc[:, -1]
+                return frame_X, frame_Y
+
+        def _stride_data(self):
+                &#34;&#34;&#34;
+                A wrapper function for data windowing algorithm. Calls windowing algorithm for every unique user in the dataset.
+                After it splits data into three datasets - test, train and validation.
+                &#34;&#34;&#34;
+                strided_X, strided_Y = self._stride_data_single(self.data[&#39;labels&#39;])
+                train_frame_X, train_frame_Y, self.test_frame_X, self.test_frame_Y = self._test_split(strided_X, strided_Y)
+                self._cv_split(train_frame_X, train_frame_Y, n_splits=self._n_splits)
+
+
+class SKLearnPred():
+        &#34;&#34;&#34;
+        This is a wrapper for classification function from sklearn library which can be used for prediction here.
+
+        Args:
+                algorithm: An algorithm from sklearn library
+                training_data: The training set from Splitter class
+                test_data: The test set from Splitter class
+                param_dist: Hyperparameters dictionary from which the best hyperparameters will be chosen
+                search_size: The search size for hyperparameters (the number of random combinations to chechk)
+                cv_size: The number of tests run of every cross validation
+                parallel: Whether random search should be performed using multithreading
+        &#34;&#34;&#34;
+
+        def __init__(self, algorithm, training_data, test_data, param_dist, search_size, cv_size=3, parallel=False):
+                &#34;&#34;&#34;
+                Class initialisation.
+                &#34;&#34;&#34;
+                self._parallel = parallel
+                self._training_data = training_data
+                self._test_data = test_data
+                self._algorithm = algorithm
+                self._param_dist = param_dist
+                self._search_size = search_size
+                self._cv_size = cv_size
+                self._tuned_alg = {}
+
+        def _user_learn(self, args_x, args_y, vals_x, vals_y):
+                &#34;&#34;&#34;
+                For multithreading processing: single-user learn algorithm.
+
+                Args:
+                        args_x: training features
+                        args_y: training targets
+                        vals_x: validation features
+                        vals_y: validation targets
+
+                Returns:
+                        user id and score board with accuracy for each hyperparameters combination
+                &#34;&#34;&#34;
+                params_to_check = iterate_random_values(self._param_dist, self._search_size)
+                score_board = {}
+                for p_comb in params_to_check:
+                        score_board[tuple(sorted(p_comb.items()))] = []
+                        fold_avg = []
+                        for cv_fold in range(self._cv_size):
+                                alg_run = self._algorithm(**p_comb).fit(args_x, args_y)
+                                pred_run = alg_run.predict(vals_x)
+                                metric_val = accuracy_score(pred_run, vals_y)
+                                fold_avg.append(metric_val)
+                        metric_val = np.mean(fold_avg)
+                        score_board[tuple(sorted(p_comb.items()))].append(metric_val)
+                ids = args_x.index.get_level_values(0)[0]
+                return ids, score_board
+
+        def learn(self):
+                &#34;&#34;&#34;
+                Learns the sklearn algorithm using cross-validation and passed input data.
+                &#34;&#34;&#34;
+                cnt = 0
+                result_dic = {}
+                for splits in self._training_data:  # for every cv split
+                        cnt += 1
+                        print(&#34;SPLIT: {}&#34;.format(cnt))
+                        train_x, train_y, val_x, val_y = splits
+                        if self._parallel:  # TODO: Finish result unpacking
+                                with cf.ThreadPoolExecutor(max_workers=6) as executor:
+                                        args_x = [val for indi, val in train_x.groupby(level=0)]
+                                        args_y = [val for indi, val in train_y.groupby(level=0)]
+                                        vals_x = [val for indi, val in val_x.groupby(level=0)]
+                                        vals_y = [val for indi, val in val_y.groupby(level=0)]
+                                        results = list(
+                                                tqdm(executor.map(self._user_learn, args_x, args_y, vals_x, vals_y), total=len(vals_y)))
+                                for result in results:
+                                        if result[0] in result_dic.keys():
+                                                result_dic[result[0]] += result[1]
+                                        else:
+                                                result_dic[result[0]] = result[1]
+                        else:  # single-threaded processing
+                                usrs = np.unique(train_x.index.get_level_values(0))
+                                for ids in tqdm(usrs, total=len(usrs)):
+                                        params_to_check = iterate_random_values(self._param_dist, self._search_size)
+                                        score_board = {}
+                                        args_x = train_x.loc[ids]
+                                        args_y = train_y.loc[ids]
+                                        vals_x = val_x.loc[ids]
+                                        vals_y = val_y.loc[ids]
+                                        for p_comb in params_to_check:
+                                                fold_avg = []
+                                                for cv_fold in range(self._cv_size):
+                                                        alg_run = self._algorithm(**p_comb, n_jobs=-1).fit(args_x, args_y)
+                                                        pred_run = alg_run.predict(vals_x)
+                                                        metric_val = accuracy_score(pred_run, vals_y)
+                                                        fold_avg.append(metric_val)
+                                                metric_val = np.mean(fold_avg)
+                                                if tuple(sorted(p_comb.items())) in score_board.keys():
+                                                        score_board[tuple(sorted(p_comb.items()))].append(metric_val)
+                                                else:
+                                                        score_board[tuple(sorted(p_comb.items()))] = [metric_val]
+                                        if ids in result_dic.keys():
+                                                for k, v in score_board.items():
+                                                        if k in result_dic[ids].keys():
+                                                                result_dic[ids][k].append(v)
+                                                        else:
+                                                                result_dic[ids][k] = [v]
+                                        else:
+                                                result_dic[ids] = {}
+                                                for k, v in score_board.items():
+                                                        result_dic[ids][k] = [v]
+                for usr, params in result_dic.items():  # selects the best params and trains the algorithm on them (for each user)
+                        select = {k: np.mean(v) for k, v in params.items()}
+                        best_params = dict(max(select.keys(), key=lambda x: select[x]))
+                        concat_x = pd.concat([self._training_data[-1][0].loc[usr], self._training_data[-1][2].loc[usr]])
+                        concat_y = pd.concat([self._training_data[-1][1].loc[usr], self._training_data[-1][3].loc[usr]])
+                        self._tuned_alg[usr] = self.algorithm(**best_params).fit(concat_x, concat_y)
+
+        def test(self):
+                &#34;&#34;&#34;
+                Implements one and final algorithm test and saves the score.
+                &#34;&#34;&#34;
+                test_x, test_y = self._test_data
+                usrs = np.unique(test_x.index.get_level_values(0))
+                metrics = {}
+                for ids in tqdm(usrs, total=len(usrs)):
+                        cur_alg = self._tuned_alg[ids]
+                        preds = cur_alg.predict(test_x.loc[ids])
+                        metric_val = accuracy_score(preds, test_y.loc[ids])
+                        metrics[ids] = metric_val
+                self.scores = pd.Series(metrics)
+
+        @property
+        def algorithm(self):
+                return self._algorithm
+
+
+class Baseline():
+        &#34;&#34;&#34;
+        The baseline algorithm which assumes the next symbol be identical to the next one. Be aware that it uses information
+        from the test set and thus, has advantage over other methods. Only test dataset is needed.
+
+        Args:
+                test_data: Test dataset. Do not use split data.
+        &#34;&#34;&#34;
+
+        def __init__(self, test_data):
+                &#34;&#34;&#34;
+                Class initialisation.
+                &#34;&#34;&#34;
+                self._test_data = test_data
+                self.prediction = []
+
+        def predict(self):
+                &#34;&#34;&#34;
+                Baseline prediction algorithm. This method only evaluates the accuracy of the method and do not return the
+                predictions. Predictions are stored within the class attributes.
+
+                Returns:
+                        accuracy score
+                &#34;&#34;&#34;
+                self.prediction = self._test_data[0].groupby(level=0).apply(lambda x: x.iloc[:, -1]).droplevel(1)  # make predictions
+                aligned = pd.concat([self._test_data[1], self.prediction], axis=1)  # align predictions and true labels
+                acc_score = aligned.groupby(level=0).apply(lambda x: sum(x.iloc[:, 0] == x.iloc[:, 1]) / x.shape[0])  # quickly evaluate the score
+                print(&#34;SCORE: {}&#34;.format(acc_score.mean()))
+                return acc_score
+
+
+class TopLoc():
+        &#34;&#34;&#34;
+        This is a naive algorithm which assumes every symbol in the test dataset being the most frequently occurring symbol
+        in the training data.
+
+        Args:
+                train_data: Train dataset, from the Splitter class. Do not use split data.
+                test_data: Test dataset, from the Splitter class. Do not use split data.
+        &#34;&#34;&#34;
+
+        def __init__(self, train_data, test_data):
+                &#34;&#34;&#34;
+                Class initialisation.
+                &#34;&#34;&#34;
+                self._train_data = train_data
+                self._test_data = test_data
+                self.prediction = []
+
+        def predict(self):
+                &#34;&#34;&#34;
+                Makes the prediction and returns the score. Predictions are stored within the class.
+
+                Returns:
+                        Accuracy score
+                &#34;&#34;&#34;
+                tr_data = pd.concat([self._train_data[0][1], self._train_data[0][3]])
+                top_location = tr_data.groupby(level=0).apply(lambda x: x.groupby(x).count().idxmax())
+                to_conc = {}
+                for uid, vals in self._test_data[1].groupby(level=0):
+                        vals[vals &gt; -1] = top_location.loc[uid]
+                        to_conc[uid] = vals
+                self.prediction = pd.concat(to_conc).droplevel(1)
+                aligned = pd.concat([self._test_data[1], self.prediction], axis=1)
+                acc_score = aligned.groupby(level=0).apply(lambda x: sum(x.iloc[:, 0] == x.iloc[:, 1]) / x.shape[0])
+                print(&#34;SCORE: {}&#34;.format(acc_score.mean()))
+                return acc_score
+
+
+def split(trajectories_frame, test_size, state_size):
+        &#34;&#34;&#34;
+        Simple train-test data split for a Markov Chain.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+                split_ratio: The split ratio for training set
+                state_size: The size of a window (for a Markov Chain algorithm)
+
+        Returns:
+                Split data
+        &#34;&#34;&#34;
+        train_frame = trajectories_frame[&#39;labels&#39;].groupby(level=0).progress_apply(
+                lambda x: x.iloc[:round(len(x) * test_size)])
+        test_frame = trajectories_frame[&#39;labels&#39;].groupby(level=0).progress_apply(
+                lambda x: x.iloc[round(len(x) * test_size) - state_size:])
+        return train_frame, test_frame
+
+
+def markov_wrapper(trajectories_frame, split_ratio=.8, state_size=2, update=False, averaged=True, online=True):
+        &#34;&#34;&#34;
+        The wrapper, one stop shop algorithm for the Markov Chain. Splits the data, learns the model and makes predictions
+        on the test set.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+                split_ratio: The training set size.
+                state_size: The order of the Markov Chain
+                update: Whether the model should update its beliefs based on own predictions
+                averaged: Whether an averaged accuracy should be returned
+                online: Whether the algorithm should make an online prediction (sees the last n symbols when predicting)
+
+        Returns:
+                Prediction scores
+        &#34;&#34;&#34;
+        train_frame, test_frame = split(trajectories_frame, split_ratio, state_size)  # train test split
+        test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
+        predictions_dic = {}
+        for uid, train_values in train_frame.groupby(level=0):  # training
+                try:
+                        if online:
+                                predictions_dic[uid] = MarkovChain(list(train_values.values), state_size)
+                        else:
+                                predictions_dic[uid] = MarkovChain(list(train_values.values), state_size).move_from_build(
+                                        test_lengths.loc[uid], update)
+                except:
+                        continue
+        results_dic = {}
+        for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting
+                uid = test_values[0]
+                test_values = test_values[1].values
+                if online:
+                        forecast = []
+                        for current_state in range(len(test_values) - state_size):
+                                forecast.append(predictions_dic[uid].move(test_values[current_state:current_state + state_size]))
+                        results_dic[uid] = sum(forecast == test_values[state_size:]) / len(forecast)
+                else:
+                        results_dic[uid] = sum(test_values == predictions_dic[prediction_values]) / len(test_values)
+        if averaged:
+                return sum(list(results_dic.values())) / len(results_dic.values())
+        else:
+                return results_dic
+
+
+def sparse_wrapper(trajectories_frame, split_ratio=.8, state_size=0, update=False, averaged=True, online=False):
+        &#34;&#34;&#34;
+        &#34;&#34;&#34;
+        train_frame, test_frame = split(trajectories_frame, split_ratio, state_size)
+        test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
+        predictions_dic = {}
+        for uid, train_values in train_frame.groupby(level=0):
+                predictions_dic[uid] = Sparse(train_values.values)
+        results_dic = {}
+        for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting
+                uid = test_values[0]
+                test_values = test_values[1].values
+                forecast = []
+                split_ind = round(trajectories_frame.uloc(uid).shape[0]*split_ratio)
+                for n in range(test_lengths.loc[uid]):
+                        context = trajectories_frame.uloc(uid).iloc[:split_ind].labels.values
+                        pred = predictions_dic[uid].predict(context)
+                        forecast.append(pred)
+                        split_ind += 1
+                results_dic[uid] = sum(forecast == test_values[state_size:]) / len(forecast)
+        if averaged:
+                return sum(list(results_dic.values())) / len(results_dic.values())
+        else:
+                return results_dic</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="src.humobi.predictors.wrapper.iterate_random_values"><code class="name flex">
+<span>def <span class="ident">iterate_random_values</span></span>(<span>S, n_check)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Takes a random combination of items of a given size.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>S</code></strong></dt>
+<dd>The dictionary of items</dd>
+<dt><strong><code>n_check</code></strong></dt>
+<dd>Size of combination</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A random combination</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def iterate_random_values(S, n_check):
+        &#34;&#34;&#34;
+        Takes a random combination of items of a given size.
+
+        Args:
+                S: The dictionary of items
+                n_check: Size of combination
+
+        Returns:
+                A random combination
+        &#34;&#34;&#34;
+        keys, values = zip(*S.items())
+        combs = [dict(zip(keys, row)) for row in itertools.product(*values)]
+        combs = np.random.choice(combs, n_check)
+        return combs</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.predictors.wrapper.markov_wrapper"><code class="name flex">
+<span>def <span class="ident">markov_wrapper</span></span>(<span>trajectories_frame, split_ratio=0.8, state_size=2, update=False, averaged=True, online=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The wrapper, one stop shop algorithm for the Markov Chain. Splits the data, learns the model and makes predictions
+on the test set.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+<dt><strong><code>split_ratio</code></strong></dt>
+<dd>The training set size.</dd>
+<dt><strong><code>state_size</code></strong></dt>
+<dd>The order of the Markov Chain</dd>
+<dt><strong><code>update</code></strong></dt>
+<dd>Whether the model should update its beliefs based on own predictions</dd>
+<dt><strong><code>averaged</code></strong></dt>
+<dd>Whether an averaged accuracy should be returned</dd>
+<dt><strong><code>online</code></strong></dt>
+<dd>Whether the algorithm should make an online prediction (sees the last n symbols when predicting)</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Prediction scores</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def markov_wrapper(trajectories_frame, split_ratio=.8, state_size=2, update=False, averaged=True, online=True):
+        &#34;&#34;&#34;
+        The wrapper, one stop shop algorithm for the Markov Chain. Splits the data, learns the model and makes predictions
+        on the test set.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+                split_ratio: The training set size.
+                state_size: The order of the Markov Chain
+                update: Whether the model should update its beliefs based on own predictions
+                averaged: Whether an averaged accuracy should be returned
+                online: Whether the algorithm should make an online prediction (sees the last n symbols when predicting)
+
+        Returns:
+                Prediction scores
+        &#34;&#34;&#34;
+        train_frame, test_frame = split(trajectories_frame, split_ratio, state_size)  # train test split
+        test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
+        predictions_dic = {}
+        for uid, train_values in train_frame.groupby(level=0):  # training
+                try:
+                        if online:
+                                predictions_dic[uid] = MarkovChain(list(train_values.values), state_size)
+                        else:
+                                predictions_dic[uid] = MarkovChain(list(train_values.values), state_size).move_from_build(
+                                        test_lengths.loc[uid], update)
+                except:
+                        continue
+        results_dic = {}
+        for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting
+                uid = test_values[0]
+                test_values = test_values[1].values
+                if online:
+                        forecast = []
+                        for current_state in range(len(test_values) - state_size):
+                                forecast.append(predictions_dic[uid].move(test_values[current_state:current_state + state_size]))
+                        results_dic[uid] = sum(forecast == test_values[state_size:]) / len(forecast)
+                else:
+                        results_dic[uid] = sum(test_values == predictions_dic[prediction_values]) / len(test_values)
+        if averaged:
+                return sum(list(results_dic.values())) / len(results_dic.values())
+        else:
+                return results_dic</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.predictors.wrapper.sparse_wrapper"><code class="name flex">
+<span>def <span class="ident">sparse_wrapper</span></span>(<span>trajectories_frame, split_ratio=0.8, state_size=0, update=False, averaged=True, online=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sparse_wrapper(trajectories_frame, split_ratio=.8, state_size=0, update=False, averaged=True, online=False):
+        &#34;&#34;&#34;
+        &#34;&#34;&#34;
+        train_frame, test_frame = split(trajectories_frame, split_ratio, state_size)
+        test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
+        predictions_dic = {}
+        for uid, train_values in train_frame.groupby(level=0):
+                predictions_dic[uid] = Sparse(train_values.values)
+        results_dic = {}
+        for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting
+                uid = test_values[0]
+                test_values = test_values[1].values
+                forecast = []
+                split_ind = round(trajectories_frame.uloc(uid).shape[0]*split_ratio)
+                for n in range(test_lengths.loc[uid]):
+                        context = trajectories_frame.uloc(uid).iloc[:split_ind].labels.values
+                        pred = predictions_dic[uid].predict(context)
+                        forecast.append(pred)
+                        split_ind += 1
+                results_dic[uid] = sum(forecast == test_values[state_size:]) / len(forecast)
+        if averaged:
+                return sum(list(results_dic.values())) / len(results_dic.values())
+        else:
+                return results_dic</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.predictors.wrapper.split"><code class="name flex">
+<span>def <span class="ident">split</span></span>(<span>trajectories_frame, test_size, state_size)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Simple train-test data split for a Markov Chain.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+<dt><strong><code>split_ratio</code></strong></dt>
+<dd>The split ratio for training set</dd>
+<dt><strong><code>state_size</code></strong></dt>
+<dd>The size of a window (for a Markov Chain algorithm)</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Split data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def split(trajectories_frame, test_size, state_size):
+        &#34;&#34;&#34;
+        Simple train-test data split for a Markov Chain.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+                split_ratio: The split ratio for training set
+                state_size: The size of a window (for a Markov Chain algorithm)
+
+        Returns:
+                Split data
+        &#34;&#34;&#34;
+        train_frame = trajectories_frame[&#39;labels&#39;].groupby(level=0).progress_apply(
+                lambda x: x.iloc[:round(len(x) * test_size)])
+        test_frame = trajectories_frame[&#39;labels&#39;].groupby(level=0).progress_apply(
+                lambda x: x.iloc[round(len(x) * test_size) - state_size:])
+        return train_frame, test_frame</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="src.humobi.predictors.wrapper.Baseline"><code class="flex name class">
+<span>class <span class="ident">Baseline</span></span>
+<span>(</span><span>test_data)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The baseline algorithm which assumes the next symbol be identical to the next one. Be aware that it uses information
+from the test set and thus, has advantage over other methods. Only test dataset is needed.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>test_data</code></strong></dt>
+<dd>Test dataset. Do not use split data.</dd>
+</dl>
+<p>Class initialisation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Baseline():
+        &#34;&#34;&#34;
+        The baseline algorithm which assumes the next symbol be identical to the next one. Be aware that it uses information
+        from the test set and thus, has advantage over other methods. Only test dataset is needed.
+
+        Args:
+                test_data: Test dataset. Do not use split data.
+        &#34;&#34;&#34;
+
+        def __init__(self, test_data):
+                &#34;&#34;&#34;
+                Class initialisation.
+                &#34;&#34;&#34;
+                self._test_data = test_data
+                self.prediction = []
+
+        def predict(self):
+                &#34;&#34;&#34;
+                Baseline prediction algorithm. This method only evaluates the accuracy of the method and do not return the
+                predictions. Predictions are stored within the class attributes.
+
+                Returns:
+                        accuracy score
+                &#34;&#34;&#34;
+                self.prediction = self._test_data[0].groupby(level=0).apply(lambda x: x.iloc[:, -1]).droplevel(1)  # make predictions
+                aligned = pd.concat([self._test_data[1], self.prediction], axis=1)  # align predictions and true labels
+                acc_score = aligned.groupby(level=0).apply(lambda x: sum(x.iloc[:, 0] == x.iloc[:, 1]) / x.shape[0])  # quickly evaluate the score
+                print(&#34;SCORE: {}&#34;.format(acc_score.mean()))
+                return acc_score</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="src.humobi.predictors.wrapper.Baseline.predict"><code class="name flex">
+<span>def <span class="ident">predict</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Baseline prediction algorithm. This method only evaluates the accuracy of the method and do not return the
+predictions. Predictions are stored within the class attributes.</p>
+<h2 id="returns">Returns</h2>
+<p>accuracy score</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def predict(self):
+        &#34;&#34;&#34;
+        Baseline prediction algorithm. This method only evaluates the accuracy of the method and do not return the
+        predictions. Predictions are stored within the class attributes.
+
+        Returns:
+                accuracy score
+        &#34;&#34;&#34;
+        self.prediction = self._test_data[0].groupby(level=0).apply(lambda x: x.iloc[:, -1]).droplevel(1)  # make predictions
+        aligned = pd.concat([self._test_data[1], self.prediction], axis=1)  # align predictions and true labels
+        acc_score = aligned.groupby(level=0).apply(lambda x: sum(x.iloc[:, 0] == x.iloc[:, 1]) / x.shape[0])  # quickly evaluate the score
+        print(&#34;SCORE: {}&#34;.format(acc_score.mean()))
+        return acc_score</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="src.humobi.predictors.wrapper.SKLearnPred"><code class="flex name class">
+<span>class <span class="ident">SKLearnPred</span></span>
+<span>(</span><span>algorithm, training_data, test_data, param_dist, search_size, cv_size=3, parallel=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This is a wrapper for classification function from sklearn library which can be used for prediction here.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>algorithm</code></strong></dt>
+<dd>An algorithm from sklearn library</dd>
+<dt><strong><code>training_data</code></strong></dt>
+<dd>The training set from Splitter class</dd>
+<dt><strong><code>test_data</code></strong></dt>
+<dd>The test set from Splitter class</dd>
+<dt><strong><code>param_dist</code></strong></dt>
+<dd>Hyperparameters dictionary from which the best hyperparameters will be chosen</dd>
+<dt><strong><code>search_size</code></strong></dt>
+<dd>The search size for hyperparameters (the number of random combinations to chechk)</dd>
+<dt><strong><code>cv_size</code></strong></dt>
+<dd>The number of tests run of every cross validation</dd>
+<dt><strong><code>parallel</code></strong></dt>
+<dd>Whether random search should be performed using multithreading</dd>
+</dl>
+<p>Class initialisation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SKLearnPred():
+        &#34;&#34;&#34;
+        This is a wrapper for classification function from sklearn library which can be used for prediction here.
+
+        Args:
+                algorithm: An algorithm from sklearn library
+                training_data: The training set from Splitter class
+                test_data: The test set from Splitter class
+                param_dist: Hyperparameters dictionary from which the best hyperparameters will be chosen
+                search_size: The search size for hyperparameters (the number of random combinations to chechk)
+                cv_size: The number of tests run of every cross validation
+                parallel: Whether random search should be performed using multithreading
+        &#34;&#34;&#34;
+
+        def __init__(self, algorithm, training_data, test_data, param_dist, search_size, cv_size=3, parallel=False):
+                &#34;&#34;&#34;
+                Class initialisation.
+                &#34;&#34;&#34;
+                self._parallel = parallel
+                self._training_data = training_data
+                self._test_data = test_data
+                self._algorithm = algorithm
+                self._param_dist = param_dist
+                self._search_size = search_size
+                self._cv_size = cv_size
+                self._tuned_alg = {}
+
+        def _user_learn(self, args_x, args_y, vals_x, vals_y):
+                &#34;&#34;&#34;
+                For multithreading processing: single-user learn algorithm.
+
+                Args:
+                        args_x: training features
+                        args_y: training targets
+                        vals_x: validation features
+                        vals_y: validation targets
+
+                Returns:
+                        user id and score board with accuracy for each hyperparameters combination
+                &#34;&#34;&#34;
+                params_to_check = iterate_random_values(self._param_dist, self._search_size)
+                score_board = {}
+                for p_comb in params_to_check:
+                        score_board[tuple(sorted(p_comb.items()))] = []
+                        fold_avg = []
+                        for cv_fold in range(self._cv_size):
+                                alg_run = self._algorithm(**p_comb).fit(args_x, args_y)
+                                pred_run = alg_run.predict(vals_x)
+                                metric_val = accuracy_score(pred_run, vals_y)
+                                fold_avg.append(metric_val)
+                        metric_val = np.mean(fold_avg)
+                        score_board[tuple(sorted(p_comb.items()))].append(metric_val)
+                ids = args_x.index.get_level_values(0)[0]
+                return ids, score_board
+
+        def learn(self):
+                &#34;&#34;&#34;
+                Learns the sklearn algorithm using cross-validation and passed input data.
+                &#34;&#34;&#34;
+                cnt = 0
+                result_dic = {}
+                for splits in self._training_data:  # for every cv split
+                        cnt += 1
+                        print(&#34;SPLIT: {}&#34;.format(cnt))
+                        train_x, train_y, val_x, val_y = splits
+                        if self._parallel:  # TODO: Finish result unpacking
+                                with cf.ThreadPoolExecutor(max_workers=6) as executor:
+                                        args_x = [val for indi, val in train_x.groupby(level=0)]
+                                        args_y = [val for indi, val in train_y.groupby(level=0)]
+                                        vals_x = [val for indi, val in val_x.groupby(level=0)]
+                                        vals_y = [val for indi, val in val_y.groupby(level=0)]
+                                        results = list(
+                                                tqdm(executor.map(self._user_learn, args_x, args_y, vals_x, vals_y), total=len(vals_y)))
+                                for result in results:
+                                        if result[0] in result_dic.keys():
+                                                result_dic[result[0]] += result[1]
+                                        else:
+                                                result_dic[result[0]] = result[1]
+                        else:  # single-threaded processing
+                                usrs = np.unique(train_x.index.get_level_values(0))
+                                for ids in tqdm(usrs, total=len(usrs)):
+                                        params_to_check = iterate_random_values(self._param_dist, self._search_size)
+                                        score_board = {}
+                                        args_x = train_x.loc[ids]
+                                        args_y = train_y.loc[ids]
+                                        vals_x = val_x.loc[ids]
+                                        vals_y = val_y.loc[ids]
+                                        for p_comb in params_to_check:
+                                                fold_avg = []
+                                                for cv_fold in range(self._cv_size):
+                                                        alg_run = self._algorithm(**p_comb, n_jobs=-1).fit(args_x, args_y)
+                                                        pred_run = alg_run.predict(vals_x)
+                                                        metric_val = accuracy_score(pred_run, vals_y)
+                                                        fold_avg.append(metric_val)
+                                                metric_val = np.mean(fold_avg)
+                                                if tuple(sorted(p_comb.items())) in score_board.keys():
+                                                        score_board[tuple(sorted(p_comb.items()))].append(metric_val)
+                                                else:
+                                                        score_board[tuple(sorted(p_comb.items()))] = [metric_val]
+                                        if ids in result_dic.keys():
+                                                for k, v in score_board.items():
+                                                        if k in result_dic[ids].keys():
+                                                                result_dic[ids][k].append(v)
+                                                        else:
+                                                                result_dic[ids][k] = [v]
+                                        else:
+                                                result_dic[ids] = {}
+                                                for k, v in score_board.items():
+                                                        result_dic[ids][k] = [v]
+                for usr, params in result_dic.items():  # selects the best params and trains the algorithm on them (for each user)
+                        select = {k: np.mean(v) for k, v in params.items()}
+                        best_params = dict(max(select.keys(), key=lambda x: select[x]))
+                        concat_x = pd.concat([self._training_data[-1][0].loc[usr], self._training_data[-1][2].loc[usr]])
+                        concat_y = pd.concat([self._training_data[-1][1].loc[usr], self._training_data[-1][3].loc[usr]])
+                        self._tuned_alg[usr] = self.algorithm(**best_params).fit(concat_x, concat_y)
+
+        def test(self):
+                &#34;&#34;&#34;
+                Implements one and final algorithm test and saves the score.
+                &#34;&#34;&#34;
+                test_x, test_y = self._test_data
+                usrs = np.unique(test_x.index.get_level_values(0))
+                metrics = {}
+                for ids in tqdm(usrs, total=len(usrs)):
+                        cur_alg = self._tuned_alg[ids]
+                        preds = cur_alg.predict(test_x.loc[ids])
+                        metric_val = accuracy_score(preds, test_y.loc[ids])
+                        metrics[ids] = metric_val
+                self.scores = pd.Series(metrics)
+
+        @property
+        def algorithm(self):
+                return self._algorithm</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="src.humobi.predictors.wrapper.SKLearnPred.algorithm"><code class="name">var <span class="ident">algorithm</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def algorithm(self):
+        return self._algorithm</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="src.humobi.predictors.wrapper.SKLearnPred.learn"><code class="name flex">
+<span>def <span class="ident">learn</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Learns the sklearn algorithm using cross-validation and passed input data.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def learn(self):
+        &#34;&#34;&#34;
+        Learns the sklearn algorithm using cross-validation and passed input data.
+        &#34;&#34;&#34;
+        cnt = 0
+        result_dic = {}
+        for splits in self._training_data:  # for every cv split
+                cnt += 1
+                print(&#34;SPLIT: {}&#34;.format(cnt))
+                train_x, train_y, val_x, val_y = splits
+                if self._parallel:  # TODO: Finish result unpacking
+                        with cf.ThreadPoolExecutor(max_workers=6) as executor:
+                                args_x = [val for indi, val in train_x.groupby(level=0)]
+                                args_y = [val for indi, val in train_y.groupby(level=0)]
+                                vals_x = [val for indi, val in val_x.groupby(level=0)]
+                                vals_y = [val for indi, val in val_y.groupby(level=0)]
+                                results = list(
+                                        tqdm(executor.map(self._user_learn, args_x, args_y, vals_x, vals_y), total=len(vals_y)))
+                        for result in results:
+                                if result[0] in result_dic.keys():
+                                        result_dic[result[0]] += result[1]
+                                else:
+                                        result_dic[result[0]] = result[1]
+                else:  # single-threaded processing
+                        usrs = np.unique(train_x.index.get_level_values(0))
+                        for ids in tqdm(usrs, total=len(usrs)):
+                                params_to_check = iterate_random_values(self._param_dist, self._search_size)
+                                score_board = {}
+                                args_x = train_x.loc[ids]
+                                args_y = train_y.loc[ids]
+                                vals_x = val_x.loc[ids]
+                                vals_y = val_y.loc[ids]
+                                for p_comb in params_to_check:
+                                        fold_avg = []
+                                        for cv_fold in range(self._cv_size):
+                                                alg_run = self._algorithm(**p_comb, n_jobs=-1).fit(args_x, args_y)
+                                                pred_run = alg_run.predict(vals_x)
+                                                metric_val = accuracy_score(pred_run, vals_y)
+                                                fold_avg.append(metric_val)
+                                        metric_val = np.mean(fold_avg)
+                                        if tuple(sorted(p_comb.items())) in score_board.keys():
+                                                score_board[tuple(sorted(p_comb.items()))].append(metric_val)
+                                        else:
+                                                score_board[tuple(sorted(p_comb.items()))] = [metric_val]
+                                if ids in result_dic.keys():
+                                        for k, v in score_board.items():
+                                                if k in result_dic[ids].keys():
+                                                        result_dic[ids][k].append(v)
+                                                else:
+                                                        result_dic[ids][k] = [v]
+                                else:
+                                        result_dic[ids] = {}
+                                        for k, v in score_board.items():
+                                                result_dic[ids][k] = [v]
+        for usr, params in result_dic.items():  # selects the best params and trains the algorithm on them (for each user)
+                select = {k: np.mean(v) for k, v in params.items()}
+                best_params = dict(max(select.keys(), key=lambda x: select[x]))
+                concat_x = pd.concat([self._training_data[-1][0].loc[usr], self._training_data[-1][2].loc[usr]])
+                concat_y = pd.concat([self._training_data[-1][1].loc[usr], self._training_data[-1][3].loc[usr]])
+                self._tuned_alg[usr] = self.algorithm(**best_params).fit(concat_x, concat_y)</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.predictors.wrapper.SKLearnPred.test"><code class="name flex">
+<span>def <span class="ident">test</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Implements one and final algorithm test and saves the score.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test(self):
+        &#34;&#34;&#34;
+        Implements one and final algorithm test and saves the score.
+        &#34;&#34;&#34;
+        test_x, test_y = self._test_data
+        usrs = np.unique(test_x.index.get_level_values(0))
+        metrics = {}
+        for ids in tqdm(usrs, total=len(usrs)):
+                cur_alg = self._tuned_alg[ids]
+                preds = cur_alg.predict(test_x.loc[ids])
+                metric_val = accuracy_score(preds, test_y.loc[ids])
+                metrics[ids] = metric_val
+        self.scores = pd.Series(metrics)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="src.humobi.predictors.wrapper.Splitter"><code class="flex name class">
+<span>class <span class="ident">Splitter</span></span>
+<span>(</span><span>trajectories_frame, split_ratio, horizon, n_splits)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This is a Splitter class responsible for data preparation for shallow machine learning-based models from sklearn library.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories_frame</code></strong></dt>
+<dd>TrajectoriesFrame class object</dd>
+<dt><strong><code>split_ratio</code></strong></dt>
+<dd>The ratio of training data</dd>
+<dt><strong><code>horizon</code></strong></dt>
+<dd>Window size - determines how many previous symbols are considered by the model when predicting</dd>
+<dt><strong><code>n_splits</code></strong></dt>
+<dd>The number of splits for cross-validation process</dd>
+</dl>
+<p>Class initialisation. Calls data splitting routine, hence after initialisation data is already prepared.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Splitter():
+        &#34;&#34;&#34;
+        This is a Splitter class responsible for data preparation for shallow machine learning-based models from sklearn library.
+
+        Args:
+                trajectories_frame: TrajectoriesFrame class object
+                split_ratio: The ratio of training data
+                horizon: Window size - determines how many previous symbols are considered by the model when predicting
+                n_splits: The number of splits for cross-validation process
+        &#34;&#34;&#34;
+
+        def __init__(self, trajectories_frame, split_ratio, horizon, n_splits):
+                &#34;&#34;&#34;
+                Class initialisation. Calls data splitting routine, hence after initialisation data is already prepared.
+                &#34;&#34;&#34;
+                self._data = trajectories_frame
+                self._test_ratio = 1-split_ratio
+                if horizon &lt; 1:
+                        raise ValueError(&#34;Horizon value has to be a positive integer&#34;)
+                self._horizon = horizon
+                self._n_splits = n_splits
+                self.cv_data = []
+                self._stride_data()
+
+        @property
+        def data(self):
+                return self._data
+
+        @property
+        def test_ratio(self):
+                return self._test_ratio
+
+        @property
+        def horizon(self):
+                return self._horizon
+
+        def _test_split(self, X, Y):
+                &#34;&#34;&#34;
+                Splits test data into training and testing sets. Uses windowed data.
+
+                Args:
+                        X: Windowed features
+                        Y: Windowed targets
+
+                Returns:
+                        Training and testing sets of data
+                &#34;&#34;&#34;
+                train_frame_X = X.groupby(level=0).progress_apply(lambda x: x.iloc[:round(len(x) * self.test_ratio)]).droplevel(
+                        1)
+                train_frame_Y = Y.groupby(level=0).progress_apply(lambda x: x.iloc[:round(len(x) * self.test_ratio)]).droplevel(
+                        1)
+                test_frame_X = X.groupby(level=0).progress_apply(lambda x: x.iloc[round(len(x) * self.test_ratio):]).droplevel(
+                        1)
+                test_frame_Y = Y.groupby(level=0).progress_apply(lambda x: x.iloc[round(len(x) * self.test_ratio):]).droplevel(
+                        1)
+                return train_frame_X, train_frame_Y, test_frame_X, test_frame_Y
+
+        def _cv_split(self, frame_X, frame_Y, n_splits=5):
+                &#34;&#34;&#34;
+                Splits training data into the training and validation sets using cross-validation approach.
+
+                Args:
+                        frame_X: Training features
+                        frame_Y: Training targets
+                        n_splits: The number of splits to be applied
+                &#34;&#34;&#34;
+                for n in range(1, n_splits + 1):
+                        train_set_X = frame_X.groupby(level=0).apply(
+                                lambda x: x.iloc[:round(x.shape[0] * (n / (n_splits + 1)))]).droplevel(0)
+                        train_set_Y = frame_Y.groupby(level=0).apply(
+                                lambda x: x.iloc[:round(x.shape[0] * (n / (n_splits + 1)))]).droplevel(0)
+                        val_set_X = frame_X.groupby(level=0).apply(lambda x: x.iloc[round(x.shape[0] * (n / (n_splits + 1))):round(
+                                x.shape[0] * ((n + 1) / (n_splits + 1)))]).droplevel(0)
+                        val_set_Y = frame_Y.groupby(level=0).apply(lambda x: x.iloc[round(
+                                x.shape[0] * (n / (n_splits + 1))):round(
+                                x.shape[0] * ((n + 1) / (n_splits + 1)))]).droplevel(0)
+                        self.cv_data.append((train_set_X, train_set_Y, val_set_X, val_set_Y))
+
+        def _stride_data_single(self, frame):
+                &#34;&#34;&#34;
+                Uses windowing algorithm to prepare time-series data from sequences to prediction. Takes labels and horizon size
+                to create chunks of data.
+
+                Args:
+                        frame: TrajectoriesFrame of single user
+
+                Returns:
+                        Chunks of data in a DataFrame - features and targets
+                &#34;&#34;&#34;
+                to_concat = []
+                for uid, traj in frame.groupby(level=0):
+                        traj = traj.reset_index()
+                        for x in range(1, self.horizon + 1):
+                                traj[&#39;labels{}&#39;.format(x)] = traj[&#39;labels&#39;].shift(-x)
+                        traj[&#39;datetime&#39;] = traj[&#39;datetime&#39;].shift(-self.horizon)
+                        traj = traj.set_index([&#39;user_id&#39;, &#39;datetime&#39;])
+                        to_concat.append(traj[:-self.horizon])
+                frame_ready = pd.concat(to_concat)
+                frame_X = frame_ready.iloc[:, :self.horizon]
+                frame_Y = frame_ready.iloc[:, -1]
+                return frame_X, frame_Y
+
+        def _stride_data(self):
+                &#34;&#34;&#34;
+                A wrapper function for data windowing algorithm. Calls windowing algorithm for every unique user in the dataset.
+                After it splits data into three datasets - test, train and validation.
+                &#34;&#34;&#34;
+                strided_X, strided_Y = self._stride_data_single(self.data[&#39;labels&#39;])
+                train_frame_X, train_frame_Y, self.test_frame_X, self.test_frame_Y = self._test_split(strided_X, strided_Y)
+                self._cv_split(train_frame_X, train_frame_Y, n_splits=self._n_splits)</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="src.humobi.predictors.wrapper.Splitter.data"><code class="name">var <span class="ident">data</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def data(self):
+        return self._data</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.predictors.wrapper.Splitter.horizon"><code class="name">var <span class="ident">horizon</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def horizon(self):
+        return self._horizon</code></pre>
+</details>
+</dd>
+<dt id="src.humobi.predictors.wrapper.Splitter.test_ratio"><code class="name">var <span class="ident">test_ratio</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def test_ratio(self):
+        return self._test_ratio</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="src.humobi.predictors.wrapper.TopLoc"><code class="flex name class">
+<span>class <span class="ident">TopLoc</span></span>
+<span>(</span><span>train_data, test_data)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This is a naive algorithm which assumes every symbol in the test dataset being the most frequently occurring symbol
+in the training data.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>train_data</code></strong></dt>
+<dd>Train dataset, from the Splitter class. Do not use split data.</dd>
+<dt><strong><code>test_data</code></strong></dt>
+<dd>Test dataset, from the Splitter class. Do not use split data.</dd>
+</dl>
+<p>Class initialisation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TopLoc():
+        &#34;&#34;&#34;
+        This is a naive algorithm which assumes every symbol in the test dataset being the most frequently occurring symbol
+        in the training data.
+
+        Args:
+                train_data: Train dataset, from the Splitter class. Do not use split data.
+                test_data: Test dataset, from the Splitter class. Do not use split data.
+        &#34;&#34;&#34;
+
+        def __init__(self, train_data, test_data):
+                &#34;&#34;&#34;
+                Class initialisation.
+                &#34;&#34;&#34;
+                self._train_data = train_data
+                self._test_data = test_data
+                self.prediction = []
+
+        def predict(self):
+                &#34;&#34;&#34;
+                Makes the prediction and returns the score. Predictions are stored within the class.
+
+                Returns:
+                        Accuracy score
+                &#34;&#34;&#34;
+                tr_data = pd.concat([self._train_data[0][1], self._train_data[0][3]])
+                top_location = tr_data.groupby(level=0).apply(lambda x: x.groupby(x).count().idxmax())
+                to_conc = {}
+                for uid, vals in self._test_data[1].groupby(level=0):
+                        vals[vals &gt; -1] = top_location.loc[uid]
+                        to_conc[uid] = vals
+                self.prediction = pd.concat(to_conc).droplevel(1)
+                aligned = pd.concat([self._test_data[1], self.prediction], axis=1)
+                acc_score = aligned.groupby(level=0).apply(lambda x: sum(x.iloc[:, 0] == x.iloc[:, 1]) / x.shape[0])
+                print(&#34;SCORE: {}&#34;.format(acc_score.mean()))
+                return acc_score</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="src.humobi.predictors.wrapper.TopLoc.predict"><code class="name flex">
+<span>def <span class="ident">predict</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Makes the prediction and returns the score. Predictions are stored within the class.</p>
+<h2 id="returns">Returns</h2>
+<p>Accuracy score</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def predict(self):
+        &#34;&#34;&#34;
+        Makes the prediction and returns the score. Predictions are stored within the class.
+
+        Returns:
+                Accuracy score
+        &#34;&#34;&#34;
+        tr_data = pd.concat([self._train_data[0][1], self._train_data[0][3]])
+        top_location = tr_data.groupby(level=0).apply(lambda x: x.groupby(x).count().idxmax())
+        to_conc = {}
+        for uid, vals in self._test_data[1].groupby(level=0):
+                vals[vals &gt; -1] = top_location.loc[uid]
+                to_conc[uid] = vals
+        self.prediction = pd.concat(to_conc).droplevel(1)
+        aligned = pd.concat([self._test_data[1], self.prediction], axis=1)
+        acc_score = aligned.groupby(level=0).apply(lambda x: sum(x.iloc[:, 0] == x.iloc[:, 1]) / x.shape[0])
+        print(&#34;SCORE: {}&#34;.format(acc_score.mean()))
+        return acc_score</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="src.humobi.predictors" href="index.html">src.humobi.predictors</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="src.humobi.predictors.wrapper.iterate_random_values" href="#src.humobi.predictors.wrapper.iterate_random_values">iterate_random_values</a></code></li>
+<li><code><a title="src.humobi.predictors.wrapper.markov_wrapper" href="#src.humobi.predictors.wrapper.markov_wrapper">markov_wrapper</a></code></li>
+<li><code><a title="src.humobi.predictors.wrapper.sparse_wrapper" href="#src.humobi.predictors.wrapper.sparse_wrapper">sparse_wrapper</a></code></li>
+<li><code><a title="src.humobi.predictors.wrapper.split" href="#src.humobi.predictors.wrapper.split">split</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="src.humobi.predictors.wrapper.Baseline" href="#src.humobi.predictors.wrapper.Baseline">Baseline</a></code></h4>
+<ul class="">
+<li><code><a title="src.humobi.predictors.wrapper.Baseline.predict" href="#src.humobi.predictors.wrapper.Baseline.predict">predict</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.humobi.predictors.wrapper.SKLearnPred" href="#src.humobi.predictors.wrapper.SKLearnPred">SKLearnPred</a></code></h4>
+<ul class="">
+<li><code><a title="src.humobi.predictors.wrapper.SKLearnPred.algorithm" href="#src.humobi.predictors.wrapper.SKLearnPred.algorithm">algorithm</a></code></li>
+<li><code><a title="src.humobi.predictors.wrapper.SKLearnPred.learn" href="#src.humobi.predictors.wrapper.SKLearnPred.learn">learn</a></code></li>
+<li><code><a title="src.humobi.predictors.wrapper.SKLearnPred.test" href="#src.humobi.predictors.wrapper.SKLearnPred.test">test</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.humobi.predictors.wrapper.Splitter" href="#src.humobi.predictors.wrapper.Splitter">Splitter</a></code></h4>
+<ul class="">
+<li><code><a title="src.humobi.predictors.wrapper.Splitter.data" href="#src.humobi.predictors.wrapper.Splitter.data">data</a></code></li>
+<li><code><a title="src.humobi.predictors.wrapper.Splitter.horizon" href="#src.humobi.predictors.wrapper.Splitter.horizon">horizon</a></code></li>
+<li><code><a title="src.humobi.predictors.wrapper.Splitter.test_ratio" href="#src.humobi.predictors.wrapper.Splitter.test_ratio">test_ratio</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.humobi.predictors.wrapper.TopLoc" href="#src.humobi.predictors.wrapper.TopLoc">TopLoc</a></code></h4>
+<ul class="">
+<li><code><a title="src.humobi.predictors.wrapper.TopLoc.predict" href="#src.humobi.predictors.wrapper.TopLoc.predict">predict</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>
