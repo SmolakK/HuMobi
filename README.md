@@ -232,4 +232,40 @@ Finally, TrajectoriesFrame will look like this:
 
 ### Data aggregation
 
-After stay-point detection, data can be finally converted to movement sequences by spatial (stay-regions detection) and temporal aggregation.
+After stay-point detection, data can be finally converted to movement sequences by spatial (stay-regions detection) and temporal aggregation. 
+
+Stay-regions detection can be done using various approaches, the most commonly used are grid-based approach or clustering method. Also, there are two approaches to temporal aggregation: next time-bin and next place. Let's see how to convert our data to various movement sequences. First, let's import necessary functions.
+```
+from humobi.structures import trajectory as tr
+from humobi.preprocessing.temporal_aggregation import TemporalAggregator
+from humobi.preprocessing.spatial_aggregation import GridAggregation, ClusteringAggregator, LayerAggregation
+from humobi.preprocessing.filters import next_location_sequence
+from sklearn.cluster import DBSCAN
+```
+
+Spatial aggregation (stay-regions detection) should be done first. `humobi.preprocessing.spatial_aggregation` module offers `GridAggregator`, `ClusteringAggregator`, and `LayerAggregator` classes which can be used to perform different approaches to spatial aggregation.
+
+To perform aggregation, an aggregator class has to be defined first. When aggregator is created, the data and arguments controlling aggregation behaviour are passed first. After that, `aggregate` method can be called to perform data aggregation.
+
+`GridAggregator` is a quick data aggregation to a regular grid of defined resolution. There are some implemented behaviours. For example, you can pass only `resolution` argument, and the grid will be fit into the data extent.
+```
+gird_resolution = 1000  # DEFINE SPATIAL UNIT (GRID)
+grid_agg = GridAggregation(gird_resolution)  # DEFINE GRID AGGREGATION ALGORITHM
+df_sel_grid = grid_agg.aggregate(df_sel, parralel=False)  # CALL AGGREGATION
+```
+When you want to set the grid extent yourself, you can pass `x_min`, `x_max`, `y_min`, `y_max` paramaters to set the extent of aggregation grid. Aslo, you can pass an `origin` parameter to tell whether the grid should be centered at the data. `parralel` parameter of `aggregate()` method calls multithread processing, but this is not necessarily faster than single-core method, due to its overheads.
+
+`ClusteringAggregator` allows you to pass any scikit-learn clustering algorithm to perform clusterisation of the stay-points. In the below example we use `DBSCAN` class to perform clustering:
+```
+eps = 300  # DEFINE SPATIAL UNIT
+min_pts = 2  # OTHER HYPERPARAMETERS
+clust_agg = ClusteringAggregator(DBSCAN, **{"eps": eps, "min_samples": min_pts})  # DEFINE SPATIAL AGGREGATION ALGORITHM
+df_sel_dbscan = clust_agg.aggregate(df_sel)  # SPATIAL AGGREGATION CALL
+```
+As you see, all the arguments for clustering method can be passes as `**kwargs`. This class uses multithreading implemented within scikit-learn library.
+
+Third class is `LayerAggregator`. This class uses an external file to perform aggregation. Its functionality is based on GeoPandas function of spatial join. To perform it, just call:
+```
+layer_agg = LayerAggregator('path_to_outer_layer',**kwargs)
+df_sel_layer = layer_agg.aggregate(df_sel)
+'''
