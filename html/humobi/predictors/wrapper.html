@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
-<title>src.humobi.predictors.wrapper API documentation</title>
+<title>humobi.predictors.wrapper API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>src.humobi.predictors.wrapper</code></h1>
+<h1 class="title">Module <code>humobi.predictors.wrapper</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -470,7 +470,7 @@ def sparse_wrapper(trajectories_frame, split_ratio=.8, state_size=0, update=Fals
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="src.humobi.predictors.wrapper.iterate_random_values"><code class="name flex">
+<dt id="humobi.predictors.wrapper.iterate_random_values"><code class="name flex">
 <span>def <span class="ident">iterate_random_values</span></span>(<span>S, n_check)</span>
 </code></dt>
 <dd>
@@ -505,7 +505,7 @@ def sparse_wrapper(trajectories_frame, split_ratio=.8, state_size=0, update=Fals
         return combs</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.predictors.wrapper.markov_wrapper"><code class="name flex">
+<dt id="humobi.predictors.wrapper.markov_wrapper"><code class="name flex">
 <span>def <span class="ident">markov_wrapper</span></span>(<span>trajectories_frame, split_ratio=0.8, state_size=2, update=False, averaged=True, online=True)</span>
 </code></dt>
 <dd>
@@ -577,7 +577,7 @@ on the test set.</p>
                 return results_dic</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.predictors.wrapper.sparse_wrapper"><code class="name flex">
+<dt id="humobi.predictors.wrapper.sparse_wrapper"><code class="name flex">
 <span>def <span class="ident">sparse_wrapper</span></span>(<span>trajectories_frame, split_ratio=0.8, state_size=0, update=False, averaged=True, online=False)</span>
 </code></dt>
 <dd>
@@ -612,7 +612,7 @@ on the test set.</p>
                 return results_dic</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.predictors.wrapper.split"><code class="name flex">
+<dt id="humobi.predictors.wrapper.split"><code class="name flex">
 <span>def <span class="ident">split</span></span>(<span>trajectories_frame, test_size, state_size)</span>
 </code></dt>
 <dd>
@@ -656,7 +656,7 @@ on the test set.</p>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="src.humobi.predictors.wrapper.Baseline"><code class="flex name class">
+<dt id="humobi.predictors.wrapper.Baseline"><code class="flex name class">
 <span>class <span class="ident">Baseline</span></span>
 <span>(</span><span>test_data)</span>
 </code></dt>
@@ -705,7 +705,7 @@ from the test set and thus, has advantage over other methods. Only test dataset 
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="src.humobi.predictors.wrapper.Baseline.predict"><code class="name flex">
+<dt id="humobi.predictors.wrapper.Baseline.predict"><code class="name flex">
 <span>def <span class="ident">predict</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -734,7 +734,7 @@ predictions. Predictions are stored within the class attributes.</p>
 </dd>
 </dl>
 </dd>
-<dt id="src.humobi.predictors.wrapper.SKLearnPred"><code class="flex name class">
+<dt id="humobi.predictors.wrapper.SKLearnPred"><code class="flex name class">
 <span>class <span class="ident">SKLearnPred</span></span>
 <span>(</span><span>algorithm, training_data, test_data, param_dist, search_size, cv_size=3, parallel=False)</span>
 </code></dt>
@@ -898,7 +898,7 @@ predictions. Predictions are stored within the class attributes.</p>
 </details>
 <h3>Instance variables</h3>
 <dl>
-<dt id="src.humobi.predictors.wrapper.SKLearnPred.algorithm"><code class="name">var <span class="ident">algorithm</span></code></dt>
+<dt id="humobi.predictors.wrapper.SKLearnPred.algorithm"><code class="name">var <span class="ident">algorithm</span></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -913,7 +913,7 @@ def algorithm(self):
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="src.humobi.predictors.wrapper.SKLearnPred.learn"><code class="name flex">
+<dt id="humobi.predictors.wrapper.SKLearnPred.learn"><code class="name flex">
 <span>def <span class="ident">learn</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -984,7 +984,7 @@ def algorithm(self):
                 self._tuned_alg[usr] = self.algorithm(**best_params).fit(concat_x, concat_y)</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.predictors.wrapper.SKLearnPred.test"><code class="name flex">
+<dt id="humobi.predictors.wrapper.SKLearnPred.test"><code class="name flex">
 <span>def <span class="ident">test</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -1010,7 +1010,7 @@ def algorithm(self):
 </dd>
 </dl>
 </dd>
-<dt id="src.humobi.predictors.wrapper.Splitter"><code class="flex name class">
+<dt id="humobi.predictors.wrapper.Splitter"><code class="flex name class">
 <span>class <span class="ident">Splitter</span></span>
 <span>(</span><span>trajectories_frame, split_ratio, horizon, n_splits)</span>
 </code></dt>
@@ -1145,7 +1145,7 @@ def algorithm(self):
 </details>
 <h3>Instance variables</h3>
 <dl>
-<dt id="src.humobi.predictors.wrapper.Splitter.data"><code class="name">var <span class="ident">data</span></code></dt>
+<dt id="humobi.predictors.wrapper.Splitter.data"><code class="name">var <span class="ident">data</span></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1157,7 +1157,7 @@ def data(self):
         return self._data</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.predictors.wrapper.Splitter.horizon"><code class="name">var <span class="ident">horizon</span></code></dt>
+<dt id="humobi.predictors.wrapper.Splitter.horizon"><code class="name">var <span class="ident">horizon</span></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1169,7 +1169,7 @@ def horizon(self):
         return self._horizon</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.predictors.wrapper.Splitter.test_ratio"><code class="name">var <span class="ident">test_ratio</span></code></dt>
+<dt id="humobi.predictors.wrapper.Splitter.test_ratio"><code class="name">var <span class="ident">test_ratio</span></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1183,7 +1183,7 @@ def test_ratio(self):
 </dd>
 </dl>
 </dd>
-<dt id="src.humobi.predictors.wrapper.TopLoc"><code class="flex name class">
+<dt id="humobi.predictors.wrapper.TopLoc"><code class="flex name class">
 <span>class <span class="ident">TopLoc</span></span>
 <span>(</span><span>train_data, test_data)</span>
 </code></dt>
@@ -1241,7 +1241,7 @@ in the training data.</p>
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="src.humobi.predictors.wrapper.TopLoc.predict"><code class="name flex">
+<dt id="humobi.predictors.wrapper.TopLoc.predict"><code class="name flex">
 <span>def <span class="ident">predict</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -1285,45 +1285,45 @@ in the training data.</p>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="src.humobi.predictors" href="index.html">src.humobi.predictors</a></code></li>
+<li><code><a title="humobi.predictors" href="index.html">humobi.predictors</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="src.humobi.predictors.wrapper.iterate_random_values" href="#src.humobi.predictors.wrapper.iterate_random_values">iterate_random_values</a></code></li>
-<li><code><a title="src.humobi.predictors.wrapper.markov_wrapper" href="#src.humobi.predictors.wrapper.markov_wrapper">markov_wrapper</a></code></li>
-<li><code><a title="src.humobi.predictors.wrapper.sparse_wrapper" href="#src.humobi.predictors.wrapper.sparse_wrapper">sparse_wrapper</a></code></li>
-<li><code><a title="src.humobi.predictors.wrapper.split" href="#src.humobi.predictors.wrapper.split">split</a></code></li>
+<li><code><a title="humobi.predictors.wrapper.iterate_random_values" href="#humobi.predictors.wrapper.iterate_random_values">iterate_random_values</a></code></li>
+<li><code><a title="humobi.predictors.wrapper.markov_wrapper" href="#humobi.predictors.wrapper.markov_wrapper">markov_wrapper</a></code></li>
+<li><code><a title="humobi.predictors.wrapper.sparse_wrapper" href="#humobi.predictors.wrapper.sparse_wrapper">sparse_wrapper</a></code></li>
+<li><code><a title="humobi.predictors.wrapper.split" href="#humobi.predictors.wrapper.split">split</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="src.humobi.predictors.wrapper.Baseline" href="#src.humobi.predictors.wrapper.Baseline">Baseline</a></code></h4>
+<h4><code><a title="humobi.predictors.wrapper.Baseline" href="#humobi.predictors.wrapper.Baseline">Baseline</a></code></h4>
 <ul class="">
-<li><code><a title="src.humobi.predictors.wrapper.Baseline.predict" href="#src.humobi.predictors.wrapper.Baseline.predict">predict</a></code></li>
+<li><code><a title="humobi.predictors.wrapper.Baseline.predict" href="#humobi.predictors.wrapper.Baseline.predict">predict</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="src.humobi.predictors.wrapper.SKLearnPred" href="#src.humobi.predictors.wrapper.SKLearnPred">SKLearnPred</a></code></h4>
+<h4><code><a title="humobi.predictors.wrapper.SKLearnPred" href="#humobi.predictors.wrapper.SKLearnPred">SKLearnPred</a></code></h4>
 <ul class="">
-<li><code><a title="src.humobi.predictors.wrapper.SKLearnPred.algorithm" href="#src.humobi.predictors.wrapper.SKLearnPred.algorithm">algorithm</a></code></li>
-<li><code><a title="src.humobi.predictors.wrapper.SKLearnPred.learn" href="#src.humobi.predictors.wrapper.SKLearnPred.learn">learn</a></code></li>
-<li><code><a title="src.humobi.predictors.wrapper.SKLearnPred.test" href="#src.humobi.predictors.wrapper.SKLearnPred.test">test</a></code></li>
+<li><code><a title="humobi.predictors.wrapper.SKLearnPred.algorithm" href="#humobi.predictors.wrapper.SKLearnPred.algorithm">algorithm</a></code></li>
+<li><code><a title="humobi.predictors.wrapper.SKLearnPred.learn" href="#humobi.predictors.wrapper.SKLearnPred.learn">learn</a></code></li>
+<li><code><a title="humobi.predictors.wrapper.SKLearnPred.test" href="#humobi.predictors.wrapper.SKLearnPred.test">test</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="src.humobi.predictors.wrapper.Splitter" href="#src.humobi.predictors.wrapper.Splitter">Splitter</a></code></h4>
+<h4><code><a title="humobi.predictors.wrapper.Splitter" href="#humobi.predictors.wrapper.Splitter">Splitter</a></code></h4>
 <ul class="">
-<li><code><a title="src.humobi.predictors.wrapper.Splitter.data" href="#src.humobi.predictors.wrapper.Splitter.data">data</a></code></li>
-<li><code><a title="src.humobi.predictors.wrapper.Splitter.horizon" href="#src.humobi.predictors.wrapper.Splitter.horizon">horizon</a></code></li>
-<li><code><a title="src.humobi.predictors.wrapper.Splitter.test_ratio" href="#src.humobi.predictors.wrapper.Splitter.test_ratio">test_ratio</a></code></li>
+<li><code><a title="humobi.predictors.wrapper.Splitter.data" href="#humobi.predictors.wrapper.Splitter.data">data</a></code></li>
+<li><code><a title="humobi.predictors.wrapper.Splitter.horizon" href="#humobi.predictors.wrapper.Splitter.horizon">horizon</a></code></li>
+<li><code><a title="humobi.predictors.wrapper.Splitter.test_ratio" href="#humobi.predictors.wrapper.Splitter.test_ratio">test_ratio</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="src.humobi.predictors.wrapper.TopLoc" href="#src.humobi.predictors.wrapper.TopLoc">TopLoc</a></code></h4>
+<h4><code><a title="humobi.predictors.wrapper.TopLoc" href="#humobi.predictors.wrapper.TopLoc">TopLoc</a></code></h4>
 <ul class="">
-<li><code><a title="src.humobi.predictors.wrapper.TopLoc.predict" href="#src.humobi.predictors.wrapper.TopLoc.predict">predict</a></code></li>
+<li><code><a title="humobi.predictors.wrapper.TopLoc.predict" href="#humobi.predictors.wrapper.TopLoc.predict">predict</a></code></li>
 </ul>
 </li>
 </ul>

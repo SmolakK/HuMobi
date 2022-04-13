@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
-<title>src.humobi.measures.individual API documentation</title>
+<title>humobi.measures.individual API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>src.humobi.measures.individual</code></h1>
+<h1 class="title">Module <code>humobi.measures.individual</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -667,7 +667,7 @@ def iterative_global_alignment(train_frame, test_frame):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="src.humobi.measures.individual.center_of_mass"><code class="name flex">
+<dt id="humobi.measures.individual.center_of_mass"><code class="name flex">
 <span>def <span class="ident">center_of_mass</span></span>(<span>trajectories_frame)</span>
 </code></dt>
 <dd>
@@ -696,7 +696,7 @@ def iterative_global_alignment(train_frame, test_frame):
         return trajectories_frame.dissolve(by=trajectories_frame.index.get_level_values(0)).centroid</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.distinct_locations_over_time"><code class="name flex">
+<dt id="humobi.measures.individual.distinct_locations_over_time"><code class="name flex">
 <span>def <span class="ident">distinct_locations_over_time</span></span>(<span>trajectories_frame, time_unit='1H', reaggregate=False)</span>
 </code></dt>
 <dd>
@@ -737,7 +737,7 @@ def iterative_global_alignment(train_frame, test_frame):
         return distinct_locations</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.global_alignment"><code class="name flex">
+<dt id="humobi.measures.individual.global_alignment"><code class="name flex">
 <span>def <span class="ident">global_alignment</span></span>(<span>train_frame, test_frame)</span>
 </code></dt>
 <dd>
@@ -781,7 +781,7 @@ Returns normalised values.</p>
         return pd.Series(np.fromiter(result_dic.values(), dtype=float), index = np.fromiter(result_dic.keys(), dtype = int))</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.iterative_global_alignment"><code class="name flex">
+<dt id="humobi.measures.individual.iterative_global_alignment"><code class="name flex">
 <span>def <span class="ident">iterative_global_alignment</span></span>(<span>train_frame, test_frame)</span>
 </code></dt>
 <dd>
@@ -825,7 +825,7 @@ Returns normalised values.</p>
         return pd.Series(np.fromiter(result_dic.values(), dtype=float), index = np.fromiter(result_dic.keys(), dtype = int))</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.jump_lengths"><code class="name flex">
+<dt id="humobi.measures.individual.jump_lengths"><code class="name flex">
 <span>def <span class="ident">jump_lengths</span></span>(<span>trajectories_frame)</span>
 </code></dt>
 <dd>
@@ -855,7 +855,7 @@ Returns normalised values.</p>
         return jumps</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.mean_square_displacement"><code class="name flex">
+<dt id="humobi.measures.individual.mean_square_displacement"><code class="name flex">
 <span>def <span class="ident">mean_square_displacement</span></span>(<span>trajectories_frame, from_center=False, time_evolution=True, reference_locs=None)</span>
 </code></dt>
 <dd>
@@ -913,7 +913,7 @@ Returns normalised values.</p>
         return msd</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.nonzero_trips"><code class="name flex">
+<dt id="humobi.measures.individual.nonzero_trips"><code class="name flex">
 <span>def <span class="ident">nonzero_trips</span></span>(<span>trajectories_frame)</span>
 </code></dt>
 <dd>
@@ -943,7 +943,7 @@ Returns normalised values.</p>
         return jumps[jumps != 0].groupby(by=&#34;user_id&#34;).count()</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.num_of_distinct_locations"><code class="name flex">
+<dt id="humobi.measures.individual.num_of_distinct_locations"><code class="name flex">
 <span>def <span class="ident">num_of_distinct_locations</span></span>(<span>trajectories_frame)</span>
 </code></dt>
 <dd>
@@ -975,7 +975,7 @@ Returns normalised values.</p>
                 return trajectories_frame.groupby(level=0).progress_apply(lambda x: pd.unique(x).shape[0])</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.radius_of_gyration"><code class="name flex">
+<dt id="humobi.measures.individual.radius_of_gyration"><code class="name flex">
 <span>def <span class="ident">radius_of_gyration</span></span>(<span>trajectories_frame, time_evolution=True)</span>
 </code></dt>
 <dd>
@@ -1023,7 +1023,7 @@ Returns normalised values.</p>
         return radius</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.random_entropy"><code class="name flex">
+<dt id="humobi.measures.individual.random_entropy"><code class="name flex">
 <span>def <span class="ident">random_entropy</span></span>(<span>trajectories_frame)</span>
 </code></dt>
 <dd>
@@ -1052,7 +1052,7 @@ Returns normalised values.</p>
         return trajectories_frame.groupby(level=0).progress_apply(lambda x: np.log2(len(pd.unique(x.geometry))))</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.random_predictability"><code class="name flex">
+<dt id="humobi.measures.individual.random_predictability"><code class="name flex">
 <span>def <span class="ident">random_predictability</span></span>(<span>trajectories_frame)</span>
 </code></dt>
 <dd>
@@ -1084,7 +1084,7 @@ Returns normalised values.</p>
         return merged.progress_apply(lambda x: fano_inequality(x[&#39;locations&#39;], x[&#39;entropy&#39;])), rand_ent</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.real_entropy"><code class="name flex">
+<dt id="humobi.measures.individual.real_entropy"><code class="name flex">
 <span>def <span class="ident">real_entropy</span></span>(<span>trajectories_frame)</span>
 </code></dt>
 <dd>
@@ -1123,7 +1123,7 @@ Returns normalised values.</p>
         return pd.Series(np.fromiter(result_dic.values(), dtype=float), index=np.fromiter(result_dic.keys(), dtype=int))</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.real_predictability"><code class="name flex">
+<dt id="humobi.measures.individual.real_predictability"><code class="name flex">
 <span>def <span class="ident">real_predictability</span></span>(<span>trajectories_frame)</span>
 </code></dt>
 <dd>
@@ -1155,7 +1155,7 @@ Returns normalised values.</p>
         return merged.progress_apply(lambda x: fano_inequality(x[&#39;locations&#39;], x[&#39;entropy&#39;])), real_ent</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.regularity"><code class="name flex">
+<dt id="humobi.measures.individual.regularity"><code class="name flex">
 <span>def <span class="ident">regularity</span></span>(<span>trajectories_frame)</span>
 </code></dt>
 <dd>
@@ -1188,7 +1188,7 @@ unique symbols</p>
         return regul</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.repeatability_dense"><code class="name flex">
+<dt id="humobi.measures.individual.repeatability_dense"><code class="name flex">
 <span>def <span class="ident">repeatability_dense</span></span>(<span>train_frame, test_frame)</span>
 </code></dt>
 <dd>
@@ -1231,7 +1231,7 @@ Returns normalised values.</p>
         return pd.Series(np.fromiter(result_dic.values(), dtype=float), index=np.fromiter(result_dic.keys(), dtype=int))</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.repeatability_equally_sparse"><code class="name flex">
+<dt id="humobi.measures.individual.repeatability_equally_sparse"><code class="name flex">
 <span>def <span class="ident">repeatability_equally_sparse</span></span>(<span>train_frame, test_frame)</span>
 </code></dt>
 <dd>
@@ -1276,7 +1276,7 @@ Returns normalised values.</p>
         return pd.Series(np.fromiter(result_dic.values(), dtype=float), index = np.fromiter(result_dic.keys(), dtype = int))</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.repeatability_sparse"><code class="name flex">
+<dt id="humobi.measures.individual.repeatability_sparse"><code class="name flex">
 <span>def <span class="ident">repeatability_sparse</span></span>(<span>train_frame, test_frame)</span>
 </code></dt>
 <dd>
@@ -1319,7 +1319,7 @@ Returns normalised values.</p>
         return pd.Series(np.fromiter(result_dic.values(), dtype=float), index = np.fromiter(result_dic.keys(), dtype = int))</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.return_time"><code class="name flex">
+<dt id="humobi.measures.individual.return_time"><code class="name flex">
 <span>def <span class="ident">return_time</span></span>(<span>trajectories_frame, time_unit='h', by_place=False)</span>
 </code></dt>
 <dd>
@@ -1374,7 +1374,7 @@ Returns normalised values.</p>
         return return_times</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.self_transitions"><code class="name flex">
+<dt id="humobi.measures.individual.self_transitions"><code class="name flex">
 <span>def <span class="ident">self_transitions</span></span>(<span>trajectories_frame)</span>
 </code></dt>
 <dd>
@@ -1420,7 +1420,7 @@ a Series with the number of self transitions for each user</p></div>
         return self_transitions_only</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.stationarity"><code class="name flex">
+<dt id="humobi.measures.individual.stationarity"><code class="name flex">
 <span>def <span class="ident">stationarity</span></span>(<span>trajectories_frame)</span>
 </code></dt>
 <dd>
@@ -1454,7 +1454,7 @@ a Series with the number of self transitions for each user</p></div>
         return stationarity_frame/size_frame</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.unc_entropy"><code class="name flex">
+<dt id="humobi.measures.individual.unc_entropy"><code class="name flex">
 <span>def <span class="ident">unc_entropy</span></span>(<span>trajectories_frame)</span>
 </code></dt>
 <dd>
@@ -1484,7 +1484,7 @@ a Series with the number of self transitions for each user</p></div>
         return frequencies.groupby(level=0).progress_apply(lambda x: -np.sum([pk * np.log2(pk) for pk in x if pk != 0]))</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.unc_predictability"><code class="name flex">
+<dt id="humobi.measures.individual.unc_predictability"><code class="name flex">
 <span>def <span class="ident">unc_predictability</span></span>(<span>trajectories_frame)</span>
 </code></dt>
 <dd>
@@ -1516,7 +1516,7 @@ a Series with the number of self transitions for each user</p></div>
         return merged.progress_apply(lambda x: fano_inequality(x[&#39;locations&#39;], x[&#39;entropy&#39;])), unc_ent</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.visitation_frequency"><code class="name flex">
+<dt id="humobi.measures.individual.visitation_frequency"><code class="name flex">
 <span>def <span class="ident">visitation_frequency</span></span>(<span>trajectories_frame)</span>
 </code></dt>
 <dd>
@@ -1551,7 +1551,7 @@ a Series with the number of self transitions for each user</p></div>
         return frequencies</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.measures.individual.waiting_times"><code class="name flex">
+<dt id="humobi.measures.individual.waiting_times"><code class="name flex">
 <span>def <span class="ident">waiting_times</span></span>(<span>trajectories_frame, time_unit='h')</span>
 </code></dt>
 <dd>
@@ -1601,35 +1601,35 @@ a Series with the number of self transitions for each user</p></div>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="src.humobi.measures" href="index.html">src.humobi.measures</a></code></li>
+<li><code><a title="humobi.measures" href="index.html">humobi.measures</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="src.humobi.measures.individual.center_of_mass" href="#src.humobi.measures.individual.center_of_mass">center_of_mass</a></code></li>
-<li><code><a title="src.humobi.measures.individual.distinct_locations_over_time" href="#src.humobi.measures.individual.distinct_locations_over_time">distinct_locations_over_time</a></code></li>
-<li><code><a title="src.humobi.measures.individual.global_alignment" href="#src.humobi.measures.individual.global_alignment">global_alignment</a></code></li>
-<li><code><a title="src.humobi.measures.individual.iterative_global_alignment" href="#src.humobi.measures.individual.iterative_global_alignment">iterative_global_alignment</a></code></li>
-<li><code><a title="src.humobi.measures.individual.jump_lengths" href="#src.humobi.measures.individual.jump_lengths">jump_lengths</a></code></li>
-<li><code><a title="src.humobi.measures.individual.mean_square_displacement" href="#src.humobi.measures.individual.mean_square_displacement">mean_square_displacement</a></code></li>
-<li><code><a title="src.humobi.measures.individual.nonzero_trips" href="#src.humobi.measures.individual.nonzero_trips">nonzero_trips</a></code></li>
-<li><code><a title="src.humobi.measures.individual.num_of_distinct_locations" href="#src.humobi.measures.individual.num_of_distinct_locations">num_of_distinct_locations</a></code></li>
-<li><code><a title="src.humobi.measures.individual.radius_of_gyration" href="#src.humobi.measures.individual.radius_of_gyration">radius_of_gyration</a></code></li>
-<li><code><a title="src.humobi.measures.individual.random_entropy" href="#src.humobi.measures.individual.random_entropy">random_entropy</a></code></li>
-<li><code><a title="src.humobi.measures.individual.random_predictability" href="#src.humobi.measures.individual.random_predictability">random_predictability</a></code></li>
-<li><code><a title="src.humobi.measures.individual.real_entropy" href="#src.humobi.measures.individual.real_entropy">real_entropy</a></code></li>
-<li><code><a title="src.humobi.measures.individual.real_predictability" href="#src.humobi.measures.individual.real_predictability">real_predictability</a></code></li>
-<li><code><a title="src.humobi.measures.individual.regularity" href="#src.humobi.measures.individual.regularity">regularity</a></code></li>
-<li><code><a title="src.humobi.measures.individual.repeatability_dense" href="#src.humobi.measures.individual.repeatability_dense">repeatability_dense</a></code></li>
-<li><code><a title="src.humobi.measures.individual.repeatability_equally_sparse" href="#src.humobi.measures.individual.repeatability_equally_sparse">repeatability_equally_sparse</a></code></li>
-<li><code><a title="src.humobi.measures.individual.repeatability_sparse" href="#src.humobi.measures.individual.repeatability_sparse">repeatability_sparse</a></code></li>
-<li><code><a title="src.humobi.measures.individual.return_time" href="#src.humobi.measures.individual.return_time">return_time</a></code></li>
-<li><code><a title="src.humobi.measures.individual.self_transitions" href="#src.humobi.measures.individual.self_transitions">self_transitions</a></code></li>
-<li><code><a title="src.humobi.measures.individual.stationarity" href="#src.humobi.measures.individual.stationarity">stationarity</a></code></li>
-<li><code><a title="src.humobi.measures.individual.unc_entropy" href="#src.humobi.measures.individual.unc_entropy">unc_entropy</a></code></li>
-<li><code><a title="src.humobi.measures.individual.unc_predictability" href="#src.humobi.measures.individual.unc_predictability">unc_predictability</a></code></li>
-<li><code><a title="src.humobi.measures.individual.visitation_frequency" href="#src.humobi.measures.individual.visitation_frequency">visitation_frequency</a></code></li>
-<li><code><a title="src.humobi.measures.individual.waiting_times" href="#src.humobi.measures.individual.waiting_times">waiting_times</a></code></li>
+<li><code><a title="humobi.measures.individual.center_of_mass" href="#humobi.measures.individual.center_of_mass">center_of_mass</a></code></li>
+<li><code><a title="humobi.measures.individual.distinct_locations_over_time" href="#humobi.measures.individual.distinct_locations_over_time">distinct_locations_over_time</a></code></li>
+<li><code><a title="humobi.measures.individual.global_alignment" href="#humobi.measures.individual.global_alignment">global_alignment</a></code></li>
+<li><code><a title="humobi.measures.individual.iterative_global_alignment" href="#humobi.measures.individual.iterative_global_alignment">iterative_global_alignment</a></code></li>
+<li><code><a title="humobi.measures.individual.jump_lengths" href="#humobi.measures.individual.jump_lengths">jump_lengths</a></code></li>
+<li><code><a title="humobi.measures.individual.mean_square_displacement" href="#humobi.measures.individual.mean_square_displacement">mean_square_displacement</a></code></li>
+<li><code><a title="humobi.measures.individual.nonzero_trips" href="#humobi.measures.individual.nonzero_trips">nonzero_trips</a></code></li>
+<li><code><a title="humobi.measures.individual.num_of_distinct_locations" href="#humobi.measures.individual.num_of_distinct_locations">num_of_distinct_locations</a></code></li>
+<li><code><a title="humobi.measures.individual.radius_of_gyration" href="#humobi.measures.individual.radius_of_gyration">radius_of_gyration</a></code></li>
+<li><code><a title="humobi.measures.individual.random_entropy" href="#humobi.measures.individual.random_entropy">random_entropy</a></code></li>
+<li><code><a title="humobi.measures.individual.random_predictability" href="#humobi.measures.individual.random_predictability">random_predictability</a></code></li>
+<li><code><a title="humobi.measures.individual.real_entropy" href="#humobi.measures.individual.real_entropy">real_entropy</a></code></li>
+<li><code><a title="humobi.measures.individual.real_predictability" href="#humobi.measures.individual.real_predictability">real_predictability</a></code></li>
+<li><code><a title="humobi.measures.individual.regularity" href="#humobi.measures.individual.regularity">regularity</a></code></li>
+<li><code><a title="humobi.measures.individual.repeatability_dense" href="#humobi.measures.individual.repeatability_dense">repeatability_dense</a></code></li>
+<li><code><a title="humobi.measures.individual.repeatability_equally_sparse" href="#humobi.measures.individual.repeatability_equally_sparse">repeatability_equally_sparse</a></code></li>
+<li><code><a title="humobi.measures.individual.repeatability_sparse" href="#humobi.measures.individual.repeatability_sparse">repeatability_sparse</a></code></li>
+<li><code><a title="humobi.measures.individual.return_time" href="#humobi.measures.individual.return_time">return_time</a></code></li>
+<li><code><a title="humobi.measures.individual.self_transitions" href="#humobi.measures.individual.self_transitions">self_transitions</a></code></li>
+<li><code><a title="humobi.measures.individual.stationarity" href="#humobi.measures.individual.stationarity">stationarity</a></code></li>
+<li><code><a title="humobi.measures.individual.unc_entropy" href="#humobi.measures.individual.unc_entropy">unc_entropy</a></code></li>
+<li><code><a title="humobi.measures.individual.unc_predictability" href="#humobi.measures.individual.unc_predictability">unc_predictability</a></code></li>
+<li><code><a title="humobi.measures.individual.visitation_frequency" href="#humobi.measures.individual.visitation_frequency">visitation_frequency</a></code></li>
+<li><code><a title="humobi.measures.individual.waiting_times" href="#humobi.measures.individual.waiting_times">waiting_times</a></code></li>
 </ul>
 </li>
 </ul>

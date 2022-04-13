@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
-<title>src.humobi.tools.processing API documentation</title>
+<title>humobi.tools.processing API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>src.humobi.tools.processing</code></h1>
+<h1 class="title">Module <code>humobi.tools.processing</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -226,7 +226,7 @@ def start_end(trajectories_frame):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="src.humobi.tools.processing.convert_to_distribution"><code class="name flex">
+<dt id="humobi.tools.processing.convert_to_distribution"><code class="name flex">
 <span>def <span class="ident">convert_to_distribution</span></span>(<span>gs, bin_size=None, num_of_classes=None)</span>
 </code></dt>
 <dd>
@@ -267,7 +267,7 @@ def start_end(trajectories_frame):
         return gs/gs.sum()</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.tools.processing.groupwise_average"><code class="name flex">
+<dt id="humobi.tools.processing.groupwise_average"><code class="name flex">
 <span>def <span class="ident">groupwise_average</span></span>(<span>gs)</span>
 </code></dt>
 <dd>
@@ -296,7 +296,7 @@ def start_end(trajectories_frame):
         return gs.groupby(level=0).mean()</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.tools.processing.groupwise_expansion"><code class="name flex">
+<dt id="humobi.tools.processing.groupwise_expansion"><code class="name flex">
 <span>def <span class="ident">groupwise_expansion</span></span>(<span>gs)</span>
 </code></dt>
 <dd>
@@ -325,7 +325,7 @@ def start_end(trajectories_frame):
         return gs.groupby(level=0).expanding().mean()</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.tools.processing.groupwise_normalise"><code class="name flex">
+<dt id="humobi.tools.processing.groupwise_normalise"><code class="name flex">
 <span>def <span class="ident">groupwise_normalise</span></span>(<span>gs)</span>
 </code></dt>
 <dd>
@@ -354,7 +354,7 @@ def start_end(trajectories_frame):
         return gs.groupby(level=0).apply(lambda x: x / x.sum())</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.tools.processing.mode_geoseries"><code class="name flex">
+<dt id="humobi.tools.processing.mode_geoseries"><code class="name flex">
 <span>def <span class="ident">mode_geoseries</span></span>(<span>ind, gs)</span>
 </code></dt>
 <dd>
@@ -394,7 +394,7 @@ def start_end(trajectories_frame):
         return ind, pd.concat(aggregated)</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.tools.processing.normalize"><code class="name flex">
+<dt id="humobi.tools.processing.normalize"><code class="name flex">
 <span>def <span class="ident">normalize</span></span>(<span>gs, name)</span>
 </code></dt>
 <dd>
@@ -433,7 +433,7 @@ def start_end(trajectories_frame):
         return gs</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.tools.processing.rowwise_average"><code class="name flex">
+<dt id="humobi.tools.processing.rowwise_average"><code class="name flex">
 <span>def <span class="ident">rowwise_average</span></span>(<span>gs, row_count=None)</span>
 </code></dt>
 <dd>
@@ -467,7 +467,7 @@ def start_end(trajectories_frame):
         return pd.Series([gs.groupby(level=0).nth(n).mean() for n in range(row_count)])</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.tools.processing.start_end"><code class="name flex">
+<dt id="humobi.tools.processing.start_end"><code class="name flex">
 <span>def <span class="ident">start_end</span></span>(<span>trajectories_frame)</span>
 </code></dt>
 <dd>
@@ -507,7 +507,7 @@ def start_end(trajectories_frame):
         return pd.concat(to_concat)</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.tools.processing.top_time"><code class="name flex">
+<dt id="humobi.tools.processing.top_time"><code class="name flex">
 <span>def <span class="ident">top_time</span></span>(<span>ind=None, gs=None)</span>
 </code></dt>
 <dd>
@@ -558,7 +558,7 @@ def start_end(trajectories_frame):
                 return ind, pd.concat(aggregated)</code></pre>
 </details>
 </dd>
-<dt id="src.humobi.tools.processing.total_normalise"><code class="name flex">
+<dt id="humobi.tools.processing.total_normalise"><code class="name flex">
 <span>def <span class="ident">total_normalise</span></span>(<span>gs)</span>
 </code></dt>
 <dd>
@@ -600,21 +600,21 @@ def start_end(trajectories_frame):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="src.humobi.tools" href="index.html">src.humobi.tools</a></code></li>
+<li><code><a title="humobi.tools" href="index.html">humobi.tools</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="src.humobi.tools.processing.convert_to_distribution" href="#src.humobi.tools.processing.convert_to_distribution">convert_to_distribution</a></code></li>
-<li><code><a title="src.humobi.tools.processing.groupwise_average" href="#src.humobi.tools.processing.groupwise_average">groupwise_average</a></code></li>
-<li><code><a title="src.humobi.tools.processing.groupwise_expansion" href="#src.humobi.tools.processing.groupwise_expansion">groupwise_expansion</a></code></li>
-<li><code><a title="src.humobi.tools.processing.groupwise_normalise" href="#src.humobi.tools.processing.groupwise_normalise">groupwise_normalise</a></code></li>
-<li><code><a title="src.humobi.tools.processing.mode_geoseries" href="#src.humobi.tools.processing.mode_geoseries">mode_geoseries</a></code></li>
-<li><code><a title="src.humobi.tools.processing.normalize" href="#src.humobi.tools.processing.normalize">normalize</a></code></li>
-<li><code><a title="src.humobi.tools.processing.rowwise_average" href="#src.humobi.tools.processing.rowwise_average">rowwise_average</a></code></li>
-<li><code><a title="src.humobi.tools.processing.start_end" href="#src.humobi.tools.processing.start_end">start_end</a></code></li>
-<li><code><a title="src.humobi.tools.processing.top_time" href="#src.humobi.tools.processing.top_time">top_time</a></code></li>
-<li><code><a title="src.humobi.tools.processing.total_normalise" href="#src.humobi.tools.processing.total_normalise">total_normalise</a></code></li>
+<li><code><a title="humobi.tools.processing.convert_to_distribution" href="#humobi.tools.processing.convert_to_distribution">convert_to_distribution</a></code></li>
+<li><code><a title="humobi.tools.processing.groupwise_average" href="#humobi.tools.processing.groupwise_average">groupwise_average</a></code></li>
+<li><code><a title="humobi.tools.processing.groupwise_expansion" href="#humobi.tools.processing.groupwise_expansion">groupwise_expansion</a></code></li>
+<li><code><a title="humobi.tools.processing.groupwise_normalise" href="#humobi.tools.processing.groupwise_normalise">groupwise_normalise</a></code></li>
+<li><code><a title="humobi.tools.processing.mode_geoseries" href="#humobi.tools.processing.mode_geoseries">mode_geoseries</a></code></li>
+<li><code><a title="humobi.tools.processing.normalize" href="#humobi.tools.processing.normalize">normalize</a></code></li>
+<li><code><a title="humobi.tools.processing.rowwise_average" href="#humobi.tools.processing.rowwise_average">rowwise_average</a></code></li>
+<li><code><a title="humobi.tools.processing.start_end" href="#humobi.tools.processing.start_end">start_end</a></code></li>
+<li><code><a title="humobi.tools.processing.top_time" href="#humobi.tools.processing.top_time">top_time</a></code></li>
+<li><code><a title="humobi.tools.processing.total_normalise" href="#humobi.tools.processing.total_normalise">total_normalise</a></code></li>
 </ul>
 </li>
 </ul>
