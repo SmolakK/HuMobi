@@ -229,6 +229,12 @@ Furthermore, to decrease data size, let's compress stops to a single row of data
 df_sel = start_end(df_sel)
 ```
 Finally, TrajectoriesFrame will look like this:
+```
+                                 id        lat         lon                                     place                     geometry  is_stop                      date                     start                       end
+user_id datetime                                                                                                                                                                                                          
+0       2009-05-29 00:04:23+00:00   0  39.759608 -104.984862          6346d66a3aa011de83f8003048c0801e  POINT (-104.98486 39.75961)     True 2009-05-29 00:04:23+00:00 2009-05-29 00:04:23+00:00 2009-05-29 02:29:20+00:00
+        2009-05-30 02:12:30+00:00   0  39.890648 -105.068872          dd7cd3d264c2d063832db506fba8bf79  POINT (-105.06887 39.89065)     True 2009-05-30 02:12:30+00:00 2009-05-30 02:12:30+00:00 2009-05-30 07:28:16+00:00
+```
 
 ### Data aggregation
 
