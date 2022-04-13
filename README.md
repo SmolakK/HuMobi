@@ -108,3 +108,93 @@ df.to_shapefile("shape_path")
 ```
 
 ## Data preprocessing
+
+Raw movement data should be preprocessed to remove noise, remove unimportant stops and extract necessary information. HuMobi library offers methods for data preprocessing, analyses, and filtering. This process consists of two steps. First, noisy data is removed and stop locations are detected. In the second step, stop locations are aggregated into stay-regions and converted to movement sequence. For methodology details see publication:
+```
+Smolak, K., Siła-Nowicka, K., Delvenne, J. C., Wierzbiński, M., & Rohm, W. (2021). The impact of human mobility data scales and processing on movement predictability. Scientific Reports, 11(1), 1-10.
+```
+
+Data preprocessing tools are available in the `preprocessing` module. Some statistics and data compression methods are available in the `tools` module.
+First, let's import necessary functions and read our data example saved with `to_csv` method from previous subsection of this readme.
+```
+from humobi.structures import trajectory as tr
+from humobi.preprocessing.filters import stop_detection
+from humobi.tools.user_statistics import *
+from humobi.tools.processing import start_end
+
+in_path = """converted_sample.csv"""
+df_sel = tr.TrajectoriesFrame(in_path, {'crs': 4326})  # ALREADY CONVERTED - WITH GEOMETRY AND MULTIINDEX, SAVED TO CSV (SEE data_reading.py demo)
+```
+
+### Data (users) selection
+
+First, let's cover how to select particular movement trajectories to be able to filter the data later. `TrajectoriesFrame` offers `uloc` method which allows you to select a user or users using their id. For example, let's select user of id `0`:
+```
+one_user = df_sel.uloc(0)
+```
+
+To get a list of all user ids, use `get_users()` method:
+```
+users_list = df_sel.get_users()  # LIST OF ALL IDS
+```
+
+Then, passing that list to `uloc` will result in selecting all users from the data (so the result will be unchanged):
+```
+many_users = df_sel.uloc(users_list)
+```
+
+You can use standard `loc` and `iloc` pandas commends, too.
+
+### Users statistics
+
+Many data selection methods are based on selecting users who have certain global statistics, like data completness or the duration of trajectories. Module `tools.user_statistics` contains some metrics which can be used to calculate them. All results are returned as pandas `Series` with user id as index and statistics values. Available statistics include:
+
+Fraction of empty records, that is expressed in a given temporal resolution. This is calculated globally - you can limit the timeframe using selection methods or use it together with `pd.rolling` to have a moving value.
+```
+frac = fraction_of_empty_records(df_sel, resolution='1H')  # FRACTION OF MISSING RECORDS
+```
+
+Total number of records:
+```
+count = count_records(df_sel)  # TOTAL NUMBER OF RECORDS
+```
+
+Total number of records calculated per time frame:
+```
+count_per_time_frame = count_records_per_time_frame(df_sel, resolution='1D')  # TOTAL NUMBER OF RECORDS PER TIME FRAME
+```
+
+Total length of trajectories expressed in time unit. `count_empty` determines whether empty records should be considered or excluded. If excluded, the value will be decreased by the number of empty records timeframes.
+```
+trajectories_duration = user_trajectories_duration(df_sel, resolution='1H', count_empty=False)  # TOTAL LENGTH OF TRAJECTORIES
+```
+
+The highest number of consecutive records expressed in the given time unit.
+```
+consecutive = consecutive_record(df_sel, resolution='1H')
+```
+
+Now, let's see how to use these statistics to filter some data. For example, we want to select only users with fraction of empty records lower than 90%, whose trajectories are longer than 6 days and have at least 100 records of data. We will use sets intersection to find all the users that satisfy all these three requirements.
+```
+# FILTRATION WITH USER STATISTICS
+frac = fraction_of_empty_records(df_sel, '1H')
+level1 = set(frac[frac < 0.9].index)  # FRACTION OF MISSING RECORDS < 0.6
+
+traj_dur = user_trajectories_duration(df_sel, '1D')
+level2 = set(traj_dur[traj_dur > 6].index)  # MORE THAN 6 DAYS OF DATA
+
+counted_records = count_records(df_sel)
+level3 = set(counted_records[counted_records >= 100].index)  # AT LEAST 100 RECORDS IN TOTAL
+
+# INDICES SELECTION
+selection = level1.intersection(level2)
+selection = selection.intersection(level3)
+df_sel = df_sel.uloc(list(selection))  # USER FILTRATION WITH ULOC METHOD
+
+# SORT BY TIMESTAMP (JUST IN CASE)
+df_sel = df_sel.sort_index(level=1)
+
+# REREAD STRUCTURE
+df_sel = tr.TrajectoriesFrame(df_sel, {'crs': crs, 'geom_cols': geom_cols})
+```
+
