@@ -72,11 +72,12 @@ df = tr.TrajectoriesFrame(in_path, {'names': ['id', 'datetime', 'lat', 'lon', 'p
 ```
 As you can see, the first positional argument is a file path. Apart from it, kwargs of pd.read_csv function can be given. Additionally, `TrajectoriesFrame` accepts two metadata arguments `crs` - Corrdinate Reference System number according to EPSG classification and `geom_cols` - indicating two columns with coordinates.
 Note that it is important to provide `delimiter` keyword, when it is other than comma. Giving column names is useful, but `TrajectoriesFrame` will try to figure out which column has timestamp and which has coordinates. However, to avoid errors provide columns with timestamp as `time` or `datetime` and columns with geometry as `lat` and `lon`.
-The first line of file will look like that:
+The first two lines of file will look like that:
 ```
                                   id  ...                     geometry
 user_id datetime                       ...                             
 0       2010-10-17 01:48:53+00:00   0  ...  POINT (-104.99251 39.74765)
+        2010-10-17 01:54:32+00:00   0  ...  POINT (-104.99251 39.74765)
 ```
 > **_NOTE:_**  In debugging mode in some IDEs you can access a DataFrame view of TrajectoriesFrame through `_base_class_view` protected attribute.
 
@@ -274,4 +275,4 @@ Third class is `LayerAggregator`. This class uses an external file to perform ag
 ```
 layer_agg = LayerAggregator('path_to_outer_layer',**kwargs)
 df_sel_layer = layer_agg.aggregate(df_sel)
-'''
+```
