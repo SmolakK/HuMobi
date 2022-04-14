@@ -53,6 +53,8 @@ Setting properly working environment for this library can be tricky through the 
 
 Below are demos of various funcionalities of this library. These cover majority of this library abilites. Note that this will be expanded in the future - including this documentation. For method attributes and functions see documentation in html folder.
 
+Some methods and functions need some time to execute. `tqdm` library enable progress bars, which will estimate remaining computation time.
+
 ## Data reading
 
 Data loading, storing and reading is done within a special TrajectoriesFrame class. This is a pandas DataFrame-based data structure with MultiIndex, which consists of user id (upper level) and timestamp (lower level). Also, it will contain a `geometry` column, identically to GeoPandas GeoDataFrame geometry column.
@@ -113,6 +115,8 @@ df.to_shapefile("shape_path")
 df.to_csr(dest_crs = 3857, cur_crs = 4326)
 ```
 This will reproject TrajectoriesFrame from `EPSG:4326` to `EPSG:3857`. If `cur_crs` is not given, TrajectoriesFrame will used `crs` metadata.
+
+> **_NOTE:_**  `TrajectoriesFrame` is based on pandas DataFrame, hence it is possible to apply any pandas function - such as filtering and data selecting - on it.
 
 ## Data preprocessing
 
@@ -239,7 +243,7 @@ user_id datetime
 
 ### Data aggregation
 
-After stay-point detection, data can be finally converted to movement sequences by spatial (stay-regions detection) and temporal aggregation. 
+After stay-point detection, data can be finally converted to movement sequences by, first, spatial (stay-regions detection), and then, temporal aggregation. 
 
 Stay-regions detection can be done using various approaches, the most commonly used are grid-based approach or clustering method. Also, there are two approaches to temporal aggregation: next time-bin and next place. Let's see how to convert our data to various movement sequences. First, let's import necessary functions.
 ```
@@ -249,10 +253,13 @@ from humobi.preprocessing.spatial_aggregation import GridAggregation, Clustering
 from humobi.preprocessing.filters import next_location_sequence
 from sklearn.cluster import DBSCAN
 ```
+#### Spatial aggregation
 
 Spatial aggregation (stay-regions detection) should be done first. `humobi.preprocessing.spatial_aggregation` module offers `GridAggregator`, `ClusteringAggregator`, and `LayerAggregator` classes which can be used to perform different approaches to spatial aggregation.
 
 To perform aggregation, an aggregator class has to be defined first. When aggregator is created, the data and arguments controlling aggregation behaviour are passed first. After that, `aggregate` method can be called to perform data aggregation.
+
+##### Grid Aggregator
 
 `GridAggregator` is a quick data aggregation to a regular grid of defined resolution. There are some implemented behaviours. For example, you can pass only `resolution` argument, and the grid will be fit into the data extent.
 ```
@@ -261,6 +268,8 @@ grid_agg = GridAggregation(gird_resolution)  # DEFINE GRID AGGREGATION ALGORITHM
 df_sel_grid = grid_agg.aggregate(df_sel, parralel=False)  # CALL AGGREGATION
 ```
 When you want to set the grid extent yourself, you can pass `x_min`, `x_max`, `y_min`, `y_max` paramaters to set the extent of aggregation grid. Aslo, you can pass an `origin` parameter to tell whether the grid should be centered at the data. `parralel` parameter of `aggregate()` method calls multithread processing, but this is not necessarily faster than single-core method, due to its overheads.
+
+##### Clustering Aggregator
 
 `ClusteringAggregator` allows you to pass any scikit-learn clustering algorithm to perform clusterisation of the stay-points. In the below example we use `DBSCAN` class to perform clustering:
 ```
@@ -271,8 +280,173 @@ df_sel_dbscan = clust_agg.aggregate(df_sel)  # SPATIAL AGGREGATION CALL
 ```
 As you see, all the arguments for clustering method can be passes as `**kwargs`. This class uses multithreading implemented within scikit-learn library.
 
+##### Layer Aggregator
+
 Third class is `LayerAggregator`. This class uses an external file to perform aggregation. Its functionality is based on GeoPandas function of spatial join. To perform it, just call:
 ```
 layer_agg = LayerAggregator('path_to_outer_layer',**kwargs)
 df_sel_layer = layer_agg.aggregate(df_sel)
 ```
+
+#### Temporal aggregation
+
+Temporal aggregation functionalities are available in the `humobi.preprocessing.temporal_aggregation` module, which contains the `TemporalAggregator` class. There are two approaches to temporal aggregation: next time-bin and next place.
+
+##### Next time-bin
+The next time-bin approach converts sequences of visited locations into evenly spaced time-bins. To perform the next time-bin aggregation, simply instantiate TemporalAggregator class and pass time unit which will be used to perform aggregation:
+```
+time_unit = '1H'  # DEFINE TEMPORAL UNIT
+time_agg = TemporalAggregator(time_unit)  # DEFINE TEMPORAL AGGREGATION ALGORITHM
+````
+In above example we chose time-bins to have an hourly resolution. Now we can call the aggregation on our data:
+```
+df_sel_dbscan_time = time_agg.aggregate(df_sel_dbscan, parallel=True) 
+```
+The above line of code will perform the time-bin aggregation according to the methodology presented in the literature. Three cases may occur:
+*No data was find for the time-bin -> In that case the time-bin will be empty
+*There was more than one stay-region visted during a time-bin -> Stay-region where user spent more time is selected
+*There was more than one stay-region visted during a time-bin and user spent identical amount of time in them -> Stay-region where user spent more time in the past is selected
+
+Temporal aggregation can be run in using `parralel` setting, which is a bit faster than its single-core variant. Aditionally, `aggregate()` method has `fill_method` argument, which can be set to `ffill` or `bfill` to fill mising data or `drop_empty` argument, which can be used to remove missing time-bins.
+
+Temporal aggregation is computationally heavy and can take some time.
+
+> **_NOTE:_** Time-bins always start at midnight.
+
+##### Next place
+
+In the next place approach all the consecutive records of visit in the same stay-region are removed. This can be done using `next_location_sequence` function from the `humobi.preprocessing.filters` module.
+```
+df_sel_time_seq = next_location_sequence(df_sel_dbscan_time)  # CREATE NEXT LOCATION SEQUENCES
+```
+
+## Metrics
+
+Once processed, various metrics can be calculated on movement sequences. We divide them into individual and collective. Individual metrics are calculated seprarately for each id in the `TrajectoriesFrame`. Collective metrics are presented in forms of distributions or are referred to stay-regions.
+
+First, let's import all the metrics:
+```
+from humobi.structures import trajectory as tr
+from humobi.measures.individual import *
+from humobi.measures.collective import *
+```
+
+We assume our processed data are stored under the `df_sel` variable.
+
+### Individual metrics
+
+#### Number of distinct locations
+
+This metric calculates the number of distinct locations visited by each individual. To calculate it, call `num_of_distinct_locations()` function from `humobi.measures.individual` module.
+```
+distinct_total = num_of_distinct_locations(df_sel)
+```
+
+#### Visitation frequency
+
+This metric calculates frequency of visits in each stay-region visited by users. Execute:
+```
+vfreq = visitation_frequency(df_sel)
+```
+
+#### Number of distinct locations over time
+
+This is a variant of the number of distinct locations measure, and calculates the number of distinct locations visited from the start of the movement trajectory at each time step. This function requires two additional parameters. `time_unit` determines the size of a time step. `reaggregate` is a boolean parameter, which will run TemporalAggregator to convert data into new time-bin size if needed. Execute:
+```
+distinct_over_time = distinct_locations_over_time(df_sel, time_unit='1H', reaggregate=False)
+```
+
+#### Jump lengths
+This function calculates the length of all trips between locations in the movement sequence.
+```
+jump = jump_lengths(df_sel)
+```
+
+#### Nonzero trips
+This function calculates the number of all trips (which covered distance > 0)
+```
+trips = nonzero_trips(df_sel)
+```
+
+#### Self-transtition
+This function calculates the number of situations when user stayed in the same location for the next time-bin (in the next place it will always be equal to 0).
+```
+st = self_transitions(df_sel)
+```
+
+#### Waiting times
+This function calculates waiting times for each transition in `TrajectoriesFrame`.
+```
+wt = waiting_times(df_sel)
+```
+
+#### Center of mass
+```
+mc = center_of_mass(df_sel)
+```
+
+#### Radius of gyration
+```
+rog = radius_of_gyration(df_sel, time_evolution=False)
+rog_time = radius_of_gyration(df_sel, time_evolution=True)
+```
+
+#### Mean square displacement
+```
+msd = mean_square_displacement(df_sel, time_evolution=False)
+msd_time = mean_square_displacement(df_sel, time_evolution=True)
+```
+
+#### Return time
+```
+rt = return_time(df_sel)
+```
+Optionally
+```
+rt_place = return_time(df_sel, by_place=True)
+```
+
+#### Random entropy and predictability
+```
+ran_ent = random_entropy(df_sel)
+random_pred = random_predictability(df_sel)
+```
+
+#### Uncorrelated entropy and predictability
+```
+unc_ent = unc_entropy(df_sel)
+unc_pred = unc_predictability(df_sel)
+```
+
+#### Real entropy and predictability
+```
+real_ent = real_entropy(df_sel)
+real_pred = real_predictability(df_sel)
+```
+
+#### Stationarity
+```
+stat = stationarity(df_sel)
+```
+
+#### Regularity
+```
+regul = regularity(df_sel)
+```
+
+### Collective metrics
+
+#### Distribution of travelling distances
+```
+dist = dist_travelling_distance(df_sel)
+```
+
+#### Pairwise comparison of flows
+```
+pairwise_flows = flows(df_sel, flows_type='all')
+```
+
+
+## Data generation routines
+
+## Next location predictions
