@@ -8,7 +8,7 @@
 * [Metrics](#Metrics)
 * [Data generation routines](#Data-generation-routines)
 * [Next location predictions](#Next-location-predictions)
-* [Paper: Explaining human mobility predictions through pattern matching algorithm](#(Paper:-Explaining-human-mobility-predictions-through-pattern-matching-algorithm)
+* [Paper: Explaining human mobility predictions through pattern matching algorithm](#Paper:-Explaining-human-mobility-predictions-through-pattern-matching-algorithm)
  
 ## General Info
 This is the HuMobi library. It is a dedicated Python library for human mobility data processing, which mostly extends Pandas
@@ -259,7 +259,11 @@ from sklearn.cluster import DBSCAN
 ```
 #### Spatial aggregation
 
-Spatial aggregation (stay-regions detection) should be done first. `humobi.preprocessing.spatial_aggregation` module offers `GridAggregator`, `ClusteringAggregator`, and `LayerAggregator` classes which can be used to perform different approaches to spatial aggregation.
+Spatial aggregation (stay-regions detection) should be done first. This process will add new `labels` column which will identify unique stay-regions.
+
+> **__NOTE:__** If you already have aggregated data and want to add unique labels only, use `to_labels()` function from the `humobi.misc.utils` module.
+
+`humobi.preprocessing.spatial_aggregation` module offers `GridAggregator`, `ClusteringAggregator`, and `LayerAggregator` classes which can be used to perform different approaches to spatial aggregation.
 
 To perform aggregation, an aggregator class has to be defined first. When aggregator is created, the data and arguments controlling aggregation behaviour are passed first. After that, `aggregate` method can be called to perform data aggregation.
 
@@ -482,6 +486,48 @@ pairwise_flows = flows(df_sel, flows_type='all')
 
 ## Data generation routines
 
+Generating synthetic data might be useful to verify algorithms and assumptions on sequences of known statistical properites. There are few generation routines available in the `humobi.misc.generators` module. The output is a DataFrame with `labels` columns, which identify unqiue locations:
+```
+                             labels
+user_id datetime                                                      
+0       1970-01-01 00:00:00       0 
+        1970-01-01 01:00:00       0
+```
+
+Each routine has avaiable parameters:
+* `users` - which is the number of unique sequences to generate
+* `places` - which is the size of vocabulary for generation
+Fixed values or list of values can be passed to this arguments. If the latter is used, each sequence will be generated using randomly picked value from the list. Some routines have more parameters. See details below.
+
+Random sequences, where each symbol is randomly generated from the avaiable vocabulary. Additional `length` parameter can be determined. It can ba single value or a list of values to randomly pick from.
+```
+random_seq = random_sequences_generator(users=10, places=10, length=100)
+```
+
+Deterministic sequences follow a series of incrementing symbols up to the size of vocabulary. At the end of vocabulary series are repeating. For example, when vocabulary size is 4, then sequence will follow routine `[0, 1, 2, 3, 0, 1, 2, 3, 1, ...]`. Additional `repeats` parameter can be determined. It can ba single value or a list of values to randomly pick from.
+```
+deter_seq = deterministic_sequences_generator(users=10, places=10, repeats=10)
+```
+
+Markovian sequences folow a deterministic sequence, but at each step with probability `prob` a random symbol is inserted.
+```
+markovian_seq = markovian_sequences_generator(users=10, places=10, length=500, prob=.3)
+```
+
+Exploratory sequences generete a sequence of unqiue, non-repeating symbols.
+```
+ex_seq = exploratory_sequences_generator(users=10, places=10)
+```
+
+Self-transitions sequences are similar to deterministic sequences, but each symbol is repeated multiple times before moving to the next one. The number of self-transtions repeating after each other is determined by the number of symbols and the legnth of the sequence.
+```
+st_seq = self_transitions_sequences_generator(users=10, places=10, length=100)
+```
+
+Non-stationary sequences generate symbols using `states`, where each state has its own routine of symbols generation. Probabilities for each state are assigned randomly at the beggining of the process.
+```
+non_st_seq = non_stationary_sequences_generator(users=10, places=10, states=5, length=100)
+```
 ## Next location predictions
 
 ## Paper: Explaining human mobility predictions through pattern matching algorithm
