@@ -5,6 +5,10 @@
 * [Installing HuMobi](#Installing-HuMobi)
 * [Data reading](#Data-reading)
 * [Data preprocessing](#Data-preprocessing)
+* [Metrics](#Metrics)
+* [Data generation routines](#Data-generation-routines)
+* [Next location predictions](#Next-location-predictions)
+* [Paper: Explaining human mobility predictions through pattern matching algorithm](#(Paper:-Explaining-human-mobility-predictions-through-pattern-matching-algorithm)
  
 ## General Info
 This is the HuMobi library. It is a dedicated Python library for human mobility data processing, which mostly extends Pandas
@@ -431,7 +435,7 @@ unc_pred = unc_predictability(df_sel)
 
 #### Real entropy and predictability
 Calculates real entropy for each user in TrajectoriesFrame using the Lempel-Ziv compression algorithm, using approach defined in
-`Song, C., Qu, Z., Blumm, N., & Barabási, A. L. (2010). Limits of predictability in human mobility. Science, 327(5968), 1018–1021. https://doi.org/10.1126/science.1177170`, and corrected using findings from:
+`Song, C., Qu, Z., Blumm, N., & Barabási, A. L. (2010). Limits of predictability in human mobility. Science, 327(5968), 1018–1021. https://doi.org/10.1126/science.1177170`, and corrected using findings from
 `Xu, P., Yin, L., Yue, Z., & Zhou, T. (2019). On predictability of time series. Physica A: Statistical Mechanics and Its Applications, 523, 345–351. https://doi.org/10.1016/j.physa.2019.02.006`
 and
 `Smolak, K., Siła-Nowicka, K., Delvenne, J. C., Wierzbiński, M., & Rohm, W. (2021). The impact of human mobility data scales and processing on movement predictability. Scientific Reports, 11(1), 1–10. https://doi.org/10.1038/s41598-021-94102-x`
@@ -440,6 +444,7 @@ Aditionally, when fraction of missing data is higher than 15%, entropy is estima
 Predictability is calculated using entropy and Fano's inequality as presented in the Song et al. (2010) paper.
 
 > **__NOTE:__** Real entropy __cannot__ be calculated when fraction of missing data is >90%.
+
 > **__NOTE:__** These function are using GPU to perform calculations. Be sure to have CUDA configured on your machine. CPU variant is not acessible, because calculations on CPU take unreasonable long time to execute.
 ```
 real_ent = real_entropy(df_sel)
@@ -478,3 +483,5 @@ pairwise_flows = flows(df_sel, flows_type='all')
 ## Data generation routines
 
 ## Next location predictions
+
+## Paper: Explaining human mobility predictions through pattern matching algorithm
