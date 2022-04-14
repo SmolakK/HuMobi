@@ -499,6 +499,11 @@ Each routine has avaiable parameters:
 * `places` - which is the size of vocabulary for generation
 Fixed values or list of values can be passed to this arguments. If the latter is used, each sequence will be generated using randomly picked value from the list. Some routines have more parameters. See details below.
 
+To import module:
+```
+from src.humobi.misc.generators import *
+```
+
 Random sequences, where each symbol is randomly generated from the avaiable vocabulary. Additional `length` parameter can be determined. It can ba single value or a list of values to randomly pick from.
 ```
 random_seq = random_sequences_generator(users=10, places=10, length=100)
@@ -529,5 +534,101 @@ Non-stationary sequences generate symbols using `states`, where each state has i
 non_st_seq = non_stationary_sequences_generator(users=10, places=10, states=5, length=100)
 ```
 ## Next location predictions
+
+Finally, let's do some predictions. There are multiple algorithms available, including:
+* Naive approaches
+* Markov chains
+* Shallow learning classification algorithms
+* Deep learning networks
+
+First, let's import necessary modules:
+```
+from src.humobi.predictors.wrapper import *
+from src.humobi.predictors.deep import *
+```
+
+### Data split
+
+To perform predictions, we need to split data into training and testing sets.  We will use `Splitter` class form the `humobi.predictors.wrapper` module. This class allows to split the whole TrajectoriesFrame at once by spliting each users' trajectory in determined ratio (determined by `split_ratio` argument which expreses the test set size). 
+For example, let's split generated Markovian sequences:
+```
+split = Splitter(markovian_seq, split_ratio=.2)
+```
+Split data will be acessible as `split` instance attributes.
+* `split.data` gives acess to the input data
+* `split.cv_data` yields a list of training-validation sets pairs. An additional parameter `n_splits` can be passed to the `Splitter`, which will generate more pairs of training-validaiton datasets pairs using the KFold aproach. Each pair consits of training set features (index 0), training set labels (index 1), validation set features (index 2), and validation set labels (index 3).
+* `split.test_frame_X` gives acess to the test set features
+* `split.text_frame_Y` gives acess to the test set labels
+
+Aditionally, a `horizon` parameter can be set on the `Splitter` class. If `horizon > 1` all the generated datasets of features (X sets) will contain additional columns with all previous time steps, up to the horizon length. Moreover, training/validation and testing sets will overlap with the `horizon` size.
+Let's assign our datasets to some variables:
+```
+test_frame_X = data_splitter.test_frame_X
+test_frame_Y = data_splitter.test_frame_Y
+cv_data = data_splitter.cv_data
+```
+
+Once data is split, now we can make predictions.
+
+### TopLoc
+
+The TopLoc algorithm is a naive algorithm adapted from `Cuttone, A., Lehmann, S., & González, M. C. (2018). Understanding predictability and exploration in human mobility. EPJ Data Science, 7(1). https://doi.org/10.1140/epjds/s13688-017-0129-1`. When doing prediction, it assumes that the next visited place is the most visited place in the training set. `TopLoc()` class is available in the `humobi.predictors.wrapper` module. To perform prediction on the datasets call:
+```
+TopLoc(train_data=cv_data, test_data=[data_splitter.test_frame_X, data_splitter.test_frame_Y]).predict()
+```
+Calling `predict()` will return predictions (DataFrame, where the first column are test set labels and the second column are predictions) and the accuracy score.
+
+### MarkovChain
+
+N-th Markov Chain can be called through wrapper function `markov_wrapper`. This wrapper accepts whole dataset at once and performs data split inside.  Test-train ratio is defined by the `test_size` parameter. Order of the Markov Chain is defined by the `state_size` parameter. For example, to call 2nd-order Markov Chain, execute following line:
+```
+MC2 = markov_wrapper(markovian_seq, test_size=.2, state_size=2)
+```
+Aditionally, this function accepts two arguments: `update` - if True, with each predicted symbol chain is rebuild, and `online` - which if True, allows algorithm to see the last `state_size` symbols from the test set when predicting. This function returns prediction and the accuracy score.
+
+### Shallow learning methods
+
+It is possible to use scikit-learn library classification methods to perform predictions. `humobi.predictors.wrapper` module allows to use `SKLearnPred()` class to apply any algorithm to perform next location prediction. To do that, first let's import a prediction algorithm:
+```
+from sklearn.ensemble import RandomForestClassifier
+clf = RandomForestClassifier
+```
+After we instanienate the `SKLearnPred` class in the following way:
+```
+predic = SKLearnPred(algorithm=clf, training_data=split.cv_data, test_data=[split.test_frame_X, split.test_frame_Y], param_dist={'n_estimators': [x for x in range(500, 5000, 500)], 'max_depth': [None, 2, 4, 6, 8]}, search_size=5, cv_size=5, parallel=False)
+```
+The algorithm has to be passed as `algorithm` argument. Then `training_data` and `test_data` have to be passed from the `Splitter()` class. Furthermore, `param_dist` allows passing dictionary of candidate hyperparameters of prediction algorithms. These will be tested to find the best solution during RandomizedSearch with cross-validation. The number of cross-validations is determined by `cv_size` parameter, while the number of tested combinations is determined by the `search_size` parameter. As of now `parallel` computing is not possible.
+
+To perform predictions, first we need to train prediction algorithms. Calling
+```
+predic.learn()
+```
+will train a set of algorithms, each for each trajectory in the dataset. Then calling
+```
+predic.test()
+```
+will perform prediction on the test set. Accuracy can be accessed through `predic.scores` attributes, predictions can be accessed through `predic.predictions` attribute.
+
+### Deep learning methods
+
+As of now, HuMobi library offers two network architectures for mobility predictions. This will be extended in the future. These are single- and double-layer Gated Recurrental Unit (GRU) networks with embedding and dropout. These are accessible in the `humobi.predictors.deep` module.
+To perform predictions with deep learning network, first call the `DeepPred` class. This class accepts following arguments at initialisation:
+* `model` - to use single-layer GRU call `'GRU'`, to use double-layer GRU call `'GRU2'`
+* `data` - TrajectoriesFrame (not from Splitter)
+* `test_size` - size of the test set
+* `folds` - number of folds in cross-validation to use
+* `batch_size` - the size of batches for the network.
+* `embedding_dim` - the dimensionality of embedding vector fit at the first layer of the network
+* `rnn_units` - the number of neurons in the GRU layers
+
+Example of usage:
+```
+GRU = DeepPred("GRU", markovian_seq, test_size=.2, folds=5, window_size=5, batch_size=50, embedding_dim=512, rnn_units=1024)
+```
+To perform prediction call:
+```
+GRU.learn_predict()
+```
+To acces predictions call `GRU.predictions`, to access accuracy scores call `GRU.scores`.
 
 ## Paper: Explaining human mobility predictions through pattern matching algorithm
