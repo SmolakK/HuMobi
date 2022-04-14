@@ -40,12 +40,12 @@ class Splitter():
 		n_splits: The number of splits for cross-validation process
 	"""
 
-	def __init__(self, trajectories_frame, split_ratio, horizon, n_splits):
+	def __init__(self, trajectories_frame, split_ratio, horizon = 1, n_splits = 1):
 		"""
 		Class initialisation. Calls data splitting routine, hence after initialisation data is already prepared.
 		"""
 		self._data = trajectories_frame
-		self._test_ratio = 1-split_ratio
+		self._train_ratio = 1 - split_ratio
 		if horizon < 1:
 			raise ValueError("Horizon value has to be a positive integer")
 		self._horizon = horizon
@@ -59,7 +59,7 @@ class Splitter():
 
 	@property
 	def test_ratio(self):
-		return self._test_ratio
+		return self._train_ratio
 
 	@property
 	def horizon(self):
@@ -264,12 +264,15 @@ class SKLearnPred():
 		test_x, test_y = self._test_data
 		usrs = np.unique(test_x.index.get_level_values(0))
 		metrics = {}
+		predictions_dic = {}
 		for ids in tqdm(usrs, total=len(usrs)):
 			cur_alg = self._tuned_alg[ids]
 			preds = cur_alg.predict(test_x.loc[ids])
 			metric_val = accuracy_score(preds, test_y.loc[ids])
+			predictions_dic[ids] = (preds, test_y.loc[ids])
 			metrics[ids] = metric_val
 		self.scores = pd.Series(metrics)
+		self.predictions = pd.concat({k: pd.concat([pd.Series(v[0]),pd.Series(v[1])],axis=1) for k,v in predictions_dic.items()}).droplevel(1)
 
 	@property
 	def algorithm(self):
@@ -304,7 +307,7 @@ class Baseline():
 		aligned = pd.concat([self._test_data[1], self.prediction], axis=1)  # align predictions and true labels
 		acc_score = aligned.groupby(level=0).apply(lambda x: sum(x.iloc[:, 0] == x.iloc[:, 1]) / x.shape[0])  # quickly evaluate the score
 		print("SCORE: {}".format(acc_score.mean()))
-		return acc_score
+		return aligned, acc_score
 
 
 class TopLoc():
@@ -342,36 +345,36 @@ class TopLoc():
 		aligned = pd.concat([self._test_data[1], self.prediction], axis=1)
 		acc_score = aligned.groupby(level=0).apply(lambda x: sum(x.iloc[:, 0] == x.iloc[:, 1]) / x.shape[0])
 		print("SCORE: {}".format(acc_score.mean()))
-		return acc_score
+		return aligned, acc_score
 
 
-def split(trajectories_frame, test_size, state_size):
+def split(trajectories_frame, train_size, state_size):
 	"""
 	Simple train-test data split for a Markov Chain.
 
 	Args:
 		trajectories_frame: TrajectoriesFrame class object
-		split_ratio: The split ratio for training set
+		train_size: The split ratio for training set
 		state_size: The size of a window (for a Markov Chain algorithm)
 
 	Returns:
 		Split data
 	"""
 	train_frame = trajectories_frame['labels'].groupby(level=0).progress_apply(
-		lambda x: x.iloc[:round(len(x) * test_size)])
+		lambda x: x.iloc[:round(len(x) * train_size)])
 	test_frame = trajectories_frame['labels'].groupby(level=0).progress_apply(
-		lambda x: x.iloc[round(len(x) * test_size) - state_size:])
+		lambda x: x.iloc[round(len(x) * train_size) - state_size:])
 	return train_frame, test_frame
 
 
-def markov_wrapper(trajectories_frame, split_ratio=.8, state_size=2, update=False, averaged=True, online=True):
+def markov_wrapper(trajectories_frame, test_size=.2, state_size=2, update=False, online=True):
 	"""
 	The wrapper, one stop shop algorithm for the Markov Chain. Splits the data, learns the model and makes predictions
 	on the test set.
 
 	Args:
 		trajectories_frame: TrajectoriesFrame class object
-		split_ratio: The training set size.
+		test_size: The training set size.
 		state_size: The order of the Markov Chain
 		update: Whether the model should update its beliefs based on own predictions
 		averaged: Whether an averaged accuracy should be returned
@@ -380,7 +383,8 @@ def markov_wrapper(trajectories_frame, split_ratio=.8, state_size=2, update=Fals
 	Returns:
 		Prediction scores
 	"""
-	train_frame, test_frame = split(trajectories_frame, split_ratio, state_size)  # train test split
+	train_size = 1 - test_size
+	train_frame, test_frame = split(trajectories_frame, train_size, state_size)  # train test split
 	test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
 	predictions_dic = {}
 	for uid, train_values in train_frame.groupby(level=0):  # training
@@ -393,6 +397,7 @@ def markov_wrapper(trajectories_frame, split_ratio=.8, state_size=2, update=Fals
 		except:
 			continue
 	results_dic = {}
+	to_conc = {}
 	for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting
 		uid = test_values[0]
 		test_values = test_values[1].values
@@ -400,13 +405,14 @@ def markov_wrapper(trajectories_frame, split_ratio=.8, state_size=2, update=Fals
 			forecast = []
 			for current_state in range(len(test_values) - state_size):
 				forecast.append(predictions_dic[uid].move(test_values[current_state:current_state + state_size]))
+			to_conc[uid] = forecast
 			results_dic[uid] = sum(forecast == test_values[state_size:]) / len(forecast)
 		else:
 			results_dic[uid] = sum(test_values == predictions_dic[prediction_values]) / len(test_values)
-	if averaged:
-		return sum(list(results_dic.values())) / len(results_dic.values())
-	else:
-		return results_dic
+			to_conc[uid] = predictions_dic[prediction_values]
+	predictions = pd.DataFrame.from_dict(to_conc).unstack().droplevel(1)
+	aligned = pd.concat([test_frame.droplevel([1,2]).groupby(level=0).apply(lambda x: x[state_size:]).droplevel([1]),predictions],axis=1)
+	return aligned, pd.DataFrame.from_dict(results_dic,orient='index')
 
 
 def sparse_wrapper(trajectories_frame, split_ratio=.8, state_size=0, update=False, averaged=True, online=False):

@@ -48,7 +48,7 @@ class GRUModel2(tf.keras.Model):
 		batch_size: Size of a single batch
 	"""
 
-	def __init__(self, vocab_size, embedding_dim, rnn_units, dropout, batch_size):
+	def __init__(self, vocab_size, embedding_dim, rnn_units, dropout, batch_size, window_size):
 		"""
 		Layer structure.
 		"""
@@ -56,10 +56,10 @@ class GRUModel2(tf.keras.Model):
 		self.embedding = tf.keras.layers.Embedding(vocab_size, embedding_dim, batch_input_shape=(batch_size,vocab_size))
 		self.gru = tf.keras.layers.GRU(rnn_units,
 		                               return_sequences=True,
-		                               return_state=True, batch_input_shape=(batch_size, X.shape[1], X.shape[2]))
+		                               return_state=True, batch_input_shape=(batch_size, window_size, embedding_dim))
 		self.gru2 = tf.keras.layers.GRU(rnn_units,
 		                                return_sequences=True,
-		                                return_state=True, batch_input_shape=(batch_size, X.shape[1], X.shape[2]))
+		                                return_state=True, batch_input_shape=(batch_size, window_size, embedding_dim))
 		self.drop = tf.keras.layers.Dropout(dropout)
 		self.dense = tf.keras.layers.Dense(vocab_size, activation='softmax')
 
@@ -160,7 +160,7 @@ class DeepPred():
 	Args:
 		model: Name of the model to use. Available: GRU (single layer), GRU2 (GRU double layer), LSTM (single layer)
 		data: Data for prediction - whole dataset, including test. Do not split it.
-		split_ratio: Test ratio for data split
+		test_size: Test ratio for data split
 		folds: The number of folds in cross-validation of the model
 		window_size: Window size, also referenced as the size of a lookback. The number of previous symbols considered
 		during prediction.
@@ -169,20 +169,21 @@ class DeepPred():
 		rnn_units:  The number of RNN layer's units
 	"""
 
-	def __init__(self, model, data, split_ratio=.8, folds=5, window_size=2, batch_size=1, embedding_dim=1024,
+	def __init__(self, model, data, test_size=.2, folds=5, window_size=2, batch_size=1, embedding_dim=1024,
 	             rnn_units=1024):
 		"""
 		Class initialisation. Runs data preparation - slicing into training and test sets.
 		"""
 		self.model = model
 		self.data = data
-		self.split_ratio = split_ratio
+		self.split_ratio = test_size
 		self.folds = folds
 		self.window_size = window_size
 		self.batch_size = batch_size
 		self.embedding_dim = embedding_dim
 		self.rnn_units = rnn_units
 		self.scores = {}
+		self.predictions = {}
 		self._prepare()
 
 	def _prepare(self):
@@ -190,7 +191,7 @@ class DeepPred():
 		Prepares data for prediction - splits data into train and test sets.
 		"""
 		data_len = self.data.groupby(level=0).apply(lambda x: len(x))
-		cut_index = round(self.split_ratio * data_len).astype(int)
+		cut_index = (1-round(self.split_ratio * data_len)).astype(int)
 		data_train = self.data.groupby(level=0).apply(
 			lambda x: x.labels.iloc[:cut_index.loc[x.index.get_level_values(0)[0]]])
 		data_test = self.data.groupby(level=0).apply(
@@ -225,7 +226,7 @@ class DeepPred():
 		if self.model == "GRU":
 			model = GRUModel(self.s_regions, self.embedding_dim, self.rnn_units, 0.2, self.batch_size)
 		elif self.model == "GRU2":
-			model = GRUModel2(self.s_regions, self.embedding_dim, self.rnn_units, 0.2, self.batch_size)
+			model = GRUModel2(self.s_regions, self.embedding_dim, self.rnn_units, 0.2, self.batch_size, self.window_size)
 		model.compile(optimizer='adam', loss=loss, metrics=['accuracy'])  # compile the model
 		for x, v in zip(data_tr, data_val):  # the CV training process
 			print("FOLD:{}".format(fold))
@@ -241,6 +242,7 @@ class DeepPred():
 		to stuck in an infinite loop.
 		"""
 		result_dic = {}
+		predictions_dic = {}
 		train = self.data[0].groupby(level=0)
 		test = self.data[1].groupby(level=0)
 		for tr, ts in zip(train, test):
@@ -250,7 +252,7 @@ class DeepPred():
 			user_model = self._user_learn(tr_data, ts_data)
 			stabs = []
 			temperature = .1 # TEMPERATURE
-			for stab in range(10):
+			for stab in range(1): # TODO: add as parameter
 				forecast = []
 				for x in range(len(ts_data) - self.window_size):
 					y = tf.expand_dims(ts_data[x:x + self.window_size], 0)
@@ -260,6 +262,8 @@ class DeepPred():
 					predicted_id = tf.random.categorical(predictions, num_samples=1)[-1, 0].numpy()
 					forecast.append(predicted_id)
 				stabs.append(sum(forecast == ts_data[self.window_size:]) / len(forecast))
+			predictions_dic[uid] = (forecast,ts_data[self.window_size:])
 			print(np.mean(stabs))
 			result_dic[uid] = np.mean(stabs)
 		self.scores = pd.DataFrame.from_dict(result_dic, orient='index')
+		self.predictions = pd.concat({k: pd.concat([pd.Series(v[0]),pd.Series(v[1])],axis=1) for k,v in predictions_dic.items()}).droplevel(1)

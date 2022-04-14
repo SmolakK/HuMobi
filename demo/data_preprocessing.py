@@ -1,7 +1,7 @@
-from humobi.structures import trajectory as tr
-from humobi.preprocessing.filters import stop_detection
-from humobi.tools.user_statistics import *
-from humobi.tools.processing import start_end
+from src.humobi.structures import trajectory as tr
+from src.humobi.preprocessing.filters import stop_detection
+from src.humobi.tools.user_statistics import *
+from src.humobi.tools.processing import start_end
 
 in_path = """converted_sample.csv"""
 df_sel = tr.TrajectoriesFrame(in_path, {'crs': 4326})  # ALREADY CONVERTED (SEE data_reading.py demo)
@@ -54,7 +54,7 @@ df_sel = tr.TrajectoriesFrame(df_sel, {'crs': crs, 'geom_cols': geom_cols})
 
 # RUN STOP DETECTION ALGORITHM
 stops = stop_detection(df_sel, distance_condition=300, time_condition='10min')
-df_sel = stops[stops['is_stop'] is True]
+df_sel = stops[stops['is_stop'] == True]
 df_sel = df_sel.drop_duplicates()
 
 # COMPRESS

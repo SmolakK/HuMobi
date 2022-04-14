@@ -63,23 +63,23 @@ def _filter_distinct_locations(trajectories_frame):
 	return pd.concat(to_concat)
 
 
-def distinct_locations_over_time(trajectories_frame, time_unit='1H', reaggregate=False):
+def distinct_locations_over_time(trajectories_frame, resolution='1H', reaggregate=False):
 	"""
 	Calculates the number of distinct location visited in the movement trajectory over time.
 
 	Args:
 		trajectories_frame: TrajectoriesFrame class object
-		time_unit: determines the time unit for the metric
+		resolution: determines the time unit for the metric
 		reaggregate: if true, data are first reagregated to given time unit
 
 	Returns:
 		a Series with the number of unique locations visited up to each time step in the movement trajectory
 	"""
 	if reaggregate:
-		temp_agg = TemporalAggregator(time_unit)
+		temp_agg = TemporalAggregator(resolution)
 		trajectories_frame = temp_agg.aggregate(trajectories_frame)
 	trajectories_frame = _filter_distinct_locations(trajectories_frame)
-	distinct_locations = trajectories_frame.groupby(level=0).resample(time_unit, level=1).count()
+	distinct_locations = trajectories_frame.groupby(level=0).resample(resolution, level=1).count()
 	distinct_locations = distinct_locations.groupby(level=0).cumsum()
 	return distinct_locations
 
