@@ -8,7 +8,7 @@
 * [Metrics](#Metrics)
 * [Data generation routines](#Data-generation-routines)
 * [Next location predictions](#Next-location-predictions)
-* [Paper: Explaining human mobility predictions through pattern matching algorithm](#Paper:-Explaining-human-mobility-predictions-through-pattern-matching-algorithm)
+* [Paper Explaining human mobility predictions through pattern matching algorithm](#Paper-Explaining-human-mobility-predictions-through-pattern-matching-algorithm)
  
 ## General Info
 This is the HuMobi library. It is a dedicated Python library for human mobility data processing, which mostly extends Pandas
