@@ -632,3 +632,28 @@ GRU.learn_predict()
 To acces predictions call `GRU.predictions`, to access accuracy scores call `GRU.scores`.
 
 ## Paper: Explaining human mobility predictions through pattern matching algorithm
+
+Publication `Explaining human mobility predictions through a pattern matching algorithm` by `Kamil Smolak, Witold Rohm, and Katarzyna Siła-Nowicka` presents and evaluate five new metrics which measure the actual predictability of mobility data and explain the variability in accuracy of the actual predictions. These are:
+* Dense Repeatability (DR)
+* Sparse Repeatability (SR)
+* Equally Sparse Repeatability (ESR)
+* Global Alignment (GA)
+* Iterative Global Alignment (IGA)
+
+These metrics are implemented within the HuMobi library and are available in the `humobi.measures.individual` module. Apart from the above metrics, all the works performed in this paper were done using this library. This includes data filtration and preprocessing (see [Data preprocessing](#Data-preprocessing)) some of calculated metrics (especially real predictability, stationarity, and regularity, see [Metrics](#Metrics) for details). Predictions and their accuracy were done as shown in the [Next location predictions](#Next-location-predictions) section.
+
+These metrics are based on the training and test sets. These can be achieved from `Splitter()`
+```
+training = pd.concat([split.cv_data[0][0], split.cv_data[0][2]])
+test = split.test_frame_X
+```
+
+Any of above metrics can be simply called by passing these `train_frame` and `test_frame` arguments:
+```
+DR = repeatability_dense(train_frame=X, test_frame=Y)
+SR = repeatability_sparse(train_frame=X, test_frame=Y)
+ESR = repeatability_equally_sparse(train_frame=X, test_frame=Y)
+GA = global_alignment(train_frame=X, test_frame=Y)
+IGA = iterative_global_alignment(train_frame=X, test_frame=Y)
+```
+This will return pd.Series with values calculated for each user in the data.
