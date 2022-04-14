@@ -351,9 +351,9 @@ vfreq = visitation_frequency(df_sel)
 
 #### Number of distinct locations over time
 
-This is a variant of the number of distinct locations measure, and calculates the number of distinct locations visited from the start of the movement trajectory at each time step. This function requires two additional parameters. `time_unit` determines the size of a time step. `reaggregate` is a boolean parameter, which will run TemporalAggregator to convert data into new time-bin size if needed. Execute:
+This is a variant of the number of distinct locations measure, and calculates the number of distinct locations visited from the start of the movement trajectory at each time step. This function requires two additional parameters. `resolution` determines the size of a time step. `reaggregate` is a boolean parameter, which will run TemporalAggregator to convert data into new time-bin size if needed. Execute:
 ```
-distinct_over_time = distinct_locations_over_time(df_sel, time_unit='1H', reaggregate=False)
+distinct_over_time = distinct_locations_over_time(df_sel, resolution='1H', reaggregate=False)
 ```
 
 #### Jump lengths
@@ -375,61 +375,88 @@ st = self_transitions(df_sel)
 ```
 
 #### Waiting times
-This function calculates waiting times for each transition in `TrajectoriesFrame`.
+This function calculates waiting times for each transition in `TrajectoriesFrame`. This function requries `time_unit` to be specified, which will control the the unit in which waiting time will be expressed.
 ```
 wt = waiting_times(df_sel)
 ```
 
 #### Center of mass
+Calculates a center of mass for each user's trajectory.
 ```
 mc = center_of_mass(df_sel)
 ```
 
 #### Radius of gyration
+Calculates radii of gyration for each user. Optionally `time_evolution` argument can be used to express this metric evolution in time.
 ```
 rog = radius_of_gyration(df_sel, time_evolution=False)
 rog_time = radius_of_gyration(df_sel, time_evolution=True)
 ```
 
 #### Mean square displacement
+Calculates mean square displacements (MSD) for each user. Optionally `time_evolution` argument can be used to express this metric evolution in time.
 ```
 msd = mean_square_displacement(df_sel, time_evolution=False)
 msd_time = mean_square_displacement(df_sel, time_evolution=True)
 ```
+Also, `from_center` argument can be used to calculate MSD in reference to the center of trajectory mass (if False it is calculated from the first point). Apart from that `reference_locs` can be passed to determine custom reference points for each person. This has to be a GeoSeries with users id as index and point geometry as values.
 
 #### Return time
+Calculates return times for each unique location in each user's trajectory. `time_unit` specifies the unit in which return times will be expressed.
 ```
 rt = return_time(df_sel)
 ```
-Optionally
+Optionally this metric can be calculated in relation to places, which will express how long it takes any person to return to that location on average. This will produce a DataFrame with the count of returns and mean time to return.
 ```
 rt_place = return_time(df_sel, by_place=True)
 ```
 
 #### Random entropy and predictability
+Calculates random entropy for each user in TrajectoriesFrame using equation defined in 
+`Song, C., Qu, Z., Blumm, N., & Barabási, A. L. (2010). Limits of predictability in human mobility. Science, 327(5968), 1018–1021. https://doi.org/10.1126/science.1177170`. Similarly, predictability is calculated using entropy and Fano's inequality as presented in the above paper.
 ```
 ran_ent = random_entropy(df_sel)
 random_pred = random_predictability(df_sel)
 ```
+> **__NOTE:__** `random_predictability` returns entropy and predictability in a DataFrame.
 
 #### Uncorrelated entropy and predictability
+Calculates uncorrelated entropy for each user in TrajectoriesFrame using equation defined in 
+`Song, C., Qu, Z., Blumm, N., & Barabási, A. L. (2010). Limits of predictability in human mobility. Science, 327(5968), 1018–1021. https://doi.org/10.1126/science.1177170`. Similarly, predictability is calculated using entropy and Fano's inequality as presented in the above paper.
 ```
 unc_ent = unc_entropy(df_sel)
 unc_pred = unc_predictability(df_sel)
 ```
+> **__NOTE:__** `unc_predictability` returns entropy and predictability in a DataFrame.
 
 #### Real entropy and predictability
+Calculates real entropy for each user in TrajectoriesFrame using the Lempel-Ziv compression algorithm, using approach defined in
+`Song, C., Qu, Z., Blumm, N., & Barabási, A. L. (2010). Limits of predictability in human mobility. Science, 327(5968), 1018–1021. https://doi.org/10.1126/science.1177170`, and corrected using findings from:
+`Xu, P., Yin, L., Yue, Z., & Zhou, T. (2019). On predictability of time series. Physica A: Statistical Mechanics and Its Applications, 523, 345–351. https://doi.org/10.1016/j.physa.2019.02.006`
+and
+`Smolak, K., Siła-Nowicka, K., Delvenne, J. C., Wierzbiński, M., & Rohm, W. (2021). The impact of human mobility data scales and processing on movement predictability. Scientific Reports, 11(1), 1–10. https://doi.org/10.1038/s41598-021-94102-x`
+Aditionally, when fraction of missing data is higher than 15%, entropy is estimated using an approach from `Ikanovic, E. L., & Mollgaard, A. (2017). An alternative approach to the limits of predictability in human mobility. EPJ Data Science, 6(1). https://doi.org/10.1140/epjds/s13688-017-0107-7`.
+
+Predictability is calculated using entropy and Fano's inequality as presented in the Song et al. (2010) paper.
+
+> **__NOTE:__** Real entropy __cannot__ be calculated when fraction of missing data is >90%.
+> **__NOTE:__** These function are using GPU to perform calculations. Be sure to have CUDA configured on your machine. CPU variant is not acessible, because calculations on CPU take unreasonable long time to execute.
 ```
 real_ent = real_entropy(df_sel)
 real_pred = real_predictability(df_sel)
 ```
+> **__NOTE:__** `real_predictability` returns entropy and predictability in a DataFrame.
 
 #### Stationarity
+Calculates the stationarity according to Teixeira et al. (2019) as the average stay length in the location. See `Teixeira, D., Almeida, J., Viana, A. C., Teixeira, D., Almeida, J., Carneiro, A., … Viana, A. C. (2021). Understanding routine impact on the predictability estimation of human mobility To cite this version : HAL Id : hal-03128624 Understanding routine impact on the predictability estimation of human mobility.` for details.
+
 ```
 stat = stationarity(df_sel)
 ```
 
 #### Regularity
+Calculates the regularity according to Teixeira et al. (2019) as the ratio of sequence lenght and the number of unique symbols. See `Teixeira, D., Almeida, J., Viana, A. C., Teixeira, D., Almeida, J., Carneiro, A., … Viana, A. C. (2021). Understanding routine impact on the predictability estimation of human mobility To cite this version : HAL Id : hal-03128624 Understanding routine impact on the predictability estimation of human mobility.` for details.
+
 ```
 regul = regularity(df_sel)
 ```
@@ -437,15 +464,16 @@ regul = regularity(df_sel)
 ### Collective metrics
 
 #### Distribution of travelling distances
+Calculates the distribution of travelling distances for each user. `bin_size` or `n_bins` can be determined for the output distribution. 
 ```
 dist = dist_travelling_distance(df_sel)
 ```
 
 #### Pairwise comparison of flows
+Calculates the number of flows for each aggregation cell. Using `flows_type` - `all` flows, only `incoming` or only `outgoing` flows can be counted.
 ```
 pairwise_flows = flows(df_sel, flows_type='all')
 ```
-
 
 ## Data generation routines
 
