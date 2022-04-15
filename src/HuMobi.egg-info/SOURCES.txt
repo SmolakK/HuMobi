@@ -6,6 +6,7 @@ setup.py
 src/HuMobi.egg-info/PKG-INFO
 src/HuMobi.egg-info/SOURCES.txt
 src/HuMobi.egg-info/dependency_links.txt
+src/HuMobi.egg-info/requires.txt
 src/HuMobi.egg-info/top_level.txt
 src/humobi/__init__.py
 src/humobi/measures/__init__.py

@@ -1,0 +1,11 @@
+pandas
+geopandas
+tqdm
+scipy
+numpy
+scikit-learn
+biopython
+shapely
+numba
+tensorflow-gpu
+geofeather
