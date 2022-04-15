@@ -241,7 +241,7 @@ Function temporally converts data to `EPSG:3857`. Note that it uses multithreadi
 
 `stop_detection` function adds a new boolean column `is_stop`. You can filter only stops using:
 ```
-df_sel = stops[stops['is_stop'] is True]
+df_sel = stops[stops['is_stop'] == True]
 ```
 
 It is also good to drop duplicates, as sometimes these may be created:
