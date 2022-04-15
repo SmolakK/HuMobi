@@ -84,7 +84,7 @@ As you can see:
 Additionally, `TrajectoriesFrame` accepts two metadata arguments:
 * `crs` - Coordinate Reference System number according to EPSG classification 
 * `geom_cols` - indicating two columns with coordinates.
-*
+
 Note that it is important to provide the `delimiter` keyword when it is other than a comma. 
 Giving column names is useful, but `TrajectoriesFrame` will try to figure out which column has a timestamp and which has coordinates. However, to avoid errors provide columns with a timestamp as `time` or `datetime` and columns with geometry as `lat` and `lon`.
 
