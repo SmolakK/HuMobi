@@ -70,7 +70,7 @@ class TemporalAggregator():
 			trajectories_frame: TrajectoriesFrame class object
 			fill_method: Empty records filling method, if 'None' then data is not filled in. Any other value causes use of forward fill.
 			drop_empty (default = False): Determines if empty records should be removed.
-			parallel (default = True): Determines if parralel computing should be used.
+			parallel (default = True): Determines if parallel computing should be used.
 
 		Returns:
 			A temporally aggregated TrajectoriesFrame object

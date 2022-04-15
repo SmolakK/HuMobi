@@ -269,10 +269,10 @@ class SKLearnPred():
 			cur_alg = self._tuned_alg[ids]
 			preds = cur_alg.predict(test_x.loc[ids])
 			metric_val = accuracy_score(preds, test_y.loc[ids])
-			predictions_dic[ids] = (preds, test_y.loc[ids])
+			predictions_dic[ids] = preds
 			metrics[ids] = metric_val
 		self.scores = pd.Series(metrics)
-		self.predictions = pd.concat({k: pd.concat([pd.Series(v[0]),pd.Series(v[1])],axis=1) for k,v in predictions_dic.items()}).droplevel(1)
+		self.predictions = pd.concat([pd.concat({k: pd.Series(v) for k,v in predictions_dic.items()}).droplevel(1),test_y.droplevel(1)],axis=1)
 
 	@property
 	def algorithm(self):

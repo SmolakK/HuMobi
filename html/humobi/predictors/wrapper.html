@@ -68,12 +68,12 @@ class Splitter():
                 n_splits: The number of splits for cross-validation process
         &#34;&#34;&#34;
 
-        def __init__(self, trajectories_frame, split_ratio, horizon, n_splits):
+        def __init__(self, trajectories_frame, split_ratio, horizon = 1, n_splits = 1):
                 &#34;&#34;&#34;
                 Class initialisation. Calls data splitting routine, hence after initialisation data is already prepared.
                 &#34;&#34;&#34;
                 self._data = trajectories_frame
-                self._test_ratio = 1-split_ratio
+                self._train_ratio = 1 - split_ratio
                 if horizon &lt; 1:
                         raise ValueError(&#34;Horizon value has to be a positive integer&#34;)
                 self._horizon = horizon
@@ -87,7 +87,7 @@ class Splitter():
 
         @property
         def test_ratio(self):
-                return self._test_ratio
+                return self._train_ratio
 
         @property
         def horizon(self):
@@ -292,12 +292,15 @@ class SKLearnPred():
                 test_x, test_y = self._test_data
                 usrs = np.unique(test_x.index.get_level_values(0))
                 metrics = {}
+                predictions_dic = {}
                 for ids in tqdm(usrs, total=len(usrs)):
                         cur_alg = self._tuned_alg[ids]
                         preds = cur_alg.predict(test_x.loc[ids])
                         metric_val = accuracy_score(preds, test_y.loc[ids])
+                        predictions_dic[ids] = preds
                         metrics[ids] = metric_val
                 self.scores = pd.Series(metrics)
+                self.predictions = pd.concat([pd.concat({k: pd.Series(v) for k,v in predictions_dic.items()}).droplevel(1),test_y.droplevel(1)],axis=1)
 
         @property
         def algorithm(self):
@@ -332,7 +335,7 @@ class Baseline():
                 aligned = pd.concat([self._test_data[1], self.prediction], axis=1)  # align predictions and true labels
                 acc_score = aligned.groupby(level=0).apply(lambda x: sum(x.iloc[:, 0] == x.iloc[:, 1]) / x.shape[0])  # quickly evaluate the score
                 print(&#34;SCORE: {}&#34;.format(acc_score.mean()))
-                return acc_score
+                return aligned, acc_score
 
 
 class TopLoc():
@@ -370,36 +373,36 @@ class TopLoc():
                 aligned = pd.concat([self._test_data[1], self.prediction], axis=1)
                 acc_score = aligned.groupby(level=0).apply(lambda x: sum(x.iloc[:, 0] == x.iloc[:, 1]) / x.shape[0])
                 print(&#34;SCORE: {}&#34;.format(acc_score.mean()))
-                return acc_score
+                return aligned, acc_score
 
 
-def split(trajectories_frame, test_size, state_size):
+def split(trajectories_frame, train_size, state_size):
         &#34;&#34;&#34;
         Simple train-test data split for a Markov Chain.
 
         Args:
                 trajectories_frame: TrajectoriesFrame class object
-                split_ratio: The split ratio for training set
+                train_size: The split ratio for training set
                 state_size: The size of a window (for a Markov Chain algorithm)
 
         Returns:
                 Split data
         &#34;&#34;&#34;
         train_frame = trajectories_frame[&#39;labels&#39;].groupby(level=0).progress_apply(
-                lambda x: x.iloc[:round(len(x) * test_size)])
+                lambda x: x.iloc[:round(len(x) * train_size)])
         test_frame = trajectories_frame[&#39;labels&#39;].groupby(level=0).progress_apply(
-                lambda x: x.iloc[round(len(x) * test_size) - state_size:])
+                lambda x: x.iloc[round(len(x) * train_size) - state_size:])
         return train_frame, test_frame
 
 
-def markov_wrapper(trajectories_frame, split_ratio=.8, state_size=2, update=False, averaged=True, online=True):
+def markov_wrapper(trajectories_frame, test_size=.2, state_size=2, update=False, online=True):
         &#34;&#34;&#34;
         The wrapper, one stop shop algorithm for the Markov Chain. Splits the data, learns the model and makes predictions
         on the test set.
 
         Args:
                 trajectories_frame: TrajectoriesFrame class object
-                split_ratio: The training set size.
+                test_size: The training set size.
                 state_size: The order of the Markov Chain
                 update: Whether the model should update its beliefs based on own predictions
                 averaged: Whether an averaged accuracy should be returned
@@ -408,7 +411,8 @@ def markov_wrapper(trajectories_frame, split_ratio=.8, state_size=2, update=Fals
         Returns:
                 Prediction scores
         &#34;&#34;&#34;
-        train_frame, test_frame = split(trajectories_frame, split_ratio, state_size)  # train test split
+        train_size = 1 - test_size
+        train_frame, test_frame = split(trajectories_frame, train_size, state_size)  # train test split
         test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
         predictions_dic = {}
         for uid, train_values in train_frame.groupby(level=0):  # training
@@ -421,6 +425,7 @@ def markov_wrapper(trajectories_frame, split_ratio=.8, state_size=2, update=Fals
                 except:
                         continue
         results_dic = {}
+        to_conc = {}
         for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting
                 uid = test_values[0]
                 test_values = test_values[1].values
@@ -428,13 +433,14 @@ def markov_wrapper(trajectories_frame, split_ratio=.8, state_size=2, update=Fals
                         forecast = []
                         for current_state in range(len(test_values) - state_size):
                                 forecast.append(predictions_dic[uid].move(test_values[current_state:current_state + state_size]))
+                        to_conc[uid] = forecast
                         results_dic[uid] = sum(forecast == test_values[state_size:]) / len(forecast)
                 else:
                         results_dic[uid] = sum(test_values == predictions_dic[prediction_values]) / len(test_values)
-        if averaged:
-                return sum(list(results_dic.values())) / len(results_dic.values())
-        else:
-                return results_dic
+                        to_conc[uid] = predictions_dic[prediction_values]
+        predictions = pd.DataFrame.from_dict(to_conc).unstack().droplevel(1)
+        aligned = pd.concat([test_frame.droplevel([1,2]).groupby(level=0).apply(lambda x: x[state_size:]).droplevel([1]),predictions],axis=1)
+        return aligned, pd.DataFrame.from_dict(results_dic,orient=&#39;index&#39;)
 
 
 def sparse_wrapper(trajectories_frame, split_ratio=.8, state_size=0, update=False, averaged=True, online=False):
@@ -506,7 +512,7 @@ def sparse_wrapper(trajectories_frame, split_ratio=.8, state_size=0, update=Fals
 </details>
 </dd>
 <dt id="humobi.predictors.wrapper.markov_wrapper"><code class="name flex">
-<span>def <span class="ident">markov_wrapper</span></span>(<span>trajectories_frame, split_ratio=0.8, state_size=2, update=False, averaged=True, online=True)</span>
+<span>def <span class="ident">markov_wrapper</span></span>(<span>trajectories_frame, test_size=0.2, state_size=2, update=False, online=True)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>The wrapper, one stop shop algorithm for the Markov Chain. Splits the data, learns the model and makes predictions
@@ -515,7 +521,7 @@ on the test set.</p>
 <dl>
 <dt><strong><code>trajectories_frame</code></strong></dt>
 <dd>TrajectoriesFrame class object</dd>
-<dt><strong><code>split_ratio</code></strong></dt>
+<dt><strong><code>test_size</code></strong></dt>
 <dd>The training set size.</dd>
 <dt><strong><code>state_size</code></strong></dt>
 <dd>The order of the Markov Chain</dd>
@@ -532,14 +538,14 @@ on the test set.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def markov_wrapper(trajectories_frame, split_ratio=.8, state_size=2, update=False, averaged=True, online=True):
+<pre><code class="python">def markov_wrapper(trajectories_frame, test_size=.2, state_size=2, update=False, online=True):
         &#34;&#34;&#34;
         The wrapper, one stop shop algorithm for the Markov Chain. Splits the data, learns the model and makes predictions
         on the test set.
 
         Args:
                 trajectories_frame: TrajectoriesFrame class object
-                split_ratio: The training set size.
+                test_size: The training set size.
                 state_size: The order of the Markov Chain
                 update: Whether the model should update its beliefs based on own predictions
                 averaged: Whether an averaged accuracy should be returned
@@ -548,7 +554,8 @@ on the test set.</p>
         Returns:
                 Prediction scores
         &#34;&#34;&#34;
-        train_frame, test_frame = split(trajectories_frame, split_ratio, state_size)  # train test split
+        train_size = 1 - test_size
+        train_frame, test_frame = split(trajectories_frame, train_size, state_size)  # train test split
         test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
         predictions_dic = {}
         for uid, train_values in train_frame.groupby(level=0):  # training
@@ -561,6 +568,7 @@ on the test set.</p>
                 except:
                         continue
         results_dic = {}
+        to_conc = {}
         for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting
                 uid = test_values[0]
                 test_values = test_values[1].values
@@ -568,13 +576,14 @@ on the test set.</p>
                         forecast = []
                         for current_state in range(len(test_values) - state_size):
                                 forecast.append(predictions_dic[uid].move(test_values[current_state:current_state + state_size]))
+                        to_conc[uid] = forecast
                         results_dic[uid] = sum(forecast == test_values[state_size:]) / len(forecast)
                 else:
                         results_dic[uid] = sum(test_values == predictions_dic[prediction_values]) / len(test_values)
-        if averaged:
-                return sum(list(results_dic.values())) / len(results_dic.values())
-        else:
-                return results_dic</code></pre>
+                        to_conc[uid] = predictions_dic[prediction_values]
+        predictions = pd.DataFrame.from_dict(to_conc).unstack().droplevel(1)
+        aligned = pd.concat([test_frame.droplevel([1,2]).groupby(level=0).apply(lambda x: x[state_size:]).droplevel([1]),predictions],axis=1)
+        return aligned, pd.DataFrame.from_dict(results_dic,orient=&#39;index&#39;)</code></pre>
 </details>
 </dd>
 <dt id="humobi.predictors.wrapper.sparse_wrapper"><code class="name flex">
@@ -613,7 +622,7 @@ on the test set.</p>
 </details>
 </dd>
 <dt id="humobi.predictors.wrapper.split"><code class="name flex">
-<span>def <span class="ident">split</span></span>(<span>trajectories_frame, test_size, state_size)</span>
+<span>def <span class="ident">split</span></span>(<span>trajectories_frame, train_size, state_size)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Simple train-test data split for a Markov Chain.</p>
@@ -621,7 +630,7 @@ on the test set.</p>
 <dl>
 <dt><strong><code>trajectories_frame</code></strong></dt>
 <dd>TrajectoriesFrame class object</dd>
-<dt><strong><code>split_ratio</code></strong></dt>
+<dt><strong><code>train_size</code></strong></dt>
 <dd>The split ratio for training set</dd>
 <dt><strong><code>state_size</code></strong></dt>
 <dd>The size of a window (for a Markov Chain algorithm)</dd>
@@ -632,22 +641,22 @@ on the test set.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def split(trajectories_frame, test_size, state_size):
+<pre><code class="python">def split(trajectories_frame, train_size, state_size):
         &#34;&#34;&#34;
         Simple train-test data split for a Markov Chain.
 
         Args:
                 trajectories_frame: TrajectoriesFrame class object
-                split_ratio: The split ratio for training set
+                train_size: The split ratio for training set
                 state_size: The size of a window (for a Markov Chain algorithm)
 
         Returns:
                 Split data
         &#34;&#34;&#34;
         train_frame = trajectories_frame[&#39;labels&#39;].groupby(level=0).progress_apply(
-                lambda x: x.iloc[:round(len(x) * test_size)])
+                lambda x: x.iloc[:round(len(x) * train_size)])
         test_frame = trajectories_frame[&#39;labels&#39;].groupby(level=0).progress_apply(
-                lambda x: x.iloc[round(len(x) * test_size) - state_size:])
+                lambda x: x.iloc[round(len(x) * train_size) - state_size:])
         return train_frame, test_frame</code></pre>
 </details>
 </dd>
@@ -701,7 +710,7 @@ from the test set and thus, has advantage over other methods. Only test dataset 
                 aligned = pd.concat([self._test_data[1], self.prediction], axis=1)  # align predictions and true labels
                 acc_score = aligned.groupby(level=0).apply(lambda x: sum(x.iloc[:, 0] == x.iloc[:, 1]) / x.shape[0])  # quickly evaluate the score
                 print(&#34;SCORE: {}&#34;.format(acc_score.mean()))
-                return acc_score</code></pre>
+                return aligned, acc_score</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -729,7 +738,7 @@ predictions. Predictions are stored within the class attributes.</p>
         aligned = pd.concat([self._test_data[1], self.prediction], axis=1)  # align predictions and true labels
         acc_score = aligned.groupby(level=0).apply(lambda x: sum(x.iloc[:, 0] == x.iloc[:, 1]) / x.shape[0])  # quickly evaluate the score
         print(&#34;SCORE: {}&#34;.format(acc_score.mean()))
-        return acc_score</code></pre>
+        return aligned, acc_score</code></pre>
 </details>
 </dd>
 </dl>
@@ -885,12 +894,15 @@ predictions. Predictions are stored within the class attributes.</p>
                 test_x, test_y = self._test_data
                 usrs = np.unique(test_x.index.get_level_values(0))
                 metrics = {}
+                predictions_dic = {}
                 for ids in tqdm(usrs, total=len(usrs)):
                         cur_alg = self._tuned_alg[ids]
                         preds = cur_alg.predict(test_x.loc[ids])
                         metric_val = accuracy_score(preds, test_y.loc[ids])
+                        predictions_dic[ids] = preds
                         metrics[ids] = metric_val
                 self.scores = pd.Series(metrics)
+                self.predictions = pd.concat([pd.concat({k: pd.Series(v) for k,v in predictions_dic.items()}).droplevel(1),test_y.droplevel(1)],axis=1)
 
         @property
         def algorithm(self):
@@ -1000,19 +1012,22 @@ def algorithm(self):
         test_x, test_y = self._test_data
         usrs = np.unique(test_x.index.get_level_values(0))
         metrics = {}
+        predictions_dic = {}
         for ids in tqdm(usrs, total=len(usrs)):
                 cur_alg = self._tuned_alg[ids]
                 preds = cur_alg.predict(test_x.loc[ids])
                 metric_val = accuracy_score(preds, test_y.loc[ids])
+                predictions_dic[ids] = preds
                 metrics[ids] = metric_val
-        self.scores = pd.Series(metrics)</code></pre>
+        self.scores = pd.Series(metrics)
+        self.predictions = pd.concat([pd.concat({k: pd.Series(v) for k,v in predictions_dic.items()}).droplevel(1),test_y.droplevel(1)],axis=1)</code></pre>
 </details>
 </dd>
 </dl>
 </dd>
 <dt id="humobi.predictors.wrapper.Splitter"><code class="flex name class">
 <span>class <span class="ident">Splitter</span></span>
-<span>(</span><span>trajectories_frame, split_ratio, horizon, n_splits)</span>
+<span>(</span><span>trajectories_frame, split_ratio, horizon=1, n_splits=1)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>This is a Splitter class responsible for data preparation for shallow machine learning-based models from sklearn library.</p>
@@ -1043,12 +1058,12 @@ def algorithm(self):
                 n_splits: The number of splits for cross-validation process
         &#34;&#34;&#34;
 
-        def __init__(self, trajectories_frame, split_ratio, horizon, n_splits):
+        def __init__(self, trajectories_frame, split_ratio, horizon = 1, n_splits = 1):
                 &#34;&#34;&#34;
                 Class initialisation. Calls data splitting routine, hence after initialisation data is already prepared.
                 &#34;&#34;&#34;
                 self._data = trajectories_frame
-                self._test_ratio = 1-split_ratio
+                self._train_ratio = 1 - split_ratio
                 if horizon &lt; 1:
                         raise ValueError(&#34;Horizon value has to be a positive integer&#34;)
                 self._horizon = horizon
@@ -1062,7 +1077,7 @@ def algorithm(self):
 
         @property
         def test_ratio(self):
-                return self._test_ratio
+                return self._train_ratio
 
         @property
         def horizon(self):
@@ -1178,7 +1193,7 @@ def horizon(self):
 </summary>
 <pre><code class="python">@property
 def test_ratio(self):
-        return self._test_ratio</code></pre>
+        return self._train_ratio</code></pre>
 </details>
 </dd>
 </dl>
@@ -1237,7 +1252,7 @@ in the training data.</p>
                 aligned = pd.concat([self._test_data[1], self.prediction], axis=1)
                 acc_score = aligned.groupby(level=0).apply(lambda x: sum(x.iloc[:, 0] == x.iloc[:, 1]) / x.shape[0])
                 print(&#34;SCORE: {}&#34;.format(acc_score.mean()))
-                return acc_score</code></pre>
+                return aligned, acc_score</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -1269,7 +1284,7 @@ in the training data.</p>
         aligned = pd.concat([self._test_data[1], self.prediction], axis=1)
         acc_score = aligned.groupby(level=0).apply(lambda x: sum(x.iloc[:, 0] == x.iloc[:, 1]) / x.shape[0])
         print(&#34;SCORE: {}&#34;.format(acc_score.mean()))
-        return acc_score</code></pre>
+        return aligned, acc_score</code></pre>
 </details>
 </dd>
 </dl>

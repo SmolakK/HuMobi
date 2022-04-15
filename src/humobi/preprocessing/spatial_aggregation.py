@@ -117,14 +117,14 @@ class GridAggregation():
 			assigned_y = centroid_y[lower_y]
 		return assigned_x, assigned_y
 
-	def aggregate(self, trajectories_frame, inplace=True, parralel=False):
+	def aggregate(self, trajectories_frame, inplace=True, parallel=False):
 		"""
 		Aggregates TrajectoriesFrame object spatially.
 
 		Args:
 			trajectories_frame: TrajectoriesFrame class object
 			inplace: determines if coordinates should be overwritten. If false, a new column is added.
-			parralel: determines if should uses multithreading (default = False, because it is slower for small data)
+			parallel: determines if should uses multithreading (default = False, because it is slower for small data)
 
 		Returns:
 			A TrajectoriesFrame with aggregated geometry.
@@ -142,7 +142,7 @@ class GridAggregation():
 		centroid_x = moving_average(x)
 		centroid_y = moving_average(y)
 		agg_dict = {}
-		if parralel:
+		if parallel:
 			with cf.ThreadPoolExecutor(max_workers=6) as executor:
 				indis = [indi for indi, val in trajectories_frame['geometry'].iteritems()]
 				vals = [val for indi, val in trajectories_frame['geometry'].iteritems()]
