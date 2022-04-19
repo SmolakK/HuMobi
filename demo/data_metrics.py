@@ -11,7 +11,7 @@ crs = df_sel.crs  # STORE CRS
 # INDIVIDUAL METRICS
 distinct_total = num_of_distinct_locations(df_sel)
 vfreq = visitation_frequency(df_sel)
-distinct_over_time = distinct_locations_over_time(df_sel, time_unit='1H', reaggregate=False)
+distinct_over_time = distinct_locations_over_time(df_sel, resolution='1H', reaggregate=False)
 jump = jump_lengths(df_sel)
 trips = nonzero_trips(df_sel)
 st = self_transitions(df_sel)

@@ -34,7 +34,7 @@ IGA = iterative_global_alignment(train_frame=X, test_frame=Y)
 toploc_results = TopLoc(train_data=cv_data,
                         test_data=[data_splitter.test_frame_X, data_splitter.test_frame_Y]).predict()
 
-# DEEP LEARNING METHODS
+# # DEEP LEARNING METHODS
 GRU = DeepPred("GRU", markovian_seq, test_size=.2, folds=5, window_size=5, batch_size=50, embedding_dim=512,
                 rnn_units=1024)
 GRU.learn_predict()
@@ -56,7 +56,7 @@ predic.test()
 rf_scores = predic.scores
 
 # MARKOV CHAINS
-MC1 = markov_wrapper(markovian_seq, test_size=.2, state_size=1, update=False, averaged=False, online=True)
-MC2 = markov_wrapper(markovian_seq, test_size=.2, state_size=2, update=False, averaged=False, online=True)
-MC2_offline = markov_wrapper(markovian_seq, test_size=.2, state_size=2, update=False, averaged=False, online=False)
-MC2_updated = markov_wrapper(markovian_seq, test_size=.2, state_size=2, update=False, averaged=False, online=False)
+MC1 = markov_wrapper(markovian_seq, test_size=.2, state_size=1, update=False, online=True)
+MC2 = markov_wrapper(markovian_seq, test_size=.2, state_size=2, update=False, online=True)
+MC2_offline = markov_wrapper(markovian_seq, test_size=.2, state_size=2, update=False, online=False)
+MC2_updated = markov_wrapper(markovian_seq, test_size=.2, state_size=2, update=False, online=False)

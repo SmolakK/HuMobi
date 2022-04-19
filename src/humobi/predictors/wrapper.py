@@ -408,7 +408,7 @@ def markov_wrapper(trajectories_frame, test_size=.2, state_size=2, update=False,
 			to_conc[uid] = forecast
 			results_dic[uid] = sum(forecast == test_values[state_size:]) / len(forecast)
 		else:
-			results_dic[uid] = sum(test_values == predictions_dic[prediction_values]) / len(test_values)
+			results_dic[uid] = sum(test_values[state_size:] == predictions_dic[prediction_values]) / len(test_values)
 			to_conc[uid] = predictions_dic[prediction_values]
 	predictions = pd.DataFrame.from_dict(to_conc).unstack().droplevel(1)
 	aligned = pd.concat([test_frame.droplevel([1,2]).groupby(level=0).apply(lambda x: x[state_size:]).droplevel([1]),predictions],axis=1)

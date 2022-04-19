@@ -113,6 +113,7 @@ class MarkovChain(object):
 		"""
 		predicted_sequence = []
 		recent_state = self.sequence[-self.state_size:]
+		horizon -= self.state_size
 		for steps in range(horizon):
 			prediction = self.move(recent_state)
 			predicted_sequence.append(prediction)

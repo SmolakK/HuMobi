@@ -27,7 +27,7 @@ df_sel_dbscan_time = time_agg.aggregate(df_sel_dbscan, parallel=True)  # TEMPORA
 gird_resolution = 1000  # DEFINE SPATIAL UNIT (GRID)
 time_unit = '1H'  # DEFINE TEMPORAL UNIT
 grid_agg = GridAggregation(gird_resolution)  # DEFINE GRID AGGREGATION ALGORITHM
-df_sel_grid = grid_agg.aggregate(df_sel, parralel=False)  # CALL AGGREGATION
+df_sel_grid = grid_agg.aggregate(df_sel, parallel=False)  # CALL AGGREGATION
 time_agg = TemporalAggregator(time_unit)  # DEFINE TEMPORAL AGGREGATION ALGORITHM
 df_sel_grid_time = time_agg.aggregate(df_sel_grid)  # AGGREGATION CALL
 
