@@ -51,7 +51,7 @@ Setting a proper working environment for this library can be tricky through the 
 * biopython >=1.78
 * shapely >=1.7.1
 * numba >= 0.51.2
-* tensorflow-gpu
+* tensorflow-gpu >= 2.4.1
 * geofeather >=0.3.0
 
 # Getting started
