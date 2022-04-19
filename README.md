@@ -42,17 +42,17 @@ $ pip install HuMobi
 ```
 
 Setting a proper working environment for this library can be tricky through the combination of specific libraries. Therefore, setting up virtualenv is recommended. Required dependencies for this library are:
-* pandas
-* geopandas
-* tqdm
-* scipy
-* numpy
-* scikit-learn
-* Biopython
-* shapely
-* numba
+* pandas >=1.1.5
+* geopandas >=0.8.1
+* tqdm >=4.59.0
+* scipy >=1.5.2
+* numpy >=0.19.5
+* scikit-learn >=0.23.2
+* biopython >=1.78
+* shapely >=1.7.1
+* numba >= 0.51.2
 * tensorflow-gpu
-* geofeather
+* geofeather >=0.3.0
 
 # Getting started
 
