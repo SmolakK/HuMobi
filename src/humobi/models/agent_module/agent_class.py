@@ -1,4 +1,4 @@
-from src.humobi.structures.trajectory import TrajectoriesFrame
+from humobi.structures.trajectory import TrajectoriesFrame
 import sys
 from shapely.geometry import Polygon
 

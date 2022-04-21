@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.cluster import DBSCAN, KMeans
 from sklearn.metrics import silhouette_score, calinski_harabasz_score
 sys.path.append("..")
-from src.humobi.models.spatial_tools.misc import rank_freq, normalize_array
+from humobi.models.spatial_tools.misc import rank_freq, normalize_array
 from scipy import stats
 from collections import Counter
 WEIGHT = False

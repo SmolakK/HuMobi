@@ -31,7 +31,7 @@ consecutive = consecutive_record(df_sel, resolution='1H')  # THE LONGEST CONSECU
 
 # FILTRATION WITH USER STATISTICS
 frac = fraction_of_empty_records(df_sel, '1H')
-level1 = set(frac[frac < 0.9].index)  # FRACTION OF MISSING RECORDS < 0.6
+level1 = set(frac[frac < 0.6].index)  # FRACTION OF MISSING RECORDS < 0.6
 
 traj_dur = user_trajectories_duration(df_sel, '1D')
 level2 = set(traj_dur[traj_dur > 6].index)  # MORE THAN 6 DAYS OF DATA

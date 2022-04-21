@@ -142,7 +142,7 @@ def _repeatfinder_dense(s1, s2):
 			if j > max_s:
 				max_s = j
 		output[pos1] = max_s
-	return max(output) / len(s2)
+	return max(output)-1 / len(s2)-1
 
 
 @jit
@@ -158,7 +158,7 @@ def _repeatfinder_sparse(s1, s2):
 			else:
 				matrix[i][j] = max(matrix[i - 1][j], matrix[i][j - 1])
 	cs = matrix[-1][-1]
-	return cs / len(s2)
+	return cs-1 / len(s2)-1
 
 
 def _repeatfinder_equally_sparse(s1, s2):
@@ -197,7 +197,7 @@ def _global_align(s1, s2):
 		pairwise2.align.globalms(one, two, 1, -1, -1, 0, penalize_end_gaps=False, one_alignment_only=True,
 		                         gap_char=['-'])[
 			0]
-	return alignment.score / (len(two))
+	return alignment.score / (len(two)-1)
 
 
 def _iterative_global_align(s1, s2):

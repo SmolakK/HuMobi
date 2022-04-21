@@ -1,13 +1,13 @@
-from src.humobi.structures.trajectory import TrajectoriesFrame
+from humobi.structures.trajectory import TrajectoriesFrame
 import sys
 sys.path.append("..")
-from src.humobi.models.temporal_tools import cluster_traj
-from src.humobi.models.spatial_tools import misc, distributions, generating, filtering
-from src.humobi.models.mobility_model import data_generating
-from src.humobi.misc import create_layer
-from src.humobi.models.spatial_tools.misc import rank_freq
+from humobi.models.temporal_tools import cluster_traj
+from humobi.models.spatial_tools import misc, distributions, generating, filtering
+from humobi.models.mobility_model import data_generating
+from humobi.misc import create_layer
+from humobi.models.spatial_tools.misc import rank_freq
 from math import ceil
-from src.humobi.models.agent_module.generate_agents import generate_agents
+from humobi.models.agent_module.generate_agents import generate_agents
 
 
 WEIGHT = False

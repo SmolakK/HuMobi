@@ -3,8 +3,8 @@ import geopandas as gpd
 import sys
 
 sys.path.append("..")
-from src.humobi.misc.utils import normalize
-from src.humobi.models.spatial_tools.misc import rank_freq
+from humobi.misc.utils import normalize
+from humobi.models.spatial_tools.misc import rank_freq
 
 
 def calculate_distances(gs1, gs2):
