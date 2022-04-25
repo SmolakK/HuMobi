@@ -1,5 +1,5 @@
-from humobi.structures.trajectory import TrajectoriesFrame
 import sys
+from ...structures.trajectory import TrajectoriesFrame
 from shapely.geometry import Polygon
 
 sys.path.append("..")

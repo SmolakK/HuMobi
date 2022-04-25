@@ -1,5 +1,5 @@
 import numpy as np
-from humobi.models.spatial_tools.misc import normalize_array
+from ...models.spatial_tools.misc import normalize_array
 WEIGHT = False
 
 

@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-from humobi.models.spatial_tools.misc import normalize_array
+from ...models.spatial_tools.misc import normalize_array
 import matplotlib.pyplot as plt
 from shapely.geometry import Point, Polygon
 import math

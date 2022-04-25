@@ -1,7 +1,7 @@
 # IMPORTS
 import numpy as np
 import pandas as pd
-from humobi.structures.trajectory import TrajectoriesFrame
+from ..structures.trajectory import TrajectoriesFrame
 from tqdm import tqdm
 tqdm.pandas()
 import concurrent.futures as cf

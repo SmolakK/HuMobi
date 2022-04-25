@@ -11,10 +11,10 @@ def normalize_chain(dicto):
 	Normalizes dictionary values. Used for the Markov Chain normalization.
 
 	Args:
-		dicto: dictionary to normalize
+		dicto: dictionary to ..
 
 	Returns:
-		normalized dictionary
+		..d dictionary
 	"""
 	total = 1 / float(np.sum(list(dicto.values())))
 	for k, v in dicto.items():

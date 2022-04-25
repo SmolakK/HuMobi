@@ -1,13 +1,13 @@
 # IMPORTS
-from humobi.preprocessing.temporal_aggregation import TemporalAggregator
+from ..preprocessing.temporal_aggregation import TemporalAggregator
 import numpy as np
 import pandas as pd
-from humobi.tools.processing import groupwise_normalise, groupwise_expansion
-from humobi.misc.utils import *
-from humobi.misc.utils import _repeatfinder_dense, _repeatfinder_sparse, _repeatfinder_equally_sparse, \
+from ..tools.processing import groupwise_normalise, groupwise_expansion
+from ..misc.utils import *
+from ..misc.utils import _repeatfinder_dense, _repeatfinder_sparse, _repeatfinder_equally_sparse, \
 	_global_align, _iterative_global_align
 from tqdm import tqdm
-from humobi.structures.trajectory import TrajectoriesFrame
+from ..structures.trajectory import TrajectoriesFrame
 tqdm.pandas()
 import concurrent.futures as cf
 from math import ceil
@@ -619,7 +619,7 @@ def iterative_global_alignment(train_frame, test_frame):
 		test_frame: TrajectoriesFrame class object with the test data
 
 	Returns:
-		a Series with global alginment metric values for each user
+		a Series with global alignment metric values for each user
 	"""
 	result_dic = {}
 	with cf.ThreadPoolExecutor() as executor:
