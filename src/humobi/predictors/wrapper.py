@@ -415,9 +415,10 @@ def markov_wrapper(trajectories_frame, test_size=.2, state_size=2, update=False,
 	return aligned, pd.DataFrame.from_dict(results_dic,orient='index')
 
 
-def sparse_wrapper(trajectories_frame, split_ratio=.8, state_size=0, update=False, averaged=True, online=False):
+def sparse_wrapper(trajectories_frame, test_size=.2, state_size=0, update=False, averaged=True, online=False):
 	"""
 	"""
+	split_ratio = 1 - test_size
 	train_frame, test_frame = split(trajectories_frame, split_ratio, state_size)
 	test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
 	predictions_dic = {}
@@ -428,8 +429,8 @@ def sparse_wrapper(trajectories_frame, split_ratio=.8, state_size=0, update=Fals
 		uid = test_values[0]
 		test_values = test_values[1].values
 		forecast = []
-		split_ind = round(trajectories_frame.uloc(uid).shape[0]*split_ratio)
-		for n in range(test_lengths.loc[uid]):
+		split_ind = round(trajectories_frame.uloc(uid).shape[0] * split_ratio)
+		for n in tqdm(range(test_lengths.loc[uid]),total = test_lengths.loc[uid]):
 			context = trajectories_frame.uloc(uid).iloc[:split_ind].labels.values
 			pred = predictions_dic[uid].predict(context)
 			forecast.append(pred)

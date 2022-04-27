@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from ..structures.trajectory import TrajectoriesFrame
 
 
 def _Mseq(places,length,prob):
@@ -49,7 +50,7 @@ def markovian_sequences_generator(users,places,length,prob):
 	generated_frame = generated_frame.reset_index()
 	generated_frame.columns = ['user_id', 'datetime', 'labels']
 	generated_frame = generated_frame.set_index(['user_id','datetime'])
-	return generated_frame
+	return TrajectoriesFrame(generated_frame)
 
 
 def random_sequences_generator(users,places,length):
@@ -82,7 +83,7 @@ def random_sequences_generator(users,places,length):
 	generated_frame = generated_frame.reset_index()
 	generated_frame.columns = ['user_id', 'datetime', 'labels']
 	generated_frame = generated_frame.set_index(['user_id','datetime'])
-	return generated_frame
+	return TrajectoriesFrame(generated_frame)
 
 
 def deterministic_sequences_generator(users,places,repeats):
@@ -116,7 +117,7 @@ def deterministic_sequences_generator(users,places,repeats):
 	generated_frame = generated_frame.reset_index()
 	generated_frame.columns = ['user_id', 'datetime', 'labels']
 	generated_frame = generated_frame.set_index(['user_id','datetime'])
-	return generated_frame
+	return TrajectoriesFrame(generated_frame)
 
 
 def exploratory_sequences_generator(users, places):
@@ -145,7 +146,7 @@ def exploratory_sequences_generator(users, places):
 	generated_frame = generated_frame.reset_index()
 	generated_frame.columns = ['user_id', 'datetime', 'labels']
 	generated_frame = generated_frame.set_index(['user_id','datetime'])
-	return generated_frame
+	return TrajectoriesFrame(generated_frame)
 
 
 def self_transitions_sequences_generator(users,places,length):
@@ -182,7 +183,7 @@ def self_transitions_sequences_generator(users,places,length):
 	generated_frame = generated_frame.reset_index()
 	generated_frame.columns = ['user_id', 'datetime', 'labels']
 	generated_frame = generated_frame.set_index(['user_id','datetime'])
-	return generated_frame
+	return TrajectoriesFrame(generated_frame)
 
 
 def non_stationary_sequences_generator(users, places, states, length):
@@ -230,4 +231,4 @@ def non_stationary_sequences_generator(users, places, states, length):
 	generated_frame = generated_frame.reset_index()
 	generated_frame.columns = ['user_id', 'datetime', 'labels']
 	generated_frame = generated_frame.set_index(['user_id','datetime'])
-	return generated_frame
+	return TrajectoriesFrame(generated_frame)

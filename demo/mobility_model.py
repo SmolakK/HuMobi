@@ -1,0 +1,1 @@
+from src.humobi.models.mobility_model.data_generating import data_generator

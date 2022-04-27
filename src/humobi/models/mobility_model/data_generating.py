@@ -10,14 +10,18 @@ WEIGHT = False
 def data_generator(start, agents, clusters, circadian_rhythm, end=None, duration=None, output_format = 'csv', output_style = 'user'):
 	"""
 	Produces a time-step-based simulation for every agent.
-	:param start: contains a string value which determinates a start of simulation, format: 'day.month.year'
-	:param end: contains a string value which determinates an end of simulation, format: 'day.month.year'
-	:param agents: contains a list with instances of Agent Class
-	:param clusters: contains a list with clusters numbers
-	:param duration: (an optional parameter) contains a duration of simulation
-	:param output_format: contains a string with the format of output file: csv,feather or parquet
-	:param output_style: contains a string 'user' or 'slot' which determinates a layout of the output file
-	:return: a list with agents for each slot of simulation
+
+	Args:
+		start: contains a string value which determinates a start of simulation, format: 'day.month.year'
+		end: contains a string value which determinates an end of simulation, format: 'day.month.year'
+		agents: contains a list with instances of Agent Class
+		clusters: contains a list with clusters numbers
+		duration: (an optional parameter) contains a duration of simulation
+		output_format: contains a string with the format of output file: csv,feather or parquet
+		output_style: contains a string 'user' or 'slot' which determinates a layout of the output file
+
+	Returns:
+		a list with agents for each slot of simulation
 	"""
 	start = pd.to_datetime(start)
 	if duration is None:

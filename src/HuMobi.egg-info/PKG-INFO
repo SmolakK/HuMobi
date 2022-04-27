@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: HuMobi
-Version: 0.1.4
+Version: 0.1.5
 Summary: A library dedicated to human mobility data processing
 Home-page: https://github.com/SmolakK/HuMobi
 Author: Kamil Smolak
@@ -58,17 +58,17 @@ $ pip install HuMobi
 ```
 
 Setting a proper working environment for this library can be tricky through the combination of specific libraries. Therefore, setting up virtualenv is recommended. Required dependencies for this library are:
-* pandas
-* geopandas
-* tqdm
-* scipy
-* numpy
-* scikit-learn
-* Biopython
-* shapely
-* numba
-* tensorflow-gpu
-* geofeather
+* pandas >=1.1.5
+* geopandas >=0.8.1
+* tqdm >=4.59.0
+* scipy >=1.5.2
+* numpy >=0.19.5
+* scikit-learn >=0.23.2
+* biopython >=1.78
+* shapely >=1.7.1
+* numba >= 0.51.2
+* tensorflow-gpu >= 2.4.1
+* geofeather >=0.3.0
 
 # Getting started
 
@@ -257,7 +257,7 @@ Function temporally converts data to `EPSG:3857`. Note that it uses multithreadi
 
 `stop_detection` function adds a new boolean column `is_stop`. You can filter only stops using:
 ```
-df_sel = stops[stops['is_stop'] is True]
+df_sel = stops[stops['is_stop'] == True]
 ```
 
 It is also good to drop duplicates, as sometimes these may be created:

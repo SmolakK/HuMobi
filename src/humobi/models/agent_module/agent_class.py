@@ -9,12 +9,14 @@ import geopandas as gpd
 
 class Agent:
 	"""
-	An Agent class
-	:param sig_locs: contains significant locations,
-	:param temporal_mechanism: contains temporal mechanism,
-	:param spatial_mechanism: contains spatial mechanism,
-	:param cluster: contains the label of cluster,
-	:param activity_area: contains the area of activity.
+	An Agent class.
+
+	Args:
+		sig_locs: contains significant locations,
+		temporal_mechanism: contains temporal mechanism,
+		spatial_mechanism: contains spatial mechanism,
+		cluster: contains the label of cluster,
+		activity_area: contains the area of activity.
 	"""
 
 	def __init__(self, sig_locs, temporal_mechanism, spatial_mechanism, cluster, activity_area):

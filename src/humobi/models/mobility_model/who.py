@@ -4,7 +4,7 @@ sys.path.append("..")
 from ...models.temporal_tools import cluster_traj
 from ...models.spatial_tools import misc, distributions, generating, filtering
 from ...models.mobility_model import data_generating
-from ...misc import create_layer
+from ...misc import create_grid
 from ...models.spatial_tools.misc import rank_freq
 from math import ceil
 from ...models.agent_module.generate_agents import generate_agents
@@ -21,7 +21,7 @@ trajectories_frame = TrajectoriesFrame(path, {
 
 circadian_collection, cluster_association, cluster_share = cluster_traj.cluster_trajectories(trajectories_frame, weights=WEIGHT)
 commute_dist = distributions.commute_distances(trajectories_frame, quantity = 2)
-layer = create_layer.create_grid(trajectories_frame, resolution = SIDE)
+layer = create_grid.create_grid(trajectories_frame, resolution = SIDE)
 layer = filtering.filter_layer(layer,trajectories_frame)
 unique_labels = set(cluster_association.values()).difference(set([-1]))
 sig_frame = rank_freq(trajectories_frame, quantity = 2)

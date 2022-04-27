@@ -5,7 +5,6 @@ from numba import cuda, jit
 from math import ceil
 from Bio import pairwise2
 
-
 def normalize_chain(dicto):
 	"""
 	Normalizes dictionary values. Used for the Markov Chain normalization.
