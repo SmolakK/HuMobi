@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
-from ..misc.utils import to_labels
+from src.humobi.misc.utils import to_labels
 from tqdm import tqdm
 tqdm.pandas()
-from ..predictors.markov import MarkovChain
-from ..predictors.sparse import Sparse
+from src.humobi.predictors.markov import MarkovChain
+from src.humobi.predictors.sparse import Sparse
 from sklearn.model_selection import TimeSeriesSplit
 import itertools
 from sklearn.metrics import accuracy_score, confusion_matrix

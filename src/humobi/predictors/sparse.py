@@ -1,6 +1,6 @@
 import numpy as np
 import tqdm
-from ..misc.utils import get_diags, normalize_chain, _equally_sparse_match
+from src.humobi.misc.utils import get_diags, normalize_chain, _equally_sparse_match
 
 
 class Sparse(object):

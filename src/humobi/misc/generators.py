@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from ..structures.trajectory import TrajectoriesFrame
+from src.humobi.structures.trajectory import TrajectoriesFrame
 
 
 def _Mseq(places,length,prob):

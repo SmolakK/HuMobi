@@ -1,4 +1,4 @@
-from ..misc.utils import resolution_to_points, moving_average
+from src.humobi.misc.utils import resolution_to_points, moving_average
 import numpy as np
 from math import ceil
 from shapely import geometry
