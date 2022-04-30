@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: HuMobi
-Version: 0.1.5
+Version: 0.1.6
 Summary: A library dedicated to human mobility data processing
 Home-page: https://github.com/SmolakK/HuMobi
 Author: Kamil Smolak
@@ -29,9 +29,9 @@ License-File: LICENSE
  
 ## General Info
 This is the HuMobi library. It is a dedicated Python library for human mobility data processing, which mostly extends Pandas
-DataFrames and Geopandas GeoDataFrames facilitate operating on a very specific data structure of individual mobility trajectories. Below you will find info on how to install a HuMobi library on your computer and some demos covering most of the library functionalities.
+DataFrames and Geopandas GeoDataFrames and facilitates operating on a very specific data structure of individual mobility trajectories. Below you will find info on how to install HuMobi library on your computer and a set of demos covering most of the library functionalities.
 
-This library is mainly devoted to processing individual mobility trajectories and focuses on human mobility prediction and modelling. Initially, it was implemented during PhD studies by Kamil Smolak, a PhD candidate at the Wrocław University of Environmental and Life Sciences.
+This library is mainly devoted to processing individual mobility trajectories and focuses on human mobility prediction and modelling. Initially, it was implemented during PhD studies of Kamil Smolak, a PhD candidate at the Wrocław University of Environmental and Life Sciences.
 
 If you use this library please cite the below work:
 ```
@@ -42,11 +42,11 @@ It is a constantly expanding project, and new functionalities are added as you r
 
 Current functionalities of HuMobi library cover:
 * The basic class of TrajectoriesFrame which is used to load and store the mobility data. You will find that class in the
-structures directory.
-* Measures of individual and collective statistics for human mobility.
-* Useful functions for data processing.
-* Next-place and next time-bin prediction methods, including Markov Chains, deep-learning and shallow-learning models.
-* Preprocessing methods for data aggregation and filtering.
+`structures` directory;
+* Measures for individual and collective statistics in human mobility;
+* Useful functions for data processing;
+* Next-place and next time-bin prediction methods, including Markov Chains, deep-learning and shallow-learning models;
+* Preprocessing methods for data aggregation and filtering;
 * Other useful tools for data processing.
 
 ## Installing HuMobi
@@ -72,7 +72,7 @@ Setting a proper working environment for this library can be tricky through the 
 
 # Getting started
 
-Below are demos of various functionalities of this library. These cover majority of these library abilities. Note that this will be expanded in the future - including this documentation. For method attributes and functions see the documentation in the HTML folder.
+Below are the demos of various functionalities of this library. These cover most of the abilities of the current status of HuMobi. Note that this will be expanded in the future - including this documentation. For the method attributes and functions see the documentation in the HTML folder.
 
 Some methods and functions need some time to execute. The `tqdm` library enables progress bars, which will estimate the remaining computation time.
 
@@ -190,7 +190,7 @@ You can use standard `loc` and `iloc` pandas commends, too.
 
 ### Users statistics
 
-Many data selection methods are based on choosing users who have certain global statistics, like data completeness or trajectories duration. Module `tools.user_statistics` contains some metrics which can be used to calculate them. All results are returned as pandas `Series` with user id as index and statistics as values. Available statistics include:
+Many data selection methods are based on choosing users who have certain global statistics, like data completeness or trajectory duration. Module `tools.user_statistics` contains some metrics which can be used to calculate them. All results are returned as pandas `Series` with user id as index and statistics as values. Available statistics include:
 
 #### Fraction of empty records
 The fraction of empty records is expressed in a given temporal resolution. This is calculated globally - you can limit the timeframe using selection methods or use it together with `pd.rolling` to have a moving value.
@@ -562,7 +562,7 @@ Random sequences, where each symbol is randomly generated from the available voc
 random_seq = random_sequences_generator(users=10, places=10, length=100)
 ```
 
-### Determinisitc sequences
+### Deterministic sequences
 
 Deterministic sequences follow a series of incrementing symbols up to the size of the vocabulary. At the end of vocabulary, series are repeated. For example, when vocabulary size is 4, then sequence will follow routine `[0, 1, 2, 3, 0, 1, 2, 3, 1, ...]`. Additional `repeats` parameters can be determined. It can be a single value or a list of values to randomly pick from.
 ```
