@@ -711,4 +711,4 @@ This will return pd.Series with values calculated for each user in the data.
 
 One of the known issues is related to crs metadata setting. It may happen, that giving the `crs` argument to `TrajectoriesFrame` does not assign it to the dataset. This is a well known GeoPandas library and Anaconda issue. Proper setting of the proj4 library solves this problem.
 
-Based on Dorregaray's answer from here: [StackOverflow question](#https://stackoverflow.com/questions/55390492/runtimeerror-bno-arguments-in-initialization-list/58009620#58009620), a solution is to edit the `datadir.py` file located in `...\Anaconda3\Lib\site-packages\pyproj`. It should be moved to `.../Anaconda3/Library/share`.
+Based on Dorregaray's answer from here: [StackOverflow question](#https://stackoverflow.com/questions/55390492/runtimeerror-bno-arguments-in-initialization-list/58009620#58009620), a solution is to edit the path in the `datadir.py` file located in `...\Anaconda3\Lib\site-packages\pyproj`. It should renamed to `.../Anaconda3/Library/share`.
