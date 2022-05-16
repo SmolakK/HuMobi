@@ -67,7 +67,7 @@ def user_trajectories_duration(trajectories_frame, resolution, count_empty=True)
 	if count_empty:
 		total_time_duration = total_time_duration.groupby(level=0).count()
 	else:
-		total_time_duration = total_time_duration[total_time_duration == 1].groupby(level=0).count()
+		total_time_duration = total_time_duration[total_time_duration >= 1].groupby(level=0).count()
 	return total_time_duration
 
 

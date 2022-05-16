@@ -262,7 +262,7 @@ class LayerAggregator():
 	A class for movement trajectories spatial aggregation. This one uses external data (spatial layer) to aggregate data.
 	"""
 
-	def __init__(self, layer, kwargs):
+	def __init__(self, layer, kwargs={}):
 		"""
 		Class initalisation.
 
@@ -286,14 +286,15 @@ class LayerAggregator():
 		Returns:
 			An aggregated TrajectoriesFrame instance
 		"""
+		self._layer = self.layer.to_crs(trajectories_frame.crs)
 		aggregated_frame = gpd.tools.sjoin(trajectories_frame.reset_index(), self.layer, how='left')
 		centroid_layer = self.layer['geometry'].centroid
-		aggregated_frame = aggregated_frame[["ID", "datetime", 'index_right']]
+		aggregated_frame = aggregated_frame[["user_id", "datetime", 'index_right']]
 		aggregated_frame = pd.merge(aggregated_frame, pd.DataFrame(centroid_layer), left_on='index_right',
 		                            right_index=True)
 		if dropoverwirte:
-			trajectories_frame = trajectories_frame.join(aggregated_frame.set_index(['ID', "datetime"]), how='inner')
+			trajectories_frame = trajectories_frame.join(aggregated_frame.set_index(["user_id", "datetime"]), how='inner')
 		else:
-			trajectories_frame = trajectories_frame.join(aggregated_frame.set_index(['ID', "datetime"]))
+			trajectories_frame = trajectories_frame.join(aggregated_frame.set_index(["user_id", "datetime"]))
 		trajectories_frame['geometry'] = trajectories_frame.iloc[:, -1]
 		return trajectories_frame

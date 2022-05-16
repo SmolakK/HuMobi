@@ -1,4 +1,4 @@
-from ...models.agent_module.agent_class import Agent
+from src.humobi.models.agent_module.agent_class import Agent
 
 
 def _generate_agent(cluster_id, home, work, area):

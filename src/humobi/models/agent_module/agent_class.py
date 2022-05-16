@@ -1,11 +1,3 @@
-import sys
-from ...structures.trajectory import TrajectoriesFrame
-from shapely.geometry import Polygon
-
-sys.path.append("..")
-import pandas as pd
-import geopandas as gpd
-
 
 class Agent:
 	"""

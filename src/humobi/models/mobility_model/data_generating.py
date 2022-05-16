@@ -1,8 +1,8 @@
 import pandas as pd, geopandas as gpd
 import sys
 sys.path.append("..")
-from ...models.temporal_tools import when
-from ...models.spatial_modules import where
+from src.humobi.models.temporal_tools import when
+from src.humobi.models.spatial_modules import where
 # from humobi.misc import export_to_file
 WEIGHT = False
 
@@ -12,13 +12,13 @@ def data_generator(start, agents, clusters, circadian_rhythm, end=None, duration
 	Produces a time-step-based simulation for every agent.
 
 	Args:
-		start: contains a string value which determinates a start of simulation, format: 'day.month.year'
-		end: contains a string value which determinates an end of simulation, format: 'day.month.year'
+		start: contains a string value which determines a start of simulation, format: 'day.month.year'
 		agents: contains a list with instances of Agent Class
 		clusters: contains a list with clusters numbers
+		end: contains a string value which determines an end of simulation, format: 'day.month.year'
 		duration: (an optional parameter) contains a duration of simulation
 		output_format: contains a string with the format of output file: csv,feather or parquet
-		output_style: contains a string 'user' or 'slot' which determinates a layout of the output file
+		output_style: contains a string 'user' or 'slot' which determines a layout of the output file
 
 	Returns:
 		a list with agents for each slot of simulation

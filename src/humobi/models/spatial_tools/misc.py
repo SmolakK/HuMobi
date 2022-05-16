@@ -1,4 +1,5 @@
 import pandas as pd
+from src.humobi.misc.utils import to_labels
 
 
 def normalize_array(arr):
@@ -21,12 +22,15 @@ def rank_freq(trajectories_frame, quantity=2):
 	:param quantity: The number of location to rank
 	:return: Ranked locations
 	"""
-	top_places = trajectories_frame.groupby(
-		[trajectories_frame.index.get_level_values(0), 'labels']).count().reset_index()
-	top_places = pd.DataFrame(top_places).groupby('id').apply(lambda x: x.sort_values('temp', ascending=False)).reset_index(drop=True)
-	merged = pd.merge(top_places[['id', 'labels']], trajectories_frame.reset_index(), on=['id', 'labels'], how='left')[['id', 'labels', 'geometry']].drop_duplicates()
+	if not 'labels' in trajectories_frame:
+		to_labels(trajectories_frame)
+	filtered_trajectories_frame = trajectories_frame[trajectories_frame.geometry.is_valid]
+	top_places = filtered_trajectories_frame.groupby(
+		[filtered_trajectories_frame.index.get_level_values(0), 'labels']).count().reset_index()
+	top_places = pd.DataFrame(top_places).groupby('user_id').apply(lambda x: x.sort_values('temp', ascending=False)).reset_index(drop=True)
+	merged = pd.merge(top_places[['user_id', 'labels']], filtered_trajectories_frame.reset_index(), on=['user_id', 'labels'], how='left')[['user_id', 'labels', 'geometry']].drop_duplicates()
 	if quantity == 1:
-		unstacked = merged.groupby('id')['geometry'].apply(lambda x: x.reset_index(drop=True)).unstack().iloc[:,quantity - 1]
+		unstacked = merged.groupby('user_id')['geometry'].apply(lambda x: x.reset_index(drop=True)).unstack().iloc[:,quantity - 1]
 	else:
-		unstacked = merged.groupby('id')['geometry'].apply(lambda x: x.reset_index(drop=True)).unstack().iloc[:,:quantity]
+		unstacked = merged.groupby('user_id')['geometry'].apply(lambda x: x.reset_index(drop=True)).unstack().iloc[:,:quantity]
 	return unstacked
