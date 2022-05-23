@@ -1,6 +1,7 @@
 # IMPORTS
 import numpy as np
 import pandas as pd
+import geopandas as gpd
 from src.humobi.structures.trajectory import TrajectoriesFrame
 from tqdm import tqdm
 tqdm.pandas()
@@ -67,6 +68,10 @@ def _user_stops(indi, single_trajectory, distance_condition, time_condition):
 	if 'datetime' not in single_trajectory.columns:
 		single_trajectory = single_trajectory.reset_index()
 	single_trajectory['datetime'] = pd.to_datetime(single_trajectory['datetime'])
+	if single_trajectory.crs is None:
+		single_trajectory.crs = "EPSG:4326"
+	single_trajectory = gpd.GeoDataFrame(single_trajectory, crs=single_trajectory.crs)
+	single_trajectory.geometry.crs = single_trajectory.crs
 	distances = np.array(single_trajectory.to_crs("EPSG:3857"))
 	starting_index = 0
 	stops = []

@@ -297,4 +297,8 @@ class LayerAggregator():
 		else:
 			trajectories_frame = trajectories_frame.join(aggregated_frame.set_index(["user_id", "datetime"]))
 		trajectories_frame['geometry'] = trajectories_frame.iloc[:, -1]
+		trajectories_frame = trajectories_frame[trajectories_frame.columns[:-1]]
+		trajectories_frame['lon'] = trajectories_frame.geometry.x
+		trajectories_frame['lat'] = trajectories_frame.geometry.y
+		trajectories_frame = TrajectoriesFrame(trajectories_frame)
 		return trajectories_frame

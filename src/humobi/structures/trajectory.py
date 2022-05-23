@@ -156,7 +156,7 @@ class TrajectoriesFrame(gpd.GeoDataFrame):
 			data.columns = columns_user_defined
 
 		if isinstance(data, gpd.GeoDataFrame):
-			self.crs = self._crs
+			self.crs = data._crs
 			self.geom_cols = self._geom_cols
 
 	@property
