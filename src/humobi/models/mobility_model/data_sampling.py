@@ -9,18 +9,22 @@ from math import ceil
 from src.humobi.models.agent_module.generate_agents import generate_agents
 from src.humobi.preprocessing.spatial_aggregation import LayerAggregator
 
+
 def data_sampler(input_data, aggregation, weigthed):
 	"""
-
 	:param input_data: 
 	:return: 
 	"""
+	if input_data.crs.coordinate_system.name == 'ellipsoidal':
+		input_data = input_data.to_crs("epsg:3857")
 	circadian_collection, cluster_association, cluster_share = cluster_traj.cluster_trajectories(input_data, weights=weigthed, quantity=2)
 	commute_dist = distributions.commute_distances(input_data, quantity = 2)
 	if isinstance(aggregation,int):
 		layer = create_grid.create_grid(input_data, resolution = aggregation)
 	elif isinstance(aggregation,str):
 		layer = LayerAggregator(aggregation)
+		if not layer.layer.crs == input_data.crs:
+			layer.layer = layer.layer.to_crs(input_data.crs)
 	layer = filtering.filter_layer(layer,input_data)
 	unique_labels = set(cluster_association.values()).difference(set([-1]))
 	sig_frame = rank_freq(input_data, quantity = 2)
@@ -30,8 +34,8 @@ def data_sampler(input_data, aggregation, weigthed):
 		group_indicies = [k for k,v in cluster_association.items() if v == n]
 		group_sig_frame = sig_frame.loc[group_indicies]
 		group_commute_dist = {k:v.loc[group_indicies] for k,v in commute_dist.items()}
-		dist_list = distributions.convert_to_2d_distribution(sig_frame, layer, crs="epsg:27700", return_centroids=True, quantity = 2)
-		commute_distributions = distributions.commute_distances_to_2d_distribution(group_commute_dist, layer, crs="epsg:27700", return_centroids=True)
+		dist_list = distributions.convert_to_2d_distribution(group_sig_frame, layer, return_centroids=True, quantity = 2)
+		commute_distributions = distributions.commute_distances_to_2d_distribution(group_commute_dist, layer, return_centroids=True)
 		cluster_spatial_distributions[n] = dist_list
 		cluster_commute_distributions[n] = commute_distributions
 	to_generate = 29

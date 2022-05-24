@@ -308,12 +308,16 @@ def to_labels(trajectories_frame):
 	:param trajectories_frame: TrajectoriesFrame object class
 	:return: TrajectoriesFrame with labels column
 	"""
+	to_tranformation = trajectories_frame[trajectories_frame.geometry.is_valid]
 	try:
-		trajectories_frame['labels'] = trajectories_frame[trajectories_frame._geom_cols[0]].astype(str) + ',' + \
-		                               trajectories_frame[trajectories_frame._geom_cols[1]].astype(str)
+		to_tranformation['labels'] = to_tranformation[to_tranformation._geom_cols[0]].astype(str) + ',' + \
+		                               to_tranformation[to_tranformation._geom_cols[1]].astype(str)
+		trajectories_frame['labels'] = trajectories_frame[to_tranformation._geom_cols[0]].astype(str) + ',' + \
+		                             trajectories_frame[to_tranformation._geom_cols[1]].astype(str)
 	except:
+		to_tranformation['labels'] = to_tranformation.lat.astype(str) + ',' + to_tranformation.lon.astype(str)
 		trajectories_frame['labels'] = trajectories_frame.lat.astype(str) + ',' + trajectories_frame.lon.astype(str)
-	unique_coors = pd.DataFrame(pd.unique(trajectories_frame['labels']))
+	unique_coors = pd.DataFrame(pd.unique(to_tranformation['labels']))
 	unique_coors.index = unique_coors.loc[:, 0]
 	unique_coors.loc[:, 0] = range(len(unique_coors))
 	sub_dict = unique_coors.to_dict()[0]

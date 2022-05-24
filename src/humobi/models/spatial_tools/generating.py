@@ -14,9 +14,8 @@ def generate_points_from_distribution(distribution, amount):
 	:param amount: The number of points to choose
 	:return: A vector of chosen points
 	"""
-	distribution = distribution.values
-	probabilities = normalize_array(distribution[:, 1].astype('float'))
-	return np.random.choice(distribution[:, 0], amount, p=probabilities)
+	probabilities = normalize_array(distribution.counted.values.astype('float'))
+	return np.random.choice(distribution.geometry.values, amount, p=probabilities)
 
 
 def select_points_with_commuting(starting_positions, target_distribution, commuting, spread=None):
@@ -28,6 +27,7 @@ def select_points_with_commuting(starting_positions, target_distribution, commut
 	:param spread: an optional parameter, the value of spread to create an annulus
 	:return: an array with work positions
 	"""
+	target_distribution = target_distribution[['geometry', 'counted']]
 	distance_indicies = [indeks[0] for indeks in [
 		commuting[1][commuting[1]['geometry'] == home].index.values for home in starting_positions]]
 	distances = commuting[1].loc[distance_indicies]
@@ -42,7 +42,7 @@ def select_points_with_commuting(starting_positions, target_distribution, commut
 	for buffer in buffers:
 		if buffer.area == 0.0:
 			chosen = None
-		# chosen = gpd.GeoDataFrame(pd.DataFrame(starting_positions), geometry = 0).loc[index][0]  # decide on the opiton
+		# chosen = gpd.GeoDataFrame(pd.DataFrame(starting_positions), geometry = 0).loc[index][0]  # decide on the option
 		else:
 			inside_buffer = target_distribution.loc[target_distribution['geometry'].intersects(buffer) == True]
 			if len(inside_buffer) != 0 and not np.all(inside_buffer.values[:, 1] == 0):

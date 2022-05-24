@@ -69,18 +69,21 @@ SIDE = 1000
 # DATA AGGREGATION
 # NEXT TIME-BIN SEQUENCE TYPE
 # DBSCAN-BASED
-df_sel = TrajectoriesFrame("""Z:\\RJ_DATA\\RIO\\selected_merged\\full_sample_limited_compressed.csv""",{'names':['user_id','datetime','temp','lat','lon','geometry','is_stop',
-                                                                                    'start','start2','end'],'header':None, 'crs': 4326})
-time_unit = '1H'  # DEFINE TEMPORAL UNIT
+# df_sel = TrajectoriesFrame("""D:\\dalnloud\\Wyklad1\\full_sample_limited_compressed.csv""",{'names':['user_id','datetime','temp','lat','lon','geometry','is_stop',
+#                                                                                     'start','start2','end'],'header':None, 'crs': 4326})
+# time_unit = '1H'  # DEFINE TEMPORAL UNIT
 # eps = 300  # DEFINE SPATIAL UNIT
 # min_pts = 1  # OTHER HYPERPARAMETERS
-clust_agg = LayerAggregator("Z:\\CENSUS_TRACT_RJ\\rj_sectors.shp",kwargs={})
-df_sel_lay = clust_agg.aggregate(df_sel)
+# clust_agg = LayerAggregator("D:\\Projekty\\4W\\rj_sectors.shp",kwargs={})
+# df_sel_lay = clust_agg.aggregate(df_sel)
 # clust_agg = ClusteringAggregator(DBSCAN, **{"eps": eps, "min_samples": min_pts})  # DEFINE SPATIAL AGGREGATION ALGORITHM
 # df_sel_dbscan = clust_agg.aggregate(df_sel)  # SPATIAL AGGREGATION CALL
-time_agg = TemporalAggregator(time_unit)  # DEFINE TEMPORAL AGGREGATION ALGORITHM
-df_sel_dbscan_time = time_agg.aggregate(df_sel_lay, parallel=True)  # TEMPORAL AGGREGATION CALL
-df_sel_dbscan_time.to_csv("""Z:\\RJ_DATA\\RIO\\selected_merged\\sample_processed.csv""")
-# dur = user_trajectories_duration(df_sel,'D')[user_trajectories_duration(df_sel,'D') > 7].index
-# df_sel = df_sel.uloc(dur)
-# data_sampler(df_sel, "D:\\Projekty\\4W\\census_tracts\\rj_sectors.shp", WEIGHT)
+# time_agg = TemporalAggregator(time_unit)  # DEFINE TEMPORAL AGGREGATION ALGORITHM
+# df_sel_dbscan_time = time_agg.aggregate(df_sel_lay, parallel=True)  # TEMPORAL AGGREGATION CALL
+# df_sel_dbscan_time.to_csv("""D:\\Projekty\\4W\\sample_processed.csv""")
+df_sel = TrajectoriesFrame("""D:\\Projekty\\4W\\sample_processed.csv""",
+                           {'names':['user_id','time','temp','lat','lon','is_stop','start','start2','end','index_right','geometry'],
+                            'header':0, 'crs': 4326, 'nrows': 100000, 'usecols': ['user_id','time','temp','lat','lon','geometry']})
+dur = user_trajectories_duration(df_sel,'D')[user_trajectories_duration(df_sel,'D') > 7].index
+df_sel = df_sel.uloc(dur)
+data_sampler(df_sel, "D:\\Projekty\\4W\\census_tracts\\rj_sectors.shp", WEIGHT)

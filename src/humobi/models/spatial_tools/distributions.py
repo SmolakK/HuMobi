@@ -47,7 +47,7 @@ def commute_distances(trajectories_frame, quantity=2):
 	return distances
 
 
-def commute_distances_to_2d_distribution(commute_distances_frame, layer, crs="epsg:3857", return_centroids=False):
+def commute_distances_to_2d_distribution(commute_distances_frame, layer, crs=None, return_centroids=False):
 	"""
 	Converts commuting distances into 2D distribution of median commuting distances.
 	:param commute_distances_frame: DataFrame with commuting distances to important locations
@@ -71,16 +71,17 @@ def commute_distances_to_2d_distribution(commute_distances_frame, layer, crs="ep
 			else:
 				vals.iloc[0, 1:k+1] = vals.iloc[:, 1:k+1].median()
 			to_concat.append(vals.iloc[0, :])
-		merged = pd.concat(to_concat, axis=1).T.iloc[:, 1:3+k]
+		merged = pd.concat(to_concat, axis=1).T
 		merged = merged.rename(columns={"Unnamed 0": 'distance'})
 		merged = gpd.GeoDataFrame(merged, geometry='geometry').fillna(0)
 		if return_centroids:
 			merged['geometry'] = merged['geometry'].centroid
+		merged = merged[['distance','geometry']]
 		commute_distributions[k] = merged
 	return commute_distributions
 
 
-def convert_to_2d_distribution(significant_places_frame, layer, quantity=1, crs="epsg:3857", return_centroids=False):
+def convert_to_2d_distribution(significant_places_frame, layer, quantity=1, crs=None, return_centroids=False):
 	"""
 	A general function for converting points into 2D distribution
 	:param significant_places_frame: Points layer - usually significant places

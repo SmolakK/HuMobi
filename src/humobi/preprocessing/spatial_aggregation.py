@@ -275,6 +275,10 @@ class LayerAggregator():
 	def layer(self):
 		return self._layer
 
+	@layer.setter
+	def layer(self, new):
+		self._layer = new
+
 	def aggregate(self, trajectories_frame, dropoverwirte=True):
 		"""
 		Aggregates data to given spatial layer. Overwrites geometry.
