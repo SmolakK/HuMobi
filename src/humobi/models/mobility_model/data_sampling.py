@@ -38,14 +38,14 @@ def data_sampler(input_data, aggregation, weigthed):
 		commute_distributions = distributions.commute_distances_to_2d_distribution(group_commute_dist, layer, return_centroids=True)
 		cluster_spatial_distributions[n] = dist_list
 		cluster_commute_distributions[n] = commute_distributions
-	to_generate = 29
+	to_generate = 217
 	generated_agents = []
 	for label, share in cluster_share.items():
 		amount = ceil(share*to_generate)
 		current_spatial_distributions = cluster_spatial_distributions[label]
 		current_commute_distributions = cluster_commute_distributions[label]
 		home_positions = generating.generate_points_from_distribution(current_spatial_distributions[0], amount)
-		work_positions = generating.select_points_with_commuting(home_positions,current_spatial_distributions[1],current_commute_distributions)
+		work_positions = generating.select_points_with_commuting(home_positions,current_spatial_distributions[1],current_commute_distributions, spread=.05)
 		activity_areas = generating.generate_activity_areas('ellipse', home_positions, work_positions, layer, 1.0)
 		agents = generate_agents(amount, label, home_positions, work_positions, activity_areas)
 		generated_agents += agents

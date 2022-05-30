@@ -14,8 +14,16 @@ def generate_points_from_distribution(distribution, amount):
 	:param amount: The number of points to choose
 	:return: A vector of chosen points
 	"""
-	probabilities = normalize_array(distribution.counted.values.astype('float'))
-	return np.random.choice(distribution.geometry.values, amount, p=probabilities)
+	choices = []
+	probabilities = distribution.counted.values.astype('float')
+	for n in range(amount):
+		choose_from = normalize_array(probabilities)
+		choice = np.random.choice(distribution.index.values, p=choose_from)
+		choices.append(distribution.loc[choice].geometry)
+		wherewasit = np.argwhere(distribution.index.values == choice)[0][0]
+		probabilities[wherewasit] -= 1/amount
+		probabilities[probabilities < 0] = 0
+	return choices
 
 
 def select_points_with_commuting(starting_positions, target_distribution, commuting, spread=None):
@@ -27,12 +35,12 @@ def select_points_with_commuting(starting_positions, target_distribution, commut
 	:param spread: an optional parameter, the value of spread to create an annulus
 	:return: an array with work positions
 	"""
-	target_distribution = target_distribution[['geometry', 'counted']]
+	target_distribution = target_distribution[['geometry', 'counted']].copy()
 	distance_indicies = [indeks[0] for indeks in [
 		commuting[1][commuting[1]['geometry'] == home].index.values for home in starting_positions]]
 	distances = commuting[1].loc[distance_indicies]
 	if spread is None:
-		buffers = [starting_positions[dist].buffer(distances.values[dist][0]) for dist in range(len(distances))]
+		buffers = [starting_positions[dist].buffer(distances.values[dist][0]) * 1.01 for dist in range(len(distances))]
 	else:
 		buffers = [starting_positions[dist].buffer(distances.values[dist][0] * (1.0 + spread)).difference(
 			starting_positions[dist].buffer(distances.values[dist][0] * (1.0 - spread))) for dist in
@@ -48,6 +56,9 @@ def select_points_with_commuting(starting_positions, target_distribution, commut
 			if len(inside_buffer) != 0 and not np.all(inside_buffer.values[:, 1] == 0):
 				probabilities = normalize_array(inside_buffer.values[:, 1].astype('float'))
 				chosen = np.random.choice(inside_buffer.values[:, 0], size=1, p=probabilities)[0]
+				where = target_distribution[target_distribution.geometry == chosen].index
+				target_distribution.loc[where,'counted'] = target_distribution.loc[where,'counted'] - 1/len(buffers)
+				target_distribution.loc[target_distribution.counted < 0,'counted'] = 0
 			else:
 				chosen = None
 		chosen_work_places.append(chosen)
