@@ -10,15 +10,13 @@ from src.humobi.models.agent_module.generate_agents import generate_agents
 from src.humobi.preprocessing.spatial_aggregation import LayerAggregator
 
 
-def data_sampler(input_data, aggregation, weigthed):
+def data_sampler(input_data, aggregation, weigthed, aux_data = None, aux_folder = None):
 	"""
 	:param input_data: 
 	:return: 
 	"""
 	if input_data.crs.coordinate_system.name == 'ellipsoidal':
 		input_data = input_data.to_crs("epsg:3857")
-	circadian_collection, cluster_association, cluster_share = cluster_traj.cluster_trajectories(input_data, weights=weigthed, quantity=2)
-	commute_dist = distributions.commute_distances(input_data, quantity = 2)
 	if isinstance(aggregation,int):
 		layer = create_grid.create_grid(input_data, resolution = aggregation)
 	elif isinstance(aggregation,str):
@@ -26,6 +24,8 @@ def data_sampler(input_data, aggregation, weigthed):
 		if not layer.layer.crs == input_data.crs:
 			layer.layer = layer.layer.to_crs(input_data.crs)
 	layer = filtering.filter_layer(layer,input_data)
+	circadian_collection, cluster_association, cluster_share = cluster_traj.cluster_trajectories(input_data, weights=weigthed, quantity=2)
+	commute_dist = distributions.commute_distances(input_data, quantity = 2)
 	unique_labels = set(cluster_association.values()).difference(set([-1]))
 	sig_frame = rank_freq(input_data, quantity = 2)
 	cluster_spatial_distributions = {}

@@ -8,9 +8,11 @@ from src.humobi.models.spatial_tools.misc import rank_freq, normalize_array
 from scipy import stats
 from collections import Counter
 WEIGHT = False
+import geopandas as gpd
+import os
 
-
-def cluster_trajectories(trajectories_frame, length = 24, quantity = 2, weights = True, clust_alg = KMeans(2)):
+def cluster_trajectories(trajectories_frame, length = 24, quantity = 2, weights = True, clust_alg = KMeans(2),
+                         aux_data = None, aux_col = None, aux_folder = None):
 	"""
 	Extracts circadian rhythms and clusters users by them.
 	:param trajectories_frame: TrajectoriesFrame class object
