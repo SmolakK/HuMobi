@@ -24,7 +24,7 @@ def data_sampler(input_data, aggregation, weigthed, aux_data = None, aux_folder 
 		if not layer.layer.crs == input_data.crs:
 			layer.layer = layer.layer.to_crs(input_data.crs)
 	layer = filtering.filter_layer(layer,input_data)
-	circadian_collection, cluster_association, cluster_share = cluster_traj.cluster_trajectories(input_data, weights=weigthed, quantity=2)
+	circadian_collection, cluster_association, cluster_share = cluster_traj.cluster_trajectories(input_data, weights=weigthed, quantity=2, aux_cols = ['tcc'])
 	commute_dist = distributions.commute_distances(input_data, quantity = 2)
 	unique_labels = set(cluster_association.values()).difference(set([-1]))
 	sig_frame = rank_freq(input_data, quantity = 2)
