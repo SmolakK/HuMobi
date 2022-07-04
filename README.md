@@ -1,4 +1,6 @@
 # HuMobi
+
+You can find an interactive version of this README on Google Colab here: https://colab.research.google.com/drive/1nmYJDBYr1nN89LLx2NKP6Q5bqQ2mugbO?usp=sharing
  
  ## Table of contents
 * [General info](#General-info)
@@ -126,7 +128,7 @@ df.to_shapefile("shape_path")
 
 `TrajectoriesFrame` overrides also the data spatial transformation method `to_crs`, which can be used to reproject the data. To do that, simply call:
 ```
-df.to_csr(dest_crs = 3857, cur_crs = 4326)
+df.to_crs(dest_crs = 3857, cur_crs = 4326)
 ```
 This will reproject TrajectoriesFrame from `EPSG:4326` to `EPSG:3857`. If `cur_crs` is not given, TrajectoriesFrame will used `crs` metadata.
 
@@ -170,7 +172,7 @@ Then, passing that list to `uloc` will result in selecting all users from the da
 many_users = df_sel.uloc(users_list)
 ```
 
-You can use standard `loc` and `iloc` pandas commends, too.
+You can use standard `loc` and `iloc` pandas commands, too.
 
 ### Users statistics
 
@@ -192,6 +194,7 @@ A total number of records calculated per time frame:
 count_per_time_frame = count_records_per_time_frame(df_sel, resolution='1D')  # TOTAL NUMBER OF RECORDS PER TIME FRAME
 ```
 
+#### Trajectories duration
 The total length of trajectories expressed in a time unit. `count_empty` determines whether empty records should be considered or excluded. If excluded, the value will be decreased by the number of empty records timeframes.
 ```
 trajectories_duration = user_trajectories_duration(df_sel, resolution='1H', count_empty=False)  # TOTAL LENGTH OF TRAJECTORIES
@@ -233,7 +236,7 @@ Stop detection algorithm is simple to use. `preprocessing.filters.stop_detection
 ```
 stops = stop_detection(df_sel, distance_condition=300, time_condition='10min')
 ```
-For details on the algorithm see mentioned publication. There are two parameters to adjust:
+For details on the algorithm see the mentioned publication. There are two parameters to adjust:
 * `distance_condition` (here it is 300 metres) - always expressed in metres
 * `time_condition` (here it is 10 minutes).
 
@@ -269,7 +272,7 @@ Stay-regions detection can be done using various approaches, the most commonly u
 ```
 from humobi.structures import trajectory as tr
 from humobi.preprocessing.temporal_aggregation import TemporalAggregator
-from humobi.preprocessing.spatial_aggregation import GridAggregation, ClusteringAggregator, LayerAggregation
+from humobi.preprocessing.spatial_aggregation import GridAggregation, ClusteringAggregator, LayerAggregator
 from humobi.preprocessing.filters import next_location_sequence
 ```
 #### Spatial aggregation
@@ -291,7 +294,7 @@ To perform aggregation, an aggregator class has to be defined first. When an agg
 ```
 gird_resolution = 1000  # DEFINE SPATIAL UNIT (GRID)
 grid_agg = GridAggregation(gird_resolution)  # DEFINE GRID AGGREGATION ALGORITHM
-df_sel_grid = grid_agg.aggregate(df_sel, parralel=False)  # CALL AGGREGATION
+df_sel_grid = grid_agg.aggregate(df_sel, parallel=False)  # CALL AGGREGATION
 ```
 * When you want to set the grid extent yourself, you can pass `x_min`, `x_max`, `y_min`, `y_max` parameters to set the extent of the aggregation grid. 
 * You can pass an `origin` parameter to tell whether the grid should be centred at the data.
@@ -361,7 +364,7 @@ from humobi.measures.individual import *
 from humobi.measures.collective import *
 ```
 
-We assume our processed data are stored under the `df_sel` variable.
+We assume our processed data are stored under the `df_sel_dbscan_time` variable.
 
 ### Individual metrics
 
@@ -369,14 +372,14 @@ We assume our processed data are stored under the `df_sel` variable.
 
 This metric calculates the number of distinct locations visited by each individual. To calculate it, call `num_of_distinct_locations()` function from `humobi.measures.individual` module.
 ```
-distinct_total = num_of_distinct_locations(df_sel)
+distinct_total = num_of_distinct_locations(df_sel_dbscan_time)
 ```
 
 #### Visitation frequency
 
 This metric calculates the frequency of visits in each stay-region visited by users. Execute:
 ```
-vfreq = visitation_frequency(df_sel)
+vfreq = visitation_frequency(df_sel_dbscan_time)
 ```
 
 #### Number of distinct locations over time
@@ -387,54 +390,54 @@ This is a variant of the number of distinct locations metric and calculates the 
 
 Execution:
 ```
-distinct_over_time = distinct_locations_over_time(df_sel, resolution='1H', reaggregate=False)
+distinct_over_time = distinct_locations_over_time(df_sel_dbscan_time, resolution='1H', reaggregate=False)
 ```
 
 #### Jump lengths
 This function calculates the length of all trips between locations in the movement sequence.
 ```
-jump = jump_lengths(df_sel)
+jump = jump_lengths(df_sel_dbscan_time)
 ```
 
 #### Nonzero trips
 This function calculates the number of all trips (which covered distance > 0)
 ```
-trips = nonzero_trips(df_sel)
+trips = nonzero_trips(df_sel_dbscan_time)
 ```
 
 #### Self-transtition
 This function calculates the number of situations when the user stayed in the same location for the next time-bin (in the next place it will always be equal to 0).
 ```
-st = self_transitions(df_sel)
+st = self_transitions(df_sel_dbscan_time)
 ```
 
 #### Waiting times
 This function calculates waiting times for each transition in `TrajectoriesFrame`. 
 * This function requires `time_unit` to be specified, which will control the unit in which waiting time will be expressed.
 ```
-wt = waiting_times(df_sel, time_unit = 'H')
+wt = waiting_times(df_sel_dbscan_time, time_unit = 'h')
 ```
 
 #### Center of mass
 Calculates a centre of mass for each user's trajectory.
 ```
-mc = center_of_mass(df_sel)
+mc = center_of_mass(df_sel_dbscan_time)
 ```
 
 #### Radius of gyration
 Calculates radii of gyration for each user. 
 * Optionally `time_evolution` argument can be used to express this metric evolution in time.
 ```
-rog = radius_of_gyration(df_sel, time_evolution=False)
-rog_time = radius_of_gyration(df_sel, time_evolution=True)
+rog = radius_of_gyration(df_sel_dbscan_time, time_evolution=False)
+rog_time = radius_of_gyration(df_sel_dbscan_time, time_evolution=True)
 ```
 
 #### Mean square displacement
 Calculates mean square displacements (MSD) for each user. 
 * Optionally `time_evolution` argument can be used to express this metric evolution in time.
 ```
-msd = mean_square_displacement(df_sel, time_evolution=False)
-msd_time = mean_square_displacement(df_sel, time_evolution=True)
+msd = mean_square_displacement(df_sel_dbscan_time, time_evolution=False)
+msd_time = mean_square_displacement(df_sel_dbscan_time, time_evolution=True)
 ```
 * The `from_center` argument can be used to calculate MSD in reference to the centre of trajectory mass (if False it is calculated from the first point). 
 * `reference_locs` can be passed to determine custom reference points for each person. This has to be a series with users' id as index and point geometry as values.
@@ -443,19 +446,19 @@ msd_time = mean_square_displacement(df_sel, time_evolution=True)
 Calculates return times for each unique location in each user's trajectory. 
 * `time_unit` specifies the unit in which return times will be expressed.
 ```
-rt = return_time(df_sel, time_unit = 'H')
+rt = return_time(df_sel_dbscan_time, time_unit = 'H')
 ```
 Optionally this metric can be calculated in relation to places, which will express how long it takes any person to return to that location on average. This will produce a DataFrame with the count of returns and mean time to return.
 ```
-rt_place = return_time(df_sel, by_place=True)
+rt_place = return_time(df_sel_dbscan_time, by_place=True)
 ```
 
 #### Random entropy and predictability
 Calculates random entropy for each user in TrajectoriesFrame using equation defined in 
 `Song, C., Qu, Z., Blumm, N., & Barabási, A. L. (2010). Limits of predictability in human mobility. Science, 327(5968), 1018–1021. https://doi.org/10.1126/science.1177170`. Similarly, predictability is calculated using entropy and Fano's inequality as presented in the above paper.
 ```
-ran_ent = random_entropy(df_sel)
-random_pred = random_predictability(df_sel)
+ran_ent = random_entropy(df_sel_dbscan_time)
+random_pred = random_predictability(df_sel_dbscan_time)
 ```
 > **__NOTE:__** `random_predictability` returns entropy and predictability in a DataFrame.
 
@@ -463,8 +466,8 @@ random_pred = random_predictability(df_sel)
 Calculates uncorrelated entropy for each user in TrajectoriesFrame using equation defined in 
 `Song, C., Qu, Z., Blumm, N., & Barabási, A. L. (2010). Limits of predictability in human mobility. Science, 327(5968), 1018–1021. https://doi.org/10.1126/science.1177170`. Similarly, predictability is calculated using entropy and Fano's inequality as presented in the above paper.
 ```
-unc_ent = unc_entropy(df_sel)
-unc_pred = unc_predictability(df_sel)
+unc_ent = unc_entropy(df_sel_dbscan_time)
+unc_pred = unc_predictability(df_sel_dbscan_time)
 ```
 > **__NOTE:__** `unc_predictability` returns entropy and predictability in a DataFrame.
 
@@ -482,8 +485,8 @@ Predictability is calculated using entropy and Fano's inequality as presented in
 
 > **__NOTE:__** These function are using GPU to perform calculations. Be sure to have CUDA configured on your machine. CPU variant is not accessible, because calculations on the CPU take an unreasonable long time to execute.
 ```
-real_ent = real_entropy(df_sel)
-real_pred = real_predictability(df_sel)
+real_ent = real_entropy(df_sel_dbscan_time)
+real_pred = real_predictability(df_sel_dbscan_time)
 ```
 > **__NOTE:__** `real_predictability` returns entropy and predictability in a DataFrame.
 
@@ -491,14 +494,14 @@ real_pred = real_predictability(df_sel)
 Calculates the stationarity according to Teixeira et al. (2019) as the average stay length in the location. See `Teixeira, D., Almeida, J., Viana, A. C., Teixeira, D., Almeida, J., Carneiro, A., … Viana, A. C. (2021). Understanding routine impact on the predictability estimation of human mobility To cite this version : HAL Id : hal-03128624 Understanding routine impact on the predictability estimation of human mobility.` for details.
 
 ```
-stat = stationarity(df_sel)
+stat = stationarity(df_sel_dbscan_time)
 ```
 
 #### Regularity
 Calculates the regularity according to Teixeira et al. (2019) as the ratio of sequence length and the number of unique symbols. See `Teixeira, D., Almeida, J., Viana, A. C., Teixeira, D., Almeida, J., Carneiro, A., … Viana, A. C. (2021). Understanding routine impact on the predictability estimation of human mobility To cite this version : HAL Id : hal-03128624 Understanding routine impact on the predictability estimation of human mobility.` for details.
 
 ```
-regul = regularity(df_sel)
+regul = regularity(df_sel_dbscan_time)
 ```
 
 ### Collective metrics
@@ -508,14 +511,14 @@ Calculates the distribution of travelling distances for each user. Two mutually 
 * `bin_size` - determines the size of a bin in an output histogram,
 * `n_bins` - determines the number of bins in an output histogram. (default = 20)
 ```
-dist = dist_travelling_distance(df_sel)
+dist = dist_travelling_distance(df_sel_dbscan_time)
 ```
 
 #### Pairwise comparison of flows
 Calculates the number of flows for each aggregation cell. 
 * Using `flows_type` - `all` flows, only `incoming`, or only `outgoing` flows can be counted.
 ```
-pairwise_flows = flows(df_sel, flows_type='all')
+pairwise_flows = flows(df_sel_dbscan_time, flows_type='all')
 ```
 
 ## Data generation routines
@@ -535,7 +538,7 @@ Fixed values or a list of values can be passed to these arguments. If the latter
 
 To import module:
 ```
-from src.humobi.misc.generators import *
+from humobi.misc.generators import *
 ```
 
 ### Random sequences
@@ -586,8 +589,8 @@ Finally, let's do some predictions. There are multiple algorithms available, inc
 
 First, let's import the necessary modules:
 ```
-from src.humobi.predictors.wrapper import *
-from src.humobi.predictors.deep import *
+from humobi.predictors.wrapper import *
+from humobi.predictors.deep import *
 ```
 > **__NOTE:__** This module is under development, there are some still inconsistencies in the structure. This will be adjusted in the future, to facilitate pipeline creation.
 
