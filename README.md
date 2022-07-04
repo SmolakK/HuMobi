@@ -675,7 +675,7 @@ To perform predictions with a deep learning network, first, call the `DeepPred` 
 
 Example of usage:
 ```
-GRU = DeepPred("GRU", markovian_seq, test_size=.2, folds=5, window_size=5, batch_size=50, embedding_dim=512, rnn_units=1024)
+GRU = DeepPred("GRU", markovian_seq, test_size=.2, folds=5, window_size=5, batch_size=1, embedding_dim=512, rnn_units=1024)
 ```
 To perform prediction, call:
 ```
@@ -696,8 +696,8 @@ These metrics are implemented within the HuMobi library and are available in the
 
 These metrics are based on the training and test sets. These can be achieved from `Splitter()`:
 ```
-training = pd.concat([split.cv_data[0][0], split.cv_data[0][2]])
-test = split.test_frame_X
+X = pd.concat([split.cv_data[0][0], split.cv_data[0][2]])
+Y = split.test_frame_X
 ```
 
 Any of the above metrics can be simply calculated by passing `train_frame` and `test_frame` arguments:
