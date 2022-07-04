@@ -599,7 +599,7 @@ from humobi.predictors.deep import *
 To perform predictions, we need to split data into training and testing sets.  We will use the `Splitter` class from the `humobi.predictors.wrapper` module. This class allows splitting the whole TrajectoriesFrame at once by splitting each users' trajectory in the determined ratio (determined by the `split_ratio` argument which expresses the test set size). 
 For example, let's split generated Markovian sequences:
 ```
-split = Splitter(markovian_seq, split_ratio=.2)
+data_splitter = Splitter(markovian_seq, split_ratio=.2)
 ```
 Split data will be accessible as `split` instance attributes.
 * `split.data` gives access to the input data
