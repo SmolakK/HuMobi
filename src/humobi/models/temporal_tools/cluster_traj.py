@@ -11,8 +11,9 @@ WEIGHT = False
 import geopandas as gpd
 import os
 
+
 def cluster_trajectories(trajectories_frame, length = 24, quantity = 2, weights = True, clust_alg = KMeans(2),
-                         aux_data = None, aux_col = None, aux_folder = None):
+                         aux_cols = None):
 	"""
 	Extracts circadian rhythms and clusters users by them.
 	:param trajectories_frame: TrajectoriesFrame class object
@@ -29,13 +30,13 @@ def cluster_trajectories(trajectories_frame, length = 24, quantity = 2, weights 
 		trajectories_frame['hod'] = trajectories_frame.index.get_level_values(1).hour
 	grouped = trajectories_frame.groupby(level=0)
 	for uid, vals in grouped:
-		extract = vals.groupby(['labels', 'hod']).count().iloc[:, 0].unstack().fillna(0)
+		extract = vals.groupby(['labels',*aux_cols, 'hod']).count().iloc[:, 0].unstack().fillna(0)
 		sig_places = []
 		for n in range(quantity):
 			sig_place = top_places.loc[uid][n]
 			if sig_place is not None:
 				sig_place_label = int(vals[vals['geometry'] == sig_place]['labels'].iloc[0])
-				sig_places.append(extract.loc[sig_place_label,:].values)
+				sig_places.append(extract.loc[sig_place_label,:])
 			else:
 				sig_places.append(np.zeros((1,length)))
 		stacked = np.vstack(sig_places)
