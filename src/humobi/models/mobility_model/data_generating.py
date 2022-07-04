@@ -1,8 +1,8 @@
 import pandas as pd, geopandas as gpd
 import sys
 sys.path.append("..")
-from src.humobi.models.temporal_tools import when
-from src.humobi.models.spatial_modules import where
+from humobi.models.temporal_tools import when
+from humobi.models.spatial_modules import where
 # from humobi.misc import export_to_file
 WEIGHT = False
 

@@ -1,5 +1,5 @@
 import pandas as pd
-from src.humobi.misc.utils import to_labels
+from humobi.misc.utils import to_labels
 
 
 def normalize_array(arr):

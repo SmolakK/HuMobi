@@ -2,9 +2,9 @@ import pandas as pd
 from tqdm import tqdm
 
 tqdm.pandas()
-from src.humobi.measures.individual import jump_lengths
-from src.humobi.preprocessing.filters import next_location_sequence
-from src.humobi.tools.processing import convert_to_distribution
+from humobi.measures.individual import jump_lengths
+from humobi.preprocessing.filters import next_location_sequence
+from humobi.tools.processing import convert_to_distribution
 
 
 def dist_travelling_distance(trajectories_frame, bin_size=None, n_bins=20):

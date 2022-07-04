@@ -86,12 +86,12 @@ clust_agg = LayerAggregator("Z:\\processing_vanessa\\grid_weatherID.shp",kwargs=
 # df_sel_dbscan_time.to_csv("""D:\\Projekty\\4W\\sample_processed.csv""")
 df_sel = TrajectoriesFrame("""Z:\\RJ_DATA\\RIO\\selected_merged\\sample_processed.csv""",
                            {'names':['user_id','time','temp','lat','lon','is_stop','start','start2','end','index_right','geometry'],
-                            'header':0, 'crs': 4326, 'usecols': ['user_id','time','temp','lat','lon','geometry']})
+                            'header':0, 'crs': 4326, 'usecols': ['user_id','time','temp','lat','lon','geometry'], 'nrows': 10000})
 dur = user_trajectories_duration(df_sel,'D')[user_trajectories_duration(df_sel,'D') > 7].index
 df_sel = df_sel.uloc(dur)
 # adding aux data
 layer = filtering.filter_layer(clust_agg, df_sel)
-embeded_trajectories_frame = gpd.sjoin(layer, df_sel)[['quad_id','index_right0','index_right1'] + [*df_sel.columns]]
+embeded_trajectories_frame = gpd.sjoin(layer, df_sel, how='right')[['quad_id'] + [*df_sel.columns]]
 aux_path = """Z:\\processing_vanessa\\outer_data"""
 ffiles = [os.path.join(aux_path,x) for x in [f for r, d, f in os.walk(aux_path)][0]]
 quad_data = [pd.read_csv(ff) for ff in ffiles]

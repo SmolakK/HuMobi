@@ -1,6 +1,6 @@
 import numpy as np
 import tqdm
-from src.humobi.misc.utils import get_diags, normalize_chain, _equally_sparse_match
+from humobi.misc.utils import get_diags, normalize_chain, _equally_sparse_match
 
 
 class Sparse(object):
@@ -66,7 +66,7 @@ class Sparse(object):
 			weights = [x**2 for x in range(len(self._sequence))]
 			recency = [abs(1 / x[:, 0].sum()) for x in match_fil]
 			# recency = [((len(self._sequence)+x[:, 0])/len(self._sequence)) for x in match_fil]
-			# recency = [max([weights[int(z)]*z for z in (len(self._sequence)+x[:, 0])]) for x in match_fil]
+			recency = [max([weights[int(z)]*z for z in (len(self._sequence)+x[:, 0])]) for x in match_fil]
 			all_counts = [x[2] for x in match]
 			recency = [x * y for x, y in zip(recency, all_counts)]
 			prob_dict[candidate] = [a * b for a, b in

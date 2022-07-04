@@ -551,7 +551,7 @@ Fixed values or a list of values can be passed to these arguments. If the latter
 
 To import module:
 ```
-from src.humobi.misc.generators import *
+from humobi.misc.generators import *
 ```
 
 ### Random sequences
@@ -602,8 +602,8 @@ Finally, let's do some predictions. There are multiple algorithms available, inc
 
 First, let's import the necessary modules:
 ```
-from src.humobi.predictors.wrapper import *
-from src.humobi.predictors.deep import *
+from humobi.predictors.wrapper import *
+from humobi.predictors.deep import *
 ```
 > **__NOTE:__** This module is under development, there are some still inconsistencies in the structure. This will be adjusted in the future, to facilitate pipeline creation.
 
