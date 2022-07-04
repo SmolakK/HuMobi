@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from src.humobi.misc.utils import to_labels
+from humobi.misc.utils import to_labels
 from tqdm import tqdm
 tqdm.pandas()
 from humobi.predictors.markov import MarkovChain

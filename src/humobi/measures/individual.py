@@ -109,7 +109,7 @@ def nonzero_trips(trajectories_frame):
 		a Series with a count of nonzero trips for each user
 	"""
 	jumps = jump_lengths(trajectories_frame).dropna().droplevel(1)
-	return jumps[jumps != 0].groupby(by="user_id").count()
+	return jumps[jumps != 0].groupby(level=0).count()
 
 
 def self_transitions(trajectories_frame):
@@ -460,7 +460,7 @@ def stationarity(trajectories_frame):
 	trajectories_frame = trajectories_frame.dropna()
 	stationarity_frame = trajectories_frame.labels.groupby(level=0).apply(
 		lambda x: x.groupby((x != x.shift()).cumsum()).size()-1)
-	stationarity_frame = stationarity_frame.groupby('user_id').sum()
+	stationarity_frame = stationarity_frame.groupby(level=0).sum()
 	size_frame = trajectories_frame.groupby(level=0).apply(lambda x: x.size)
 	return stationarity_frame/size_frame
 

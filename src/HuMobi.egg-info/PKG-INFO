@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: HuMobi
-Version: 0.1.6
+Version: 0.1.10
 Summary: A library dedicated to human mobility data processing
 Home-page: https://github.com/SmolakK/HuMobi
 Author: Kamil Smolak
@@ -551,7 +551,7 @@ Fixed values or a list of values can be passed to these arguments. If the latter
 
 To import module:
 ```
-from humobi.misc.generators import *
+from src.humobi.misc.generators import *
 ```
 
 ### Random sequences
@@ -602,8 +602,8 @@ Finally, let's do some predictions. There are multiple algorithms available, inc
 
 First, let's import the necessary modules:
 ```
-from humobi.predictors.wrapper import *
-from humobi.predictors.deep import *
+from src.humobi.predictors.wrapper import *
+from src.humobi.predictors.deep import *
 ```
 > **__NOTE:__** This module is under development, there are some still inconsistencies in the structure. This will be adjusted in the future, to facilitate pipeline creation.
 
@@ -727,6 +727,6 @@ This will return pd.Series with values calculated for each user in the data.
 
 One of the known issues is related to crs metadata setting. It may happen, that giving the `crs` argument to `TrajectoriesFrame` does not assign it to the dataset. This is a well known GeoPandas library and Anaconda issue. Proper setting of the proj4 library solves this problem.
 
-Based on Dorregaray's answer from here: [StackOverflow question](#https://stackoverflow.com/questions/55390492/runtimeerror-bno-arguments-in-initialization-list/58009620#58009620), a solution is to edit the `datadir.py` file located in `...\Anaconda3\Lib\site-packages\pyproj`. It should be moved to `.../Anaconda3/Library/share`.
+Based on Dorregaray's answer from here: [StackOverflow question](#https://stackoverflow.com/questions/55390492/runtimeerror-bno-arguments-in-initialization-list/58009620#58009620), a solution is to edit the path in the `datadir.py` file located in `...\Anaconda3\Lib\site-packages\pyproj`. It should renamed to `.../Anaconda3/Library/share`.
 
 
