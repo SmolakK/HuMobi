@@ -77,34 +77,38 @@ SIDE = 1000
 # time_unit = '1H'  # DEFINE TEMPORAL UNIT
 # eps = 300  # DEFINE SPATIAL UNIT
 # min_pts = 1  # OTHER HYPERPARAMETERS
-clust_agg = LayerAggregator("Z:\\processing_vanessa\\grid_weatherID.shp",kwargs={})
+# clust_agg = LayerAggregator("Z:\\processing_vanessa\\grid_weatherID.shp",kwargs={})
 # df_sel_lay = clust_agg.aggregate(df_sel)
 # clust_agg = ClusteringAggregator(DBSCAN, **{"eps": eps, "min_samples": min_pts})  # DEFINE SPATIAL AGGREGATION ALGORITHM
 # df_sel_dbscan = clust_agg.aggregate(df_sel)  # SPATIAL AGGREGATION CALL
 # time_agg = TemporalAggregator(time_unit)  # DEFINE TEMPORAL AGGREGATION ALGORITHM
 # df_sel_dbscan_time = time_agg.aggregate(df_sel_lay, parallel=True)  # TEMPORAL AGGREGATION CALL
 # df_sel_dbscan_time.to_csv("""D:\\Projekty\\4W\\sample_processed.csv""")
-df_sel = TrajectoriesFrame("""Z:\\RJ_DATA\\RIO\\selected_merged\\sample_processed.csv""",
-                           {'names':['user_id','time','temp','lat','lon','is_stop','start','start2','end','index_right','geometry'],
-                            'header':0, 'crs': 4326, 'usecols': ['user_id','time','temp','lat','lon','geometry'], 'nrows': 10000})
-dur = user_trajectories_duration(df_sel,'D')[user_trajectories_duration(df_sel,'D') > 7].index
-df_sel = df_sel.uloc(dur)
+# df_sel = TrajectoriesFrame("""Z:\\RJ_DATA\\RIO\\selected_merged\\sample_processed.csv""",
+#                            {'names':['user_id','time','temp','lat','lon','is_stop','start','start2','end','index_right','geometry'],
+#                             'header':0, 'crs': 4326, 'usecols': ['user_id','time','temp','lat','lon','geometry'], 'nrows': 10000})
+df_sel = TrajectoriesFrame("""D:\\GitHub\\HuMobidevfiles\\sample_classified_weather_processed.csv""",
+                           {'header':0, 'crs': 4326, 'nrows': 100000})
+# dur = user_trajectories_duration(df_sel,'D')[user_trajectories_duration(df_sel,'D') > 7].index
+# df_sel = df_sel.uloc(dur)
 # adding aux data
-layer = filtering.filter_layer(clust_agg, df_sel)
-embeded_trajectories_frame = gpd.sjoin(layer, df_sel, how='right')[['quad_id'] + [*df_sel.columns]]
-aux_path = """Z:\\processing_vanessa\\outer_data"""
-ffiles = [os.path.join(aux_path,x) for x in [f for r, d, f in os.walk(aux_path)][0]]
-quad_data = [pd.read_csv(ff) for ff in ffiles]
-for df in range(len(quad_data)):
-	quad_data[df]['quad_id'] = df+1
-aux_df = pd.concat(quad_data)
-aux_df['datetime'] = pd.to_datetime(aux_df['Day'])+pd.to_timedelta(aux_df['Time'],unit='h')
-embeded_trajectories_frame = embeded_trajectories_frame.reset_index()
-embeded_trajectories_frame = embeded_trajectories_frame.rename(columns={'time':'datetime'})
-embeded_trajectories_frame['datetime'] = embeded_trajectories_frame['datetime'].astype(str)
-aux_df['datetime'] = aux_df['datetime'].astype(str)
-merged = embeded_trajectories_frame.merge(aux_df, on=['quad_id','datetime'])
-merged.geometry = merged.geometry.centroid
-merged.to_csv("""Z:\\RJ_DATA\\RIO\\selected_merged\\sample_processed_aux.csv""")
-grouped = embeded_trajectories_frame.groupby(level=0)
-# data_sampler(df_sel, "D:\\Projekty\\4W\\processing_vanessa\\grid_weatherID.shp", WEIGHT)
+
+# layer = filtering.filter_layer(clust_agg, df_sel)
+# embeded_trajectories_frame = gpd.sjoin(layer, df_sel, how='right')[['quad_id'] + [*df_sel.columns]]
+# aux_path = """Z:\\processing_vanessa\\outer_data"""
+# ffiles = [os.path.join(aux_path,x) for x in [f for r, d, f in os.walk(aux_path)][0]]
+# quad_data = [pd.read_csv(ff) for ff in ffiles]
+# for df in range(len(quad_data)):
+# 	quad_data[df]['quad_id'] = df+1
+# aux_df = pd.concat(quad_data)
+# aux_df['datetime'] = pd.to_datetime(aux_df['Day'])+pd.to_timedelta(aux_df['Time'],unit='h')
+# embeded_trajectories_frame = embeded_trajectories_frame.reset_index()
+# embeded_trajectories_frame = embeded_trajectories_frame.rename(columns={'time':'datetime'})
+# embeded_trajectories_frame['datetime'] = embeded_trajectories_frame['datetime'].astype(str)
+# aux_df['datetime'] = aux_df['datetime'].astype(str)
+# merged = embeded_trajectories_frame.merge(aux_df, on=['quad_id','datetime'])
+# merged.geometry = merged.geometry.centroid
+# merged.to_csv("""Z:\\RJ_DATA\\RIO\\selected_merged\\sample_processed_aux.csv""")
+# grouped = embeded_trajectories_frame.groupby(level=0)
+df_sel = df_sel.drop(["Unnamed: 0"],axis=1)
+data_sampler(df_sel, "D:\\processing_vanessa\\grid_weatherID.shp", WEIGHT)

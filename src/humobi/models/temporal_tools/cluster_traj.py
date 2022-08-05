@@ -24,6 +24,7 @@ def cluster_trajectories(trajectories_frame, length = 24, quantity = 2, weights 
 	:param clust_alg: Clustering algorithm to make clusterization
 	:return: Clustered circadian rhythms, association of users to clusters, the ratio of users in clusters
 	"""
+	unique_categories = trajectories_frame[aux_cols].dropna().apply(lambda x: pd.unique(x))
 	top_places = rank_freq(trajectories_frame, quantity)
 	abstract_traj = {}
 	if length <= 24:
