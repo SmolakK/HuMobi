@@ -1,5 +1,6 @@
 import sys
 sys.path.append("..")
+<<<<<<< Updated upstream
 from humobi.misc import create_grid
 from humobi.structures.trajectory import TrajectoriesFrame
 from humobi.models.temporal_tools import cluster_traj
@@ -8,6 +9,16 @@ from humobi.models.spatial_tools.misc import rank_freq
 from math import ceil
 from humobi.models.agent_module.generate_agents import generate_agents
 from humobi.preprocessing.spatial_aggregation import LayerAggregator
+=======
+from src.humobi.misc import create_grid
+from src.humobi.structures.trajectory import TrajectoriesFrame
+from src.humobi.models.temporal_tools import cluster_traj
+from src.humobi.models.spatial_tools import misc, distributions, generating, filtering
+from src.humobi.models.spatial_tools.misc import rank_freq
+from src.humobi.models.agent_module.generate_agents import generate_agents
+from src.humobi.preprocessing.spatial_aggregation import LayerAggregator
+from math import ceil
+>>>>>>> Stashed changes
 
 
 def data_sampler(input_data, aggregation, weigthed, aux_data = None, aux_folder = None):

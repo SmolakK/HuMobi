@@ -1,4 +1,12 @@
 smbco.py
 prediction_test.py
 src\generate_docs.bat
+<<<<<<< Updated upstream
 src\humobi\config.mako
+=======
+src\humobi\config.mako
+just_a_process.py
+just_a_process2.py
+sparsechaintest.py
+EQ5_exmpl.png
+>>>>>>> Stashed changes
