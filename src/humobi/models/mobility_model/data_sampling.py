@@ -1,15 +1,5 @@
 import sys
 sys.path.append("..")
-<<<<<<< Updated upstream
-from humobi.misc import create_grid
-from humobi.structures.trajectory import TrajectoriesFrame
-from humobi.models.temporal_tools import cluster_traj
-from humobi.models.spatial_tools import misc, distributions, generating, filtering
-from humobi.models.spatial_tools.misc import rank_freq
-from math import ceil
-from humobi.models.agent_module.generate_agents import generate_agents
-from humobi.preprocessing.spatial_aggregation import LayerAggregator
-=======
 from src.humobi.misc import create_grid
 from src.humobi.structures.trajectory import TrajectoriesFrame
 from src.humobi.models.temporal_tools import cluster_traj
@@ -18,8 +8,6 @@ from src.humobi.models.spatial_tools.misc import rank_freq
 from src.humobi.models.agent_module.generate_agents import generate_agents
 from src.humobi.preprocessing.spatial_aggregation import LayerAggregator
 from math import ceil
->>>>>>> Stashed changes
-
 
 def data_sampler(input_data, aggregation, weigthed, aux_data = None, aux_folder = None):
 	"""
@@ -35,7 +23,7 @@ def data_sampler(input_data, aggregation, weigthed, aux_data = None, aux_folder 
 		if not layer.layer.crs == input_data.crs:
 			layer.layer = layer.layer.to_crs(input_data.crs)
 	layer = filtering.filter_layer(layer,input_data)
-	circadian_collection, cluster_association, cluster_share = cluster_traj.cluster_trajectories(input_data, weights=weigthed, quantity=2, aux_cols = ['tcc'])
+	circadian_collection, cluster_association, cluster_share = cluster_traj.cluster_trajectories(input_data, weights=weigthed, quantity=3, aux_cols = ['a_tcc','a_t2m'])
 	commute_dist = distributions.commute_distances(input_data, quantity = 2)
 	unique_labels = set(cluster_association.values()).difference(set([-1]))
 	sig_frame = rank_freq(input_data, quantity = 2)

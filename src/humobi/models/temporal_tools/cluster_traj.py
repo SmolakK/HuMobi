@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.cluster import AgglomerativeClustering, KMeans, MeanShift, DBSCAN
 from sklearn.metrics import silhouette_score, calinski_harabasz_score
 sys.path.append("..")
-from humobi.models.spatial_tools.misc import rank_freq, normalize_array
+from src.humobi.models.spatial_tools.misc import rank_freq, normalize_array, nighttime_daylight
 from scipy import stats
 from collections import Counter
 WEIGHT = False
@@ -14,7 +14,7 @@ from itertools import product
 import warnings
 
 
-def cluster_trajectories(trajectories_frame, length = 24, quantity = 2, weights = True, clust_alg = DBSCAN(),
+def cluster_trajectories(trajectories_frame, length = 24, quantity = 3, weights = True, clust_alg = DBSCAN(),
                          aux_cols = None):
 	"""
 	Extracts circadian rhythms and clusters users by them.
@@ -33,7 +33,7 @@ def cluster_trajectories(trajectories_frame, length = 24, quantity = 2, weights 
 		unique_combs = [z for z in product(*[list(pd.unique(trajectories_frame[col].dropna())) for col in aux_cols])]
 	else:
 		unique_combs = [pd.unique(trajectories_frame[col].dropna()) for col in aux_cols][0]
-	top_places = rank_freq(trajectories_frame, quantity)
+	top_places = rank_freq(trajectories_frame, quantity = 3)
 	abstract_traj = {}
 	if length <= 24:
 		trajectories_frame['hod'] = trajectories_frame.index.get_level_values(1).hour

@@ -35,7 +35,6 @@ IGA = iterative_global_alignment(train_frame=X, test_frame=Y)
 # LET'S MAKE PREDICTIONS
 a = sparse_wrapper(markovian_seq,test_size=.2,state_size=0,averaged=False)
 pd.Series(a).to_csv('c.csv')
-oppaaa
 # MARKOV CHAINS
 MC1 = markov_wrapper(markovian_seq, test_size=.2, state_size=1, update=False, online=True)
 MC1[1].to_csv('MC1.csv')
