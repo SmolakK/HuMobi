@@ -1,5 +1,6 @@
+import sys
 from humobi.misc.generators import *
-from humobi.predictors.wrapper import *
+from src.humobi.predictors.wrapper import *
 from humobi.predictors.deep import *
 from humobi.measures.individual import *
 from sklearn.ensemble import RandomForestClassifier
@@ -12,7 +13,7 @@ from sklearn.ensemble import RandomForestClassifier
 # st_seq = self_transitions_sequences_generator(users=10, places=10, length=100)
 # non_st_seq = non_stationary_sequences_generator(users=10, places=10, states=5, length=100)
 
-markovian_seq = TrajectoriesFrame("mark_seq.csv")
+markovian_seq = TrajectoriesFrame("mark.csv")
 # fpath = """D:\papier2\london_1H_45.20353656360243_1.csv"""
 # markovian_seq = TrajectoriesFrame(fpath, {'names': ['id','time','temp','lat','lon','labels','start','end','geometry'],'skiprows':1})
 # markovian_seq = markovian_seq.uloc([x for x in markovian_seq.get_users()][:40])

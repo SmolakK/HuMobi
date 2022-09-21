@@ -22,7 +22,7 @@ class Sparse(object):
 			elif cur_id < 0:
 				lookback = self._sequence[:cur_id]
 				search_space = self._sequence[cur_id:]
-			out = _equally_sparse_match(lookback, search_space)
+			out = _equally_sparse_match(lookback, search_space) #(-where, what), whats_next
 			if out:
 				for ids, candidate in out:
 					if candidate in scanthrough.keys():
