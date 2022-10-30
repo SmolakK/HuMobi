@@ -15,7 +15,7 @@ def normalize_array(arr):
 	return arr
 
 
-def rank_freq(trajectories_frame, quantity = 2, nighttime_approach = True, day_start=9, day_end=17, night_start=23, night_end=6):
+def rank_freq(trajectories_frame, quantity = 2, nighttime_approach = True, day_start=9, day_end=17, night_start=2, night_end=5):
 	"""
 	Ranks locations visited by each user by the frequency of visits. Used to select the most important location
 	:param trajectories_frame: TrajectoriesFrame class object
@@ -33,8 +33,12 @@ def rank_freq(trajectories_frame, quantity = 2, nighttime_approach = True, day_s
 		filtered_trajectories_frame['hod'] = filtered_trajectories_frame.index.get_level_values(1).hour
 		daylight_frame = filtered_trajectories_frame[
 			(filtered_trajectories_frame.hod >= day_start) & (filtered_trajectories_frame.hod <= day_end)]
-		nighttime_frame = filtered_trajectories_frame[(filtered_trajectories_frame.hod >= night_start) | (
-					filtered_trajectories_frame.hod <= night_end)]  # TODO: different time cases
+		if night_start > night_end:
+			nighttime_frame = filtered_trajectories_frame[(filtered_trajectories_frame.hod >= night_start) | (
+					filtered_trajectories_frame.hod <= night_end)]
+		elif night_start < night_end:
+			nighttime_frame = filtered_trajectories_frame[(filtered_trajectories_frame.hod >= night_start) & (
+					filtered_trajectories_frame.hod <= night_end)]
 		top_places_day = daylight_frame.groupby(
 			[daylight_frame.index.get_level_values(0), 'labels']).count().reset_index()
 		top_places_day = pd.DataFrame(top_places_day).groupby('user_id').apply(
@@ -57,8 +61,24 @@ def rank_freq(trajectories_frame, quantity = 2, nighttime_approach = True, day_s
 	top_places = pd.DataFrame(top_places).groupby('user_id').apply(lambda x: x.sort_values('temp', ascending=False)).reset_index(drop=True)
 	merged = pd.merge(top_places[['user_id', 'labels']], filtered_trajectories_frame.reset_index(), on=['user_id', 'labels'], how='left')[['user_id', 'labels', 'geometry']].drop_duplicates()
 	unstacked = merged.groupby('user_id')['geometry'].apply(lambda x: x.reset_index(drop=True)).unstack()
-	if quantity <= 2:
-		pass
+	if quantity == 1 and nighttime_approach:
+		out = unstacked_home.iloc[:,0]
+	elif quantity >= 2 and nighttime_approach:
+		unstacked_work.iloc[:, 0][unstacked_home.iloc[:, 0] == unstacked_work.iloc[:, 0]] = None
+		if quantity == 2:
+			out = pd.concat([unstacked_home.iloc[:,0],unstacked_work.iloc[:,0]],axis=1)
+		elif quantity > 2:
+			for n in range(unstacked.shape[1]):
+				unstacked[n][unstacked_home.iloc[:, 0] == unstacked[n]] = None
+				unstacked[n][unstacked_work.iloc[:, 0] == unstacked[n]] = None
+			others_frame = {}
+			for n in unstacked.index:
+				others_frame[n] = unstacked.loc[n, :][~unstacked.loc[n, :].isna()]
+			others_frame = pd.DataFrame.from_dict(others_frame,orient='index')
+			out = pd.concat([unstacked_home.iloc[:, 0], unstacked_work.iloc[:, 0], others_frame.iloc[:,:quantity-2]], axis=1)
+	else:
+		out = unstacked.iloc[:,:quantity]
+	return out.T.reset_index(drop=True).T
 
 
 def nighttime_daylight(trajectories_frame,day_start=8,day_end=16,night_start=23,night_end=6):

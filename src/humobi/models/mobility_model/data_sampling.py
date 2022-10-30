@@ -26,14 +26,14 @@ def data_sampler(input_data, aggregation, weigthed, aux_data = None, aux_folder 
 	circadian_collection, cluster_association, cluster_share = cluster_traj.cluster_trajectories(input_data, weights=weigthed, quantity=3, aux_cols = ['a_tcc','a_t2m'])
 	commute_dist = distributions.commute_distances(input_data, quantity = 2)
 	unique_labels = set(cluster_association.values()).difference(set([-1]))
-	sig_frame = rank_freq(input_data, quantity = 2)
+	sig_frame = rank_freq(input_data, quantity = 3)
 	cluster_spatial_distributions = {}
 	cluster_commute_distributions = {}
 	for n in [unique_labels][0]:
 		group_indicies = [k for k,v in cluster_association.items() if v == n]
 		group_sig_frame = sig_frame.loc[group_indicies]
 		group_commute_dist = {k:v.loc[group_indicies] for k,v in commute_dist.items()}
-		dist_list = distributions.convert_to_2d_distribution(group_sig_frame, layer, return_centroids=True, quantity = 2)
+		dist_list = distributions.convert_to_2d_distribution(group_sig_frame, layer, return_centroids=True, quantity = 3)
 		commute_distributions = distributions.commute_distances_to_2d_distribution(group_commute_dist, layer, return_centroids=True)
 		cluster_spatial_distributions[n] = dist_list
 		cluster_commute_distributions[n] = commute_distributions

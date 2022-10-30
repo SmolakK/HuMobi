@@ -4,7 +4,7 @@ import sys
 
 sys.path.append("..")
 from humobi.tools.processing import normalize
-from humobi.models.spatial_tools.misc import rank_freq
+from src.humobi.models.spatial_tools.misc import rank_freq
 
 
 def calculate_distances(gs1, gs2):
@@ -102,7 +102,7 @@ def convert_to_2d_distribution(significant_places_frame, layer, quantity=1, crs=
 			col_name = significant_places_frame.columns[to_convert + 1]
 			sig_locs = significant_places_frame.loc[:, col_name]
 			sig_locs = sig_locs.dropna()
-			if sig_locs.dtype == 'geometry':
+			if sig_locs.dtype == 'geometry' or sig_locs.dtype == 'object':
 				sig_locs_data = gpd.GeoDataFrame(sig_locs, crs=crs, geometry=col_name)
 			elif sig_locs.dtype == 'str':
 				sig_locs = sig_locs.str.split(";", expand=True, ).astype(float)
