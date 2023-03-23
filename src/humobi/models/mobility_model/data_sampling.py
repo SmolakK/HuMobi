@@ -1,5 +1,4 @@
 import sys
-
 sys.path.append("..")
 from humobi.misc import create_grid
 from humobi.structures.trajectory import TrajectoriesFrame
