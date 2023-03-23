@@ -7,7 +7,6 @@ sys.path.append("..")
 from src.humobi.models.spatial_tools.misc import rank_freq, normalize_array, nighttime_daylight
 from scipy import stats
 from collections import Counter
-WEIGHT = False
 import geopandas as gpd
 import os
 from itertools import product
@@ -28,7 +27,7 @@ def cluster_trajectories(trajectories_frame, length = 24, quantity = 3, weights 
 	"""
 	if aux_cols:
 		weights = True
-		warnings.warn("Warning: when aux cols are passed, the model is enforced to represent abtract trajectory as a set probabilities")
+		warnings.warn("Warning: when aux cols are passed, the model is enforced to represent abtract trajectory as a set of probabilities")
 	if len(aux_cols) >1:
 		unique_combs = [z for z in product(*[list(pd.unique(trajectories_frame[col].dropna())) for col in aux_cols])]
 	else:
@@ -43,7 +42,7 @@ def cluster_trajectories(trajectories_frame, length = 24, quantity = 3, weights 
 		sig_places = []
 		for n in range(quantity):
 			sig_place = top_places.loc[uid][n]
-			if sig_place is not None:
+			if pd.notna(sig_place):
 				sig_place_label = int(vals[vals['geometry'] == sig_place]['labels'].iloc[0])
 				extraction_combs = pd.concat([pd.DataFrame(index=unique_combs),extract.loc[sig_place_label,:]],axis=1).fillna(0)
 				sig_places.append(extraction_combs)
@@ -52,11 +51,14 @@ def cluster_trajectories(trajectories_frame, length = 24, quantity = 3, weights 
 		stacked = np.vstack(sig_places)
 		others = extract.sum(0) - stacked.sum(0)
 		stacked = np.vstack((stacked,others))
+		if stacked.shape[1] != 24:
+			fillup = np.zeros(((len(unique_combs)*quantity+1, 24-stacked.shape[1])))
+			stacked = np.hstack([stacked,fillup])
 		if weights:
 			abstract_traj[uid] = stacked/stacked.sum(axis=0) #Circadian rhythm
 		else:
 			abstract_traj[uid] = np.argmax(stacked,axis=0) #most commonly visited place at given time (0-HOME, 1 - WORK, 2 - OTHER for q=2)
-	reshaped = np.concatenate([x.reshape(1, -1) for x in abstract_traj.values()], 0) #slices to n hours strips and sets them horizontally in a matrix
+	reshaped = np.concatenate([np.nan_to_num(x.reshape(1, -1),0) for x in abstract_traj.values()], 0) #slices to n hours strips and sets them horizontally in a matrix
 	cdist = np.zeros((reshaped.shape[0],reshaped.shape[0]))
 	for n in range(reshaped.shape[0]):
 		for m in range(reshaped.shape[0]):
@@ -79,13 +81,16 @@ def cluster_trajectories(trajectories_frame, length = 24, quantity = 3, weights 
 	abstract_collection = pd.DataFrame(reshaped, index=labels)
 	cluster_share = Counter([x for x in cluster_association.values() if x != -1])
 	cluster_share = {k: v / sum(cluster_share.values()) for k, v in cluster_share.items()}
-	return abstract_collection, cluster_association, cluster_share
+	return abstract_collection, cluster_association, cluster_share, unique_combs
 
 
-def circadian_rhythm_extraction(circadian_collection):
+def circadian_rhythm_extraction(circadian_collection, combs, quantity, length, weighted = False):
 	"""
 	Calculates average circadian rhythm.
 	:param circadian_collection: contains circadian rhythms
+	:param combs: all unique aux params combinations
+	:param quantity: the number of significant locations
+	:param length: the length of circadian rhythm vector
 	:return: a dict with clusters as keys and avarage circadian rhythms as values.
 	"""
 	cluster_indicies = set(circadian_collection.index.difference(set([-1])))
@@ -95,13 +100,23 @@ def circadian_rhythm_extraction(circadian_collection):
 	for k, v in circadian_rhythm_grouped.items():
 		frequency[k] = dict(zip(np.unique(v, return_counts = True)[0],
 						 np.unique(v, return_counts = True)[1]))
-	if WEIGHT:
+	if weighted:
 		extracted = {k:v.mean() for k,v in circadian_rhythm_grouped.items()}
-	elif not WEIGHT:
+	elif not weighted: #TODO: repair
 		extracted = {k:v.mode() for k,v in circadian_rhythm_grouped.items()}
 		for k,v in extracted.items():
 			if len(v) > 1:
 				most_freq = max(frequency[k].items(), key = lambda x: x[1])[0]
 				v.iloc[0][np.where(np.array(np.isnan(v.iloc[1])) == False)[0][0]] = most_freq
 			extracted[k] = v.iloc[:1]
+	#Reshaping to aux cols
+	new_levels = []
+	for x in range(quantity):
+		for y in combs:
+				new_levels += [(x,y)]
+	new_levels += [(-1, 'O')]
+	for k in extracted.keys():
+		extracted[k] = pd.DataFrame(np.array(extracted[k]).reshape(len(combs)*quantity+1,length))
+		extracted[k][['sig','combs']] = pd.DataFrame(new_levels)
+		extracted[k] = extracted[k].set_index(['sig','combs'])
 	return extracted

@@ -84,9 +84,9 @@ SIDE = 1000
 # time_agg = TemporalAggregator(time_unit)  # DEFINE TEMPORAL AGGREGATION ALGORITHM
 # df_sel_dbscan_time = time_agg.aggregate(df_sel_lay, parallel=True)  # TEMPORAL AGGREGATION CALL
 # df_sel_dbscan_time.to_csv("""D:\\Projekty\\4W\\sample_processed.csv""")
-df_sel = TrajectoriesFrame("""D:\\Projekty\\4W\\sample_aux.csv""",
-                           {'names':['user_id','time','labels','quad_id','temp','lat','lon','geometry','a_t2m','a_wind_speed','a_wind_dir','a_tcc'],
-                            'header':0, 'crs': 4326, 'nrows': 10000})
+df_sel = TrajectoriesFrame("""D:\\processing_vanessa\\sample_classified_weather_processed.csv""",
+                           {'names':['user_id','labels','datetime','temp','lat','lon','geometry','a_t2m','a_wind_speed','a_wind_dir','a_tcc'],
+                            'header':0, 'crs': 4326, 'nrows': 5000})
 df_sel = df_sel.loc[:,['labels','temp','lat','lon','geometry','a_t2m','a_wind_speed','a_wind_dir','a_tcc']]
 # dur = user_trajectories_duration(df_sel,'D')[user_trajectories_duration(df_sel,'D') > 7].index
 # df_sel = df_sel.uloc(dur)
@@ -108,4 +108,4 @@ df_sel = df_sel.loc[:,['labels','temp','lat','lon','geometry','a_t2m','a_wind_sp
 # merged.geometry = merged.geometry.centroid
 # merged.to_csv("""Z:\\RJ_DATA\\RIO\\selected_merged\\sample_processed_aux.csv""")
 # grouped = embeded_trajectories_frame.groupby(level=0)
-data_sampler(df_sel, "D:\\Projekty\\4W\\processing_vanessa\\grid_weatherID.shp", WEIGHT)
+data_sampler(df_sel, "D:\\processing_vanessa\\grid_weatherID.shp", WEIGHT)

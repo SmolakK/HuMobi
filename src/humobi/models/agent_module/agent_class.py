@@ -95,3 +95,6 @@ class Agent:
 	@activity_area.setter
 	def activity_area(self, new_value):
 		self._activity_area = new_value
+
+	def move(self):
+		pass

@@ -1,6 +1,16 @@
 import numpy as np
 
 
+class Simple():
+    """
+    Simple version of the spatial movement of an agent. Moves to the desired significant place,
+    or to the random location if other is selected.
+    """
+
+    def __init__(self):
+        pass
+
+
 def where(user):
     """
     WHERE module of the model

@@ -1,12 +1,14 @@
+import sys
+sys.path.append('.')
 import numpy as np
 from shapely.geometry import Point
-from humobi.misc.utils import resolution_to_points, moving_average, to_labels
+from src.humobi.misc.utils import resolution_to_points, moving_average, to_labels
 from tqdm import tqdm
 import pandas as pd
 import geopandas as gpd
 import concurrent.futures as cf
 from itertools import repeat
-from humobi.structures.trajectory import TrajectoriesFrame
+from src.humobi.structures.trajectory import TrajectoriesFrame
 
 
 class GridAggregation():

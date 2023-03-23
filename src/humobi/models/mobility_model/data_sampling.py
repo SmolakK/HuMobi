@@ -9,6 +9,8 @@ from src.humobi.models.agent_module.generate_agents import generate_agents
 from src.humobi.preprocessing.spatial_aggregation import LayerAggregator
 from math import ceil
 
+import pandas as pd
+
 def data_sampler(input_data, aggregation, weigthed, aux_data = None, aux_folder = None):
 	"""
 	:param input_data: 
@@ -23,8 +25,8 @@ def data_sampler(input_data, aggregation, weigthed, aux_data = None, aux_folder 
 		if not layer.layer.crs == input_data.crs:
 			layer.layer = layer.layer.to_crs(input_data.crs)
 	layer = filtering.filter_layer(layer,input_data)
-	circadian_collection, cluster_association, cluster_share = cluster_traj.cluster_trajectories(input_data, weights=weigthed, quantity=3, aux_cols = ['a_tcc','a_t2m'])
-	commute_dist = distributions.commute_distances(input_data, quantity = 2)
+	circadian_collection, cluster_association, cluster_share, combs = cluster_traj.cluster_trajectories(input_data, weights=weigthed, quantity=3, aux_cols = ['a_tcc','a_t2m'])
+	commute_dist = distributions.commute_distances(input_data, quantity = 3)
 	unique_labels = set(cluster_association.values()).difference(set([-1]))
 	sig_frame = rank_freq(input_data, quantity = 3)
 	cluster_spatial_distributions = {}
@@ -44,8 +46,17 @@ def data_sampler(input_data, aggregation, weigthed, aux_data = None, aux_folder 
 		current_spatial_distributions = cluster_spatial_distributions[label]
 		current_commute_distributions = cluster_commute_distributions[label]
 		home_positions = generating.generate_points_from_distribution(current_spatial_distributions[0], amount)
-		work_positions = generating.select_points_with_commuting(home_positions,current_spatial_distributions[1],current_commute_distributions, spread=.05)
-		activity_areas = generating.generate_activity_areas('ellipse', home_positions, work_positions, layer, 1.0)
+		work_positions = generating.select_points_with_commuting(home_positions,current_spatial_distributions,current_commute_distributions, spread=.05)
+		activity_areas = generating.generate_activity_areas('convex', home_positions, work_positions, layer, 1.0)
 		agents = generate_agents(amount, label, home_positions, work_positions, activity_areas)
-		generated_agents += agents
-	circadian_rhythm = cluster_traj.circadian_rhythm_extraction(circadian_collection)
+	circadian_rhythm = cluster_traj.circadian_rhythm_extraction(circadian_collection, combs, quantity=3, length=24, weighted=True)
+	start = '2023-01-01'
+	duration = 7
+	start = pd.to_datetime(start)
+	duration = pd.Timedelta('{} days'.format(duration))
+	end = start + duration
+	slots_amount = 24 * duration.days
+	time_slots = pd.date_range(start, end, slots_amount + 1)
+	for time_step in time_slots:
+		for agent in agents:
+			agent

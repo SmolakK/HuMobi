@@ -65,6 +65,13 @@ def rank_freq(trajectories_frame, quantity = 2, nighttime_approach = True, day_s
 		out = unstacked_home.iloc[:,0]
 	elif quantity >= 2 and nighttime_approach:
 		unstacked_work.iloc[:, 0][unstacked_home.iloc[:, 0] == unstacked_work.iloc[:, 0]] = None
+		unstacked_work_frame = {}
+		for n in unstacked_work.index:
+			work_collapsed = unstacked_work.loc[n,:][~unstacked_work.loc[n,:].isna()].reset_index(drop=True)
+			if work_collapsed.size == 0:
+				work_collapsed = pd.Series([None])
+			unstacked_work_frame[n] = work_collapsed
+		unstacked_work = pd.DataFrame.from_dict(unstacked_work_frame, orient='index')
 		if quantity == 2:
 			out = pd.concat([unstacked_home.iloc[:,0],unstacked_work.iloc[:,0]],axis=1)
 		elif quantity > 2:
@@ -73,7 +80,7 @@ def rank_freq(trajectories_frame, quantity = 2, nighttime_approach = True, day_s
 				unstacked[n][unstacked_work.iloc[:, 0] == unstacked[n]] = None
 			others_frame = {}
 			for n in unstacked.index:
-				others_frame[n] = unstacked.loc[n, :][~unstacked.loc[n, :].isna()]
+				others_frame[n] = unstacked.loc[n, :][~unstacked.loc[n, :].isna()].reset_index(drop=True)
 			others_frame = pd.DataFrame.from_dict(others_frame,orient='index')
 			out = pd.concat([unstacked_home.iloc[:, 0], unstacked_work.iloc[:, 0], others_frame.iloc[:,:quantity-2]], axis=1)
 	else:

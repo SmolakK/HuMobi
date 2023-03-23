@@ -63,21 +63,26 @@ def commute_distances_to_2d_distribution(commute_distances_frame, layer, crs=Non
 			pass
 		else:
 			crs = layer.crs
-		grouped = gpd.tools.sjoin(commute_distances_frame, layer, how='right').groupby(level=0)
-		to_concat = []
-		for uid, vals in grouped:
-			if vals.iloc[:, 1:k+1].isna().all()[0]:
-				pass
-			else:
-				vals.iloc[0, 1:k+1] = vals.iloc[:, 1:k+1].median()
-			to_concat.append(vals.iloc[0, :])
-		merged = pd.concat(to_concat, axis=1).T
-		merged = merged.rename(columns={"Unnamed 0": 'distance'})
-		merged = gpd.GeoDataFrame(merged, geometry='geometry').fillna(0)
-		if return_centroids:
-			merged['geometry'] = merged['geometry'].centroid
-		merged = merged[['distance','geometry']]
-		commute_distributions[k] = merged
+		multiple_commutes = []
+		for n_place in range(commute_distances_frame.shape[1]//2):
+			current_commute = gpd.GeoDataFrame(commute_distances_frame.iloc[:, n_place * 2:(n_place + 1) * 2],
+											   geometry=commute_distances_frame.iloc[:,((n_place+1)*2)-1])
+			grouped = gpd.tools.sjoin(current_commute, layer, how='right').groupby(level=0)
+			to_concat = []
+			for uid, vals in grouped:
+				if vals.iloc[:, 1].isna().all():
+					pass
+				else:
+					vals.iloc[0, 1] = vals.iloc[:, 1].median()
+				to_concat.append(vals.iloc[0, :])
+			merged = pd.concat(to_concat, axis=1).T
+			merged = merged.rename(columns={"Unnamed 0": 'distance'})
+			merged = gpd.GeoDataFrame(merged, geometry='geometry').fillna(0)
+			if return_centroids:
+				merged['geometry'] = merged['geometry'].centroid
+			merged = merged[['distance','geometry']]
+			multiple_commutes.append(merged)
+		commute_distributions[k] = pd.concat(map(pd.DataFrame,multiple_commutes),axis=1)
 	return commute_distributions
 
 
