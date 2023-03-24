@@ -3,6 +3,10 @@ import tqdm
 from src.humobi.misc.utils import get_diags, normalize_chain, _equally_sparse_match
 
 
+def normalize_list(l):
+	suml = np.sum(l)
+	return [x/suml for x in l]
+
 class Sparse(object):
 	"""
 	Sparse predictor
@@ -32,18 +36,26 @@ class Sparse(object):
 		nexts = np.hstack(nexts)
 		return matches,nexts
 
-	def predict(self, context):
-		matches = {}
-		prob_dict = {}
+	def predict(self, context, use_recency_weights=False, use_weights=True):
 		pad_size = self.model[0].shape[1] - context[0].shape[0]
 		context = np.pad(context[0], (pad_size, 0))
-		matches = np.sum((self.model[0] == context), axis=1) / self.model[0].shape[1]
+		matches = (self.model[0] == context)
+		matches = matches[matches.sum(axis=1) != 0, :]
+		if use_recency_weights:
+			recency_func = lambda x: 1/x
+			recency = np.vstack([recency_func(np.flip(np.arange(matches.shape[1]) + 1))
+								 for x in range(matches.shape[0])])*matches
+		if use_weights:
+			weights_func = lambda x: x**2
+			weights = 0
+		matches = np.sum(matches, axis=1) / self.model[0].shape[1]
 		joined = np.vstack([matches.T, self.model[1]]).T
 		joined = joined[joined[:,1].argsort()]
 		spliter = np.unique(joined[:,1], return_index=True)
 		joined = np.split(joined[:,0],spliter[1][1:])
 		probs = [np.sum(x) for x in joined]
 		SMC = spliter[0][np.argmax(probs)]
+		return SMC
 		# for candidate, ids in self.model.items():
 		# 	cnts = ids[1]
 		# 	ids = ids[0]
