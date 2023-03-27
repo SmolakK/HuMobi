@@ -1,7 +1,11 @@
 import numpy as np
 import tqdm
-from humobi.misc.utils import get_diags, normalize_chain, _equally_sparse_match
+from src.humobi.misc.utils import get_diags, normalize_chain, _equally_sparse_match
 
+
+def normalize_list(l):
+	suml = np.sum(l)
+	return [x/suml for x in l]
 
 class Sparse(object):
 	"""
@@ -14,6 +18,8 @@ class Sparse(object):
 
 	def build(self):
 		scanthrough = {}
+		matches = []
+		nexts = []
 		for n in tqdm.tqdm(range(1, len(self._sequence)*2),total=len(self._sequence)*2-1):
 			cur_id = len(self._sequence) - n
 			if cur_id > 0:
@@ -24,57 +30,60 @@ class Sparse(object):
 				search_space = self._sequence[cur_id:]
 			out = _equally_sparse_match(lookback, search_space)
 			if out:
-				for ids, candidate in out:
-					if candidate in scanthrough.keys():
-						scanthrough[candidate].append(ids)
-					else:
-						scanthrough[candidate] = [ids]
-		for k, v in scanthrough.items():
-			# v = map(tuple, v)
-			# v = list(set(v))
-			lists, counts = np.unique(scanthrough[k],return_counts=True)
-			if lists.dtype != object:
-				if len(lists) > 2:
-					lists = [[tuple(lists[[0,2]])], [tuple(lists[[1,2]])]]
-					counts = counts[:2]
-				else:
-					lists = [tuple(lists)]
-					counts = counts[0]
-			# scanthrough[k] = v
-			scanthrough[k] = (lists,counts)
-		return scanthrough
+				matches.append(np.stack([x[0] for x in out]))
+				nexts.append(np.stack([x[1] for x in out]))
+		matches = np.vstack(matches)
+		nexts = np.hstack(nexts)
+		return matches,nexts
 
-	def predict(self, context):
-		matches = {}
-		prob_dict = {}
-		for candidate, ids in self.model.items():
-			cnts = ids[1]
-			ids = ids[0]
-			if not isinstance(ids[0], list):
-				ids = [ids]
-				cnts = [cnts]
-			for cases, each_count in zip(ids,cnts):
-				cases = [(x,y) for x,y in cases if abs(x) <= len(context)]
-				partial_match = (context[[int(x[0]) for x in cases]] == np.array([x[1] for x in cases]))
-				if partial_match.any():
-					if candidate in matches.keys():
-						matches[candidate].append((cases, partial_match,each_count)) #added count
-					else:
-						matches[candidate] = [(cases, partial_match,each_count)] #added count
-		for candidate, match in matches.items():
-			match_fil = [np.array(x[0])[x[1]] for x in match]
-			weights = [x**2 for x in range(len(self._sequence))]
-			recency = [abs(1 / x[:, 0].sum()) for x in match_fil]
-			# recency = [((len(self._sequence)+x[:, 0])/len(self._sequence)) for x in match_fil]
-			recency = [max([weights[int(z)]*z for z in (len(self._sequence)+x[:, 0])]) for x in match_fil]
-			all_counts = [x[2] for x in match]
-			recency = [x * y for x, y in zip(recency, all_counts)]
-			prob_dict[candidate] = [a * b for a, b in
-			                        zip([x[:, 1].shape[0] / len(y) for x, y in zip(match_fil, match)], recency)]
-		prob_dict = {k: sum((x)) for k, x in prob_dict.items()}
-		try:
-			normalize_chain(prob_dict)
-			SMC = max(prob_dict, key=prob_dict.get)
-		except ZeroDivisionError:
-			SMC = np.argmax(np.unique(context, return_counts=True)[1])
+	def predict(self, context, use_recency_weights=False, use_weights=True):
+		pad_size = self.model[0].shape[1] - context[0].shape[0]
+		context = np.pad(context[0], (pad_size, 0))
+		matches = (self.model[0] == context)
+		matches = matches[matches.sum(axis=1) != 0, :]
+		if use_recency_weights:
+			recency_func = lambda x: 1/x
+			recency = np.vstack([recency_func(np.flip(np.arange(matches.shape[1]) + 1))
+								 for x in range(matches.shape[0])])*matches
+		if use_weights:
+			weights_func = lambda x: x**2
+			weights = 0
+		matches = np.sum(matches, axis=1) / self.model[0].shape[1]
+		joined = np.vstack([matches.T, self.model[1]]).T
+		joined = joined[joined[:,1].argsort()]
+		spliter = np.unique(joined[:,1], return_index=True)
+		joined = np.split(joined[:,0],spliter[1][1:])
+		probs = [np.sum(x) for x in joined]
+		SMC = spliter[0][np.argmax(probs)]
 		return SMC
+		# for candidate, ids in self.model.items():
+		# 	cnts = ids[1]
+		# 	ids = ids[0]
+		# 	if not isinstance(ids[0], list):
+		# 		ids = [ids]
+		# 		cnts = [cnts]
+		# 	for cases, each_count in zip(ids,cnts):
+		# 		cases = [(x,y) for x,y in cases if abs(x) <= len(context)]
+		# 		partial_match = (context[[int(x[0]) for x in cases]] == np.array([x[1] for x in cases]))
+		# 		if partial_match.any():
+		# 			if candidate in matches.keys():
+		# 				matches[candidate].append((cases, partial_match,each_count)) #added count
+		# 			else:
+		# 				matches[candidate] = [(cases, partial_match,each_count)] #added count
+		# for candidate, match in matches.items():
+		# 	match_fil = [np.array(x[0])[x[1]] for x in match]
+		# 	weights = [x**2 for x in range(len(self._sequence))]
+		# 	recency = [abs(1 / x[:, 0].sum()) for x in match_fil]
+		# 	# recency = [((len(self._sequence)+x[:, 0])/len(self._sequence)) for x in match_fil]
+		# 	recency = [max([weights[int(z)]*z for z in (len(self._sequence)+x[:, 0])]) for x in match_fil]
+		# 	all_counts = [x[2] for x in match]
+		# 	recency = [x * y for x, y in zip(recency, all_counts)]
+		# 	prob_dict[candidate] = [a * b for a, b in
+		# 	                        zip([x[:, 1].shape[0] / len(y) for x, y in zip(match_fil, match)], recency)]
+		# prob_dict = {k: sum((x)) for k, x in prob_dict.items()}
+		# try:
+		# 	normalize_chain(prob_dict)
+		# 	SMC = max(prob_dict, key=prob_dict.get)
+		# except ZeroDivisionError:
+		# 	SMC = np.argmax(np.unique(context, return_counts=True)[1])
+		# return SMC
