@@ -7,6 +7,11 @@ def normalize_list(l):
 	suml = np.sum(l)
 	return [x/suml for x in l]
 
+
+def scale_vector(v):
+	return (v-np.min(v))/(np.max(v)-np.min(v))
+
+
 class Sparse(object):
 	"""
 	Sparse predictor
@@ -36,54 +41,62 @@ class Sparse(object):
 		nexts = np.hstack(nexts)
 		return matches,nexts
 
-	def predict(self, context, use_recency_weights=False, use_weights=True):
-		pad_size = self.model[0].shape[1] - context[0].shape[0]
-		context = np.pad(context[0], (pad_size, 0))
+	def predict(self, context, recency_weights=None, length_weights=None, from_dist = False):
+		#TODO: matches length original, recency original
+		model_size = self.model[0].shape[1]
+		pad_size = model_size - context.shape[0]
+		if pad_size > 0:
+			context = np.pad(context[0], (pad_size, 0))
+		elif pad_size < 0:
+			context = context[-model_size:]
 		matches = (self.model[0] == context)
-		matches = matches[matches.sum(axis=1) != 0, :]
-		if use_recency_weights:
-			recency_func = lambda x: 1/x
-			recency = np.vstack([recency_func(np.flip(np.arange(matches.shape[1]) + 1))
-								 for x in range(matches.shape[0])])*matches
-		if use_weights:
-			weights_func = lambda x: x**2
-			weights = 0
-		matches = np.sum(matches, axis=1) / self.model[0].shape[1]
-		joined = np.vstack([matches.T, self.model[1]]).T
+		match_mask = np.sum(matches,axis=1) >= 1
+		#RECENCY
+		if recency_weights in ['inverted','inverted squared','IW','IWS']:
+			nonzero_elements = np.argwhere(np.fliplr(matches))
+			ind_first = np.unique(nonzero_elements[:,0],return_index=True)[1]
+			last_nonzero = nonzero_elements[ind_first,1]+1
+			if recency_weights in ['inverted','IW']:
+				recency_func = lambda x: 1/x
+			else:
+				recency_func = lambda x: 1/x**2
+			recency = np.array(list(map(recency_func, last_nonzero)))
+		elif recency_weights in ['linear','quadratic','L','Q']:
+			nonzero_elements = np.argwhere(np.fliplr(matches))
+			ind_first = np.unique(nonzero_elements[:, 0], return_index=True)[1]
+			last_nonzero = nonzero_elements[ind_first, 1] + 1
+			last_nonzero = self.model[0].shape[1] - last_nonzero + 1
+			if recency_weights in ['linear','L']:
+				recency = last_nonzero/model_size
+			else:
+				recency = (last_nonzero/model_size)**2
+		else:
+			recency = np.ones(np.sum(match_mask))
+		#LENGTHS
+		matches = np.sum(matches, axis=1)
+		matches = matches[match_mask]
+		candidates = self.model[1][match_mask]
+		if length_weights is not None:
+			if length_weights in ['inverted','IW']:
+				weights_func = lambda x: 1/x
+			elif length_weights in ['inverted squared','IWS']:
+				weights_func = lambda x: 1/x**2
+			elif length_weights in ['linear','L']:
+				weights_func = lambda x: x
+			elif length_weights in ['quadratic','Q']:
+				weights_func = lambda x: x**2
+			lengths = np.array(list(map(weights_func, matches)))
+			lengths = scale_vector(lengths)
+			matches = np.multiply(matches,lengths)
+		matches = np.multiply(matches, recency)
+		joined = np.vstack([matches.T, candidates]).T
 		joined = joined[joined[:,1].argsort()]
 		spliter = np.unique(joined[:,1], return_index=True)
 		joined = np.split(joined[:,0],spliter[1][1:])
 		probs = [np.sum(x) for x in joined]
-		SMC = spliter[0][np.argmax(probs)]
+		probs = probs/sum(probs)
+		if from_dist:
+			SMC = np.random.choice(spliter[0], p=probs)
+		else:
+			SMC = spliter[0][np.argmax(probs)]
 		return SMC
-		# for candidate, ids in self.model.items():
-		# 	cnts = ids[1]
-		# 	ids = ids[0]
-		# 	if not isinstance(ids[0], list):
-		# 		ids = [ids]
-		# 		cnts = [cnts]
-		# 	for cases, each_count in zip(ids,cnts):
-		# 		cases = [(x,y) for x,y in cases if abs(x) <= len(context)]
-		# 		partial_match = (context[[int(x[0]) for x in cases]] == np.array([x[1] for x in cases]))
-		# 		if partial_match.any():
-		# 			if candidate in matches.keys():
-		# 				matches[candidate].append((cases, partial_match,each_count)) #added count
-		# 			else:
-		# 				matches[candidate] = [(cases, partial_match,each_count)] #added count
-		# for candidate, match in matches.items():
-		# 	match_fil = [np.array(x[0])[x[1]] for x in match]
-		# 	weights = [x**2 for x in range(len(self._sequence))]
-		# 	recency = [abs(1 / x[:, 0].sum()) for x in match_fil]
-		# 	# recency = [((len(self._sequence)+x[:, 0])/len(self._sequence)) for x in match_fil]
-		# 	recency = [max([weights[int(z)]*z for z in (len(self._sequence)+x[:, 0])]) for x in match_fil]
-		# 	all_counts = [x[2] for x in match]
-		# 	recency = [x * y for x, y in zip(recency, all_counts)]
-		# 	prob_dict[candidate] = [a * b for a, b in
-		# 	                        zip([x[:, 1].shape[0] / len(y) for x, y in zip(match_fil, match)], recency)]
-		# prob_dict = {k: sum((x)) for k, x in prob_dict.items()}
-		# try:
-		# 	normalize_chain(prob_dict)
-		# 	SMC = max(prob_dict, key=prob_dict.get)
-		# except ZeroDivisionError:
-		# 	SMC = np.argmax(np.unique(context, return_counts=True)[1])
-		# return SMC

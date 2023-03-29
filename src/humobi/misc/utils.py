@@ -284,7 +284,7 @@ def _equally_sparse_match(s1, s2):
 	matches = []
 	for x, y in zip(nonzero_s1, nonzero_s2):
 		if y[-1] + x[-1] < len(s2):
-			matched_pattern = np.zeros(len(s1)+len(s2))-1
+			matched_pattern = np.zeros((len(s1)+len(s2))//2)-1
 			for z, w in zip(y, x):
 				matched_pattern[int(-w)] = s2[int(z)]
 			# matched_pattern = [(int(-w), s2[int(z)]) for z, w in zip(y, x)]

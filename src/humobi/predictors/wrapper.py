@@ -3,8 +3,8 @@ import pandas as pd
 from humobi.misc.utils import to_labels
 from tqdm import tqdm
 tqdm.pandas()
-from humobi.predictors.markov import MarkovChain
-from humobi.predictors.sparse import Sparse
+from src.humobi.predictors.markov import MarkovChain
+from src.humobi.predictors.sparse import Sparse
 from sklearn.model_selection import TimeSeriesSplit
 import itertools
 from sklearn.metrics import accuracy_score, confusion_matrix
@@ -40,22 +40,16 @@ class Splitter():
 		n_splits: The number of splits for cross-validation process
 	"""
 
-	def __init__(self, trajectories_frame, split_ratio, horizon = 1, n_splits = 1):
+	def __init__(self, split_ratio, horizon = 1, n_splits = 1):
 		"""
 		Class initialisation. Calls data splitting routine, hence after initialisation data is already prepared.
 		"""
-		self._data = trajectories_frame
 		self._train_ratio = 1 - split_ratio
 		if horizon < 1:
 			raise ValueError("Horizon value has to be a positive integer")
 		self._horizon = horizon
 		self._n_splits = n_splits
 		self.cv_data = []
-		self._stride_data()
-
-	@property
-	def data(self):
-		return self._data
 
 	@property
 	def test_ratio(self):
@@ -131,12 +125,12 @@ class Splitter():
 		frame_Y = frame_ready.iloc[:, -1]
 		return frame_X, frame_Y
 
-	def _stride_data(self):
+	def stride_data(self, sequence):
 		"""
 		A wrapper function for data windowing algorithm. Calls windowing algorithm for every unique user in the dataset.
 		After it splits data into three datasets - test, train and validation.
 		"""
-		strided_X, strided_Y = self._stride_data_single(self.data['labels'])
+		strided_X, strided_Y = self._stride_data_single(sequence['labels'])
 		train_frame_X, train_frame_Y, self.test_frame_X, self.test_frame_Y = self._test_split(strided_X, strided_Y)
 		self._cv_split(train_frame_X, train_frame_Y, n_splits=self._n_splits)
 
@@ -237,19 +231,19 @@ class SKLearnPred():
 							fold_avg.append(metric_val)
 						metric_val = np.mean(fold_avg)
 						if tuple(sorted(p_comb.items())) in score_board.keys():
-							score_board[tuple(sorted(p_comb.items()))].append(metric_val)
+							score_board[tuple(sorted(p_comb.items()))] += [metric_val]
 						else:
 							score_board[tuple(sorted(p_comb.items()))] = [metric_val]
 					if ids in result_dic.keys():
 						for k, v in score_board.items():
 							if k in result_dic[ids].keys():
-								result_dic[ids][k].append(v)
+								result_dic[ids][k] += v
 							else:
-								result_dic[ids][k] = [v]
+								result_dic[ids][k] = v
 					else:
 						result_dic[ids] = {}
 						for k, v in score_board.items():
-							result_dic[ids][k] = [v]
+							result_dic[ids][k] = v
 		for usr, params in result_dic.items():  # selects the best params and trains the algorithm on them (for each user)
 			select = {k: np.mean(v) for k, v in params.items()}
 			best_params = dict(max(select.keys(), key=lambda x: select[x]))
@@ -410,14 +404,12 @@ def markov_wrapper(trajectories_frame, test_size=.2, state_size=2, update=False,
 		else:
 			results_dic[uid] = sum(test_values[state_size:] == predictions_dic[prediction_values]) / len(test_values)
 			to_conc[uid] = predictions_dic[prediction_values]
-	predictions = pd.DataFrame.from_dict(to_conc).unstack().droplevel(1)
-	aligned = pd.concat([test_frame.droplevel([1,2]).groupby(level=0).apply(lambda x: x[state_size:]).droplevel([1]),predictions],axis=1)
-	return aligned, pd.DataFrame.from_dict(results_dic,orient='index')
+	# predictions = pd.DataFrame.from_dict(to_conc).unstack().droplevel(1)
+	# aligned = pd.concat([test_frame.droplevel([1,2]).groupby(level=0).apply(lambda x: x[state_size:]).droplevel([1]),predictions],axis=1)
+	return pd.DataFrame.from_dict(results_dic,orient='index')
 
 
-def sparse_wrapper(trajectories_frame, test_size=.2, state_size=0, update=False, averaged=True, online=False):
-	"""
-	"""
+def sparse_wrapper(trajectories_frame, test_size=.2, state_size=0, averaged=True, length_weights=None, recency_weights=None, use_probs=False):
 	split_ratio = 1 - test_size
 	train_frame, test_frame = split(trajectories_frame, split_ratio, state_size)
 	test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
@@ -432,7 +424,7 @@ def sparse_wrapper(trajectories_frame, test_size=.2, state_size=0, update=False,
 		split_ind = round(trajectories_frame.uloc(uid).shape[0] * split_ratio)
 		for n in tqdm(range(test_lengths.loc[uid]),total = test_lengths.loc[uid]):
 			context = trajectories_frame.uloc(uid).iloc[:split_ind].labels.values
-			pred = predictions_dic[uid].predict(context)
+			pred = predictions_dic[uid].predict(context, length_weights=length_weights, recency_weights=recency_weights, from_dist=use_probs)
 			forecast.append(pred)
 			split_ind += 1
 		results_dic[uid] = sum(forecast == test_values[state_size:]) / len(forecast)
