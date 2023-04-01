@@ -17,29 +17,35 @@ class Sparse(object):
 	Sparse predictor
 	"""
 
-	def __init__(self, sequence):
-		self._sequence = sequence
-		self.model = self.build()
+	def __init__(self, search_size = None):
+		self._search_size = search_size
+		self.model = None
 
-	def build(self):
-		scanthrough = {}
+	def fit(self, sequence):
 		matches = []
 		nexts = []
-		for n in tqdm.tqdm(range(1, len(self._sequence)*2),total=len(self._sequence)*2-1):
-			cur_id = len(self._sequence) - n
+		for n in tqdm.tqdm(range(1, len(sequence)),total=len(sequence)-1):
+			cur_id = len(sequence) - n
+			if self._search_size is None:
+				end = len(sequence)
+				start = 0
+			else:
+				end = cur_id+self._search_size
+				start = cur_id-self._search_size
 			if cur_id > 0:
-				lookback = self._sequence[cur_id:]
-				search_space = self._sequence[:cur_id]
-			elif cur_id < 0:
-				lookback = self._sequence[:cur_id]
-				search_space = self._sequence[cur_id:]
+				lookback = sequence[cur_id:end]
+				search_space = sequence[start:cur_id]
 			out = _equally_sparse_match(lookback, search_space)
+			if out:
+				matches.append(np.stack([x[0] for x in out]))
+				nexts.append(np.stack([x[1] for x in out]))
+			out = _equally_sparse_match(search_space, lookback)
 			if out:
 				matches.append(np.stack([x[0] for x in out]))
 				nexts.append(np.stack([x[1] for x in out]))
 		matches = np.vstack(matches)
 		nexts = np.hstack(nexts)
-		return matches,nexts
+		self.model = (matches,nexts)
 
 	def predict(self, context, recency_weights=None, length_weights=None, from_dist = False):
 		#TODO: matches length original, recency original
