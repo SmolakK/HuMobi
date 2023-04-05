@@ -22,8 +22,13 @@ class Sparse(object):
 		self.model = None
 
 	def fit(self, sequence):
-		matches = []
+		sequence = np.array(sequence)
+		moved = 0 in sequence
+		if moved:
+			sequence += 1 #REMEBER
 		nexts = []
+		max_search = len(sequence)-1
+		matches = np.zeros((0,max_search))
 		for n in tqdm.tqdm(range(1, len(sequence)),total=len(sequence)-1):
 			cur_id = len(sequence) - n
 			if self._search_size is None:
@@ -36,14 +41,15 @@ class Sparse(object):
 				lookback = sequence[cur_id:end]
 				search_space = sequence[start:cur_id]
 			out = _equally_sparse_match(lookback, search_space)
-			if out:
-				matches.append(np.stack([x[0] for x in out]))
-				nexts.append(np.stack([x[1] for x in out]))
+			if out[1].size != 0:
+				padded = np.pad(out[0],((0,0),(max_search-n,0)),constant_values=-1)
+				matches = np.append(matches,padded,axis=0)
+				nexts.append(out[1])
 			out = _equally_sparse_match(search_space, lookback)
-			if out:
-				matches.append(np.stack([x[0] for x in out]))
-				nexts.append(np.stack([x[1] for x in out]))
-		matches = np.vstack(matches)
+			if out[1].size != 0:
+				padded = np.pad(out[0],((0,0),(max_search-cur_id,0)),constant_values=-1)
+				matches = np.append(matches,padded,axis=0)
+				nexts.append(out[1])
 		nexts = np.hstack(nexts)
 		self.model = (matches,nexts)
 

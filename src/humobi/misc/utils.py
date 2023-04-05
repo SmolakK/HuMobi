@@ -258,39 +258,43 @@ def _iterative_global_align(s1, s2):
 	return sum(all_match) / (len(two) - 1)
 
 
+def extract_diaginfo(a):
+	shorter_size = min(a.shape) - 1
+	embed_array = np.zeros((a.shape[0]+shorter_size,a.shape[1]+shorter_size))
+	embed_array[:a.shape[0],:a.shape[1]] = a
+	extracted = np.vstack([embed_array.diagonal(i)[:shorter_size+1] for i in range(-a.shape[0] + 1, a.shape[1])
+	                       if sum(embed_array.diagonal(i)) != 0])
+	return extracted
+
+
+def get_last_nonzero(a):
+	nonzero_a = np.flipud(np.argwhere(a))
+	last_ind = nonzero_a[np.unique(nonzero_a[:,0],return_index=True)[1]]
+	return a[last_ind[:,0],last_ind[:,1]]
+
+
 def _equally_sparse_match(s1, s2):
-	if len(s1) > len(s2):
-		return None
 	matrix = np.zeros((len(s1), len(s2)))  # prepare matrix for results
 	for i in range(len(s1)):
 		for j in range(len(s2)):
 			if s1[i] == s2[j]:
-				if i == 0 or j == 0:  # if matched symbols are at the start of the sequence
-					matrix[i][j] += 1  # if symbols matched - add 1
-				else:
-					matrix[i][j] = 1  # if symbols matched - add 1
-	s2_indi = (np.vstack(
-		[np.arange(matrix.shape[1]) + 1 for x in range(matrix.shape[0])])) * matrix  # convert matched 1's into indices
+				matrix[i][j] = 1
 	s1_indi = (np.hstack(
 		[np.expand_dims(np.arange(matrix.shape[0]), axis=1) + 1 for x in range(matrix.shape[1])])) * matrix
-	s2diags = get_diags(s2_indi)  # get all diagonals
-	s1diags = get_diags(s1_indi)
-	if sum([sum(x) for x in s2diags]) == 0:
-		return None
-	nonzero_s2 = [[y - 1 for y in x if y != 0] for x in s2diags if sum(x) > 0]  # filter out empty lists
-	nonzero_s1 = [[len(s1) - y + 1 for y in x if y != 0] for x in s1diags if sum(x) > 0]  # filter out empty lists
-	# nonzero_s2 = [x for x in nonzero_s2 if len(x) >= 2]
-	# nonzero_s1 = [x for x in nonzero_s1 if len(x) >= 2]
-	matches = []
-	for x, y in zip(nonzero_s1, nonzero_s2):
-		if y[-1] + x[-1] < len(s2):
-			matched_pattern = np.zeros((len(s1)+len(s2))//2)-1
-			for z, w in zip(y, x):
-				matched_pattern[int(-w)] = s2[int(z)]
-			# matched_pattern = [(int(-w), s2[int(z)]) for z, w in zip(y, x)]
-			next_symbol = s2[int(y[-1] + x[-1])]
-			matches.append((matched_pattern, next_symbol))
-	return matches
+	s2_indi = (np.vstack(
+		[np.arange(matrix.shape[1]) + 1 for x in range(matrix.shape[0])])) * matrix  # convert matched 1's into indices
+	symbols = np.vstack([np.array(s2) for x in range(matrix.shape[0])])*matrix #TODO: 0's are removed
+	s1diags = extract_diaginfo(s1_indi)
+	s2diags = extract_diaginfo(s2_indi)
+	symbols_diags = extract_diaginfo(symbols)
+	last_s1 = len(s1) - (get_last_nonzero(s1diags)-1)
+	last_s2 = get_last_nonzero(s2diags) - 1
+	index_of_next_symbol = last_s1 + last_s2
+	reach_mask = index_of_next_symbol < len(s2)
+	symbols_diags = symbols_diags[reach_mask,:]
+	index_of_next_symbol = index_of_next_symbol[reach_mask]
+	next_symbols = np.array(s2)[index_of_next_symbol.astype(int)]
+	return None
 
 
 def fano_inequality(distinct_locations, entropy):

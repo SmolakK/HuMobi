@@ -4,20 +4,9 @@ import time
 import numpy as np
 
 models = {}
-# df = markovian_sequences_generator(1,3,6,1)
-df = random_sequences_generator(1,3,400)
+df = markovian_sequences_generator(1,3,600,1)
+# df = random_sequences_generator(1,3,10)
 for uid,vals in df.groupby(level=0):
     models[uid] = Sparse()
-    start = time.time()
-    models[uid].fit(vals.labels.values)
-    end = time.time()
-    print(end-start)
-    start = time.time()
-    models[uid].fit2(vals.labels.values)
-    end = time.time()
-    print(end - start)
-    start = time.time()
-    models[uid].fit3(vals.labels.values)
-    end = time.time()
-    print(end - start)
+    models[uid].fit([2,0,1,1,0,2,1,1])
     models[uid]
