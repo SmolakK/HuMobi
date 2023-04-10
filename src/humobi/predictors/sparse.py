@@ -23,9 +23,7 @@ class Sparse(object):
 
 	def fit(self, sequence):
 		sequence = np.array(sequence)
-		moved = 0 in sequence
-		if moved:
-			sequence += 1 #REMEBER
+		sequence += 1 #REMEBER
 		nexts = []
 		max_search = len(sequence)-1
 		matches = np.zeros((0,max_search))
@@ -41,12 +39,12 @@ class Sparse(object):
 				lookback = sequence[cur_id:end]
 				search_space = sequence[start:cur_id]
 			out = _equally_sparse_match(lookback, search_space)
-			if out[1].size != 0:
+			if out and out[1].size != 0:
 				padded = np.pad(out[0],((0,0),(max_search-n,0)),constant_values=-1)
 				matches = np.append(matches,padded,axis=0)
 				nexts.append(out[1])
 			out = _equally_sparse_match(search_space, lookback)
-			if out[1].size != 0:
+			if out and out[1].size != 0:
 				padded = np.pad(out[0],((0,0),(max_search-cur_id,0)),constant_values=-1)
 				matches = np.append(matches,padded,axis=0)
 				nexts.append(out[1])
@@ -58,7 +56,7 @@ class Sparse(object):
 		model_size = self.model[0].shape[1]
 		pad_size = model_size - context.shape[0]
 		if pad_size > 0:
-			context = np.pad(context[0], (pad_size, 0))
+			context = np.pad(context, (pad_size, 0)) #TODO:??
 		elif pad_size < 0:
 			context = context[-model_size:]
 		matches = (self.model[0] == context)

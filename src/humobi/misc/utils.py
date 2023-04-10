@@ -267,34 +267,37 @@ def extract_diaginfo(a):
 	return extracted
 
 
-def get_last_nonzero(a):
+def get_last_nonzero(a, indexbased = False):
 	nonzero_a = np.flipud(np.argwhere(a))
 	last_ind = nonzero_a[np.unique(nonzero_a[:,0],return_index=True)[1]]
-	return a[last_ind[:,0],last_ind[:,1]]
+	if indexbased:
+		return last_ind[:,1]
+	else:
+		return a[last_ind[:,0],last_ind[:,1]]
 
 
-def _equally_sparse_match(s1, s2):
+def _equally_sparse_match(s1, s2): #TODO: SPEEDUP SECOND FOLD & GPU
 	matrix = np.zeros((len(s1), len(s2)))  # prepare matrix for results
 	for i in range(len(s1)):
 		for j in range(len(s2)):
 			if s1[i] == s2[j]:
 				matrix[i][j] = 1
-	s1_indi = (np.hstack(
-		[np.expand_dims(np.arange(matrix.shape[0]), axis=1) + 1 for x in range(matrix.shape[1])])) * matrix
 	s2_indi = (np.vstack(
 		[np.arange(matrix.shape[1]) + 1 for x in range(matrix.shape[0])])) * matrix  # convert matched 1's into indices
-	symbols = np.vstack([np.array(s2) for x in range(matrix.shape[0])])*matrix #TODO: 0's are removed
-	s1diags = extract_diaginfo(s1_indi)
+	symbols = np.vstack([np.array(s2) for x in range(matrix.shape[0])])*matrix
+
 	s2diags = extract_diaginfo(s2_indi)
 	symbols_diags = extract_diaginfo(symbols)
-	last_s1 = len(s1) - (get_last_nonzero(s1diags)-1)
+
 	last_s2 = get_last_nonzero(s2diags) - 1
-	index_of_next_symbol = last_s1 + last_s2
+	last_s1symbol = len(s1) - get_last_nonzero(symbols_diags, indexbased=True)
+
+	index_of_next_symbol = last_s1symbol + last_s2
 	reach_mask = index_of_next_symbol < len(s2)
 	symbols_diags = symbols_diags[reach_mask,:]
 	index_of_next_symbol = index_of_next_symbol[reach_mask]
 	next_symbols = np.array(s2)[index_of_next_symbol.astype(int)]
-	return None
+	return symbols_diags-1, next_symbols-1
 
 
 def fano_inequality(distinct_locations, entropy):
