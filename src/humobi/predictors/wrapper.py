@@ -4,7 +4,7 @@ from humobi.misc.utils import to_labels
 from tqdm import tqdm
 tqdm.pandas()
 from src.humobi.predictors.markov import MarkovChain
-from src.humobi.predictors.sparse import Sparse
+from src.humobi.predictors.sparse import Sparse, Sparse_old
 from sklearn.model_selection import TimeSeriesSplit
 import itertools
 from sklearn.metrics import accuracy_score, confusion_matrix
@@ -409,14 +409,19 @@ def markov_wrapper(trajectories_frame, test_size=.2, state_size=2, update=False,
 	return pd.DataFrame.from_dict(results_dic,orient='index')
 
 
-def sparse_wrapper(trajectories_frame, test_size=.2, state_size=0, averaged=True, length_weights=None, recency_weights=None, use_probs=False):
+def sparse_wrapper(trajectories_frame, test_size=.2, state_size=0, averaged=True, length_weights=None, recency_weights=None, use_probs=False,
+                   overreach = True, reverse = False, old = False, rolls = True):
 	split_ratio = 1 - test_size
 	train_frame, test_frame = split(trajectories_frame, split_ratio, state_size)
 	test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
 	predictions_dic = {}
 	for uid, train_values in train_frame.groupby(level=0):
-		predictions_dic[uid] = Sparse()
-		predictions_dic[uid].fit(train_values.values)
+		if old:
+			predictions_dic[uid] = Sparse_old()
+			predictions_dic[uid].fit(train_values.values)
+		else:
+			predictions_dic[uid] = Sparse(overreach=overreach, reverse=reverse, rolls = rolls)
+			predictions_dic[uid].fit(train_values.values)
 	results_dic = {}
 	for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting
 		uid = test_values[0]

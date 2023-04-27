@@ -259,45 +259,70 @@ def _iterative_global_align(s1, s2):
 
 
 def extract_diaginfo(a):
-	shorter_size = min(a.shape) - 1
-	embed_array = np.zeros((a.shape[0]+shorter_size,a.shape[1]+shorter_size))
-	embed_array[:a.shape[0],:a.shape[1]] = a
-	extracted = np.vstack([embed_array.diagonal(i)[:shorter_size+1] for i in range(-a.shape[0] + 1, a.shape[1])
-	                       if sum(embed_array.diagonal(i)) != 0])
+	shorter_size = a.shape[0] - 1
+	embed_array = np.zeros((a.shape[0], a.shape[1] + shorter_size * 2),dtype=int)
+	embed_array[:,shorter_size:embed_array.shape[1]-shorter_size] = a
+	extracted = np.array(
+        [np.diagonal(embed_array, offset=i) for i in range(-embed_array.shape[0] + 1, embed_array.shape[1])
+         if np.sum(np.diagonal(embed_array, offset=i)) != 0])
 	return extracted
 
 
-def get_last_nonzero(a, indexbased = False):
+def get_last_nonzero(a,return_index=False):
 	nonzero_a = np.flipud(np.argwhere(a))
-	last_ind = nonzero_a[np.unique(nonzero_a[:,0],return_index=True)[1]]
-	if indexbased:
+	last_ind = nonzero_a[np.unique(nonzero_a[:, 0], return_index=True)[1]]
+	if return_index:
 		return last_ind[:,1]
 	else:
 		return a[last_ind[:,0],last_ind[:,1]]
 
+def get_rolls(a):
+	"""
+	Repeats all the rows of a matrix below with a +1 roll to the right. Repats till last columns rolls over the end
+	of the matrix
+	:param a: matrix to roll
+	:return: rolled matrix with sum(0) rows removed
+	"""
+	tiles = np.tile(a,(a.shape[1],1))
+	rows, column_indices = np.ogrid[:tiles.shape[0], :tiles.shape[1]]
+	rolls = np.repeat(np.arange(a.shape[1]),a.shape[0])
+	column_indices = column_indices - rolls[:,np.newaxis]
+	tiles = tiles[rows,column_indices]
+	tiles[column_indices < 0] = 0
+	tiles = tiles[~np.all(tiles == 0, axis=1),:]
+	return tiles
 
-def _equally_sparse_match(s1, s2): #TODO: SPEEDUP SECOND FOLD & GPU
-	matrix = np.zeros((len(s1), len(s2)))  # prepare matrix for results
-	for i in range(len(s1)):
-		for j in range(len(s2)):
-			if s1[i] == s2[j]:
-				matrix[i][j] = 1
-	s2_indi = (np.vstack(
-		[np.arange(matrix.shape[1]) + 1 for x in range(matrix.shape[0])])) * matrix  # convert matched 1's into indices
-	symbols = np.vstack([np.array(s2) for x in range(matrix.shape[0])])*matrix
 
-	s2diags = extract_diaginfo(s2_indi)
-	symbols_diags = extract_diaginfo(symbols)
+def _equally_sparse_match(s1, s2, overreach = True, roll = True): #TODO: SPEEDUP SECOND FOLD & GPU
+	matrix = np.array([[c1 == c2 for c2 in s2] for c1 in s1], dtype=bool)  # where s1 (vertical) matches s2 (horizontal)
+	if not matrix.any():
+		return None
 
-	last_s2 = get_last_nonzero(s2diags) - 1
-	last_s1symbol = len(s1) - get_last_nonzero(symbols_diags, indexbased=True)
+	# s1_indi = np.tile(np.arange(1,matrix.shape[0]+1),(matrix.shape[1],1)).T * matrix
+	s2_indi = np.tile(np.arange(1, matrix.shape[1]+1), (matrix.shape[0], 1)) * matrix # convert matches into indeces of s2
+	symbols = np.tile(s2, (matrix.shape[0], 1)) * matrix  # convert matches into matched
+	# symbols at their postions
 
-	index_of_next_symbol = last_s1symbol + last_s2
-	reach_mask = index_of_next_symbol < len(s2)
-	symbols_diags = symbols_diags[reach_mask,:]
-	index_of_next_symbol = index_of_next_symbol[reach_mask]
-	next_symbols = np.array(s2)[index_of_next_symbol.astype(int)]
-	return symbols_diags-1, next_symbols-1
+	# s1rolls = get_rolls(extract_diaginfo(s1_indi))
+	if roll:
+		s2rolls = get_rolls(extract_diaginfo(s2_indi))  # extract diagonals with s2 matched indecies
+		syrolls = get_rolls(extract_diaginfo(symbols))  # extract diagonals with matched symbols
+	else:
+		s2rolls = extract_diaginfo(s2_indi)
+		syrolls = extract_diaginfo(symbols)
+
+	last_s1 = s2rolls.shape[1] - get_last_nonzero(s2rolls,return_index=True) # get the last index of matched diagonal in s1 #TODO: get last of all combs
+	last_s2 = get_last_nonzero(s2rolls) - 1  # get the last index of matched diagonal in s2
+	# of matched symbol in s1 from the end (1 being first)
+
+	index_of_next_symbol = last_s1 + last_s2  # what symbol (index) from s2 will be after the match from s1 and s2
+	if overreach:
+		s2 = np.hstack([s2,s1])
+	reach_mask = index_of_next_symbol < s2.size  # check if that index is in s2 and produce masking
+	syrolls = syrolls[reach_mask]
+	index_of_next_symbol = index_of_next_symbol[reach_mask]  # apply mask
+	next_symbols = np.array(s2)[index_of_next_symbol.astype(int)]  # get all next symbols
+	return syrolls-1, next_symbols-1
 
 
 def fano_inequality(distinct_locations, entropy):
@@ -334,3 +359,35 @@ def to_labels(trajectories_frame):
 	trajectories_frame.astype({'labels': str})
 	trajectories_frame['labels'] = trajectories_frame['labels'].map(sub_dict)
 	return trajectories_frame
+
+
+def _equally_sparse_match_old(s1, s2):
+	matrix = np.zeros((len(s1), len(s2)))  # prepare matrix for results
+	for i in range(len(s1)):
+		for j in range(len(s2)):
+			if s1[i] == s2[j]:
+				if i == 0 or j == 0:  # if matched symbols are at the start of the sequence
+					matrix[i][j] += 1  # if symbols matched - add 1
+				else:
+					matrix[i][j] = 1  # if symbols matched - add 1
+	s2_indi = (np.vstack(
+		[np.arange(matrix.shape[1]) + 1 for x in range(matrix.shape[0])])) * matrix  # convert matched 1's into indices
+	s1_indi = (np.hstack(
+		[np.expand_dims(np.arange(matrix.shape[0]), axis=1) + 1 for x in range(matrix.shape[1])])) * matrix
+	s2diags = get_diags(s2_indi)  # get all diagonals
+	s1diags = get_diags(s1_indi)
+	if sum([sum(x) for x in s2diags]) == 0:
+		return None
+	nonzero_s2 = [[y - 1 for y in x if y != 0] for x in s2diags if sum(x) > 0]  # filter out empty lists
+	nonzero_s1 = [[len(s1) - y + 1 for y in x if y != 0] for x in s1diags if sum(x) > 0]  # filter out empty lists
+	# nonzero_s2 = [x for x in nonzero_s2 if len(x) >= 2]
+	# nonzero_s1 = [x for x in nonzero_s1 if len(x) >= 2]
+	matches = []
+	for x, y in zip(nonzero_s1, nonzero_s2):
+		if y[-1] + x[-1] < len(s2):
+			matched_pattern = np.zeros(len(s1)+len(s2))-1
+			for z, w in zip(y, x):
+				matched_pattern[int(-w)] = s2[int(z)]
+			next_symbol = s2[int(y[-1] + x[-1])]
+			matches.append((matched_pattern, next_symbol))
+	return matches
