@@ -1,6 +1,6 @@
 import numpy as np
 import tqdm
-from src.humobi.misc.utils import get_diags, normalize_chain, _equally_sparse_match, _equally_sparse_match_old
+from src.humobi.misc.utils import get_diags, normalize_chain, _equally_sparse_match, _equally_sparse_match_old, remove_subset_rows
 from time import time
 
 def normalize_list(l):
@@ -18,18 +18,19 @@ class Sparse(object):
 	"""
 	_search_size: int
 
-	def __init__(self, search_size = None, reverse = False, overreach = False, rolls = True):
+	def __init__(self, search_size = None, reverse = False, overreach = False, rolls = True, remove_subsets = True):
 		self._search_size = search_size
 		self.model = None
 		self.reverse = reverse
 		self.overreach = overreach
 		self.rolls = rolls
+		self.remove_subsets = remove_subsets
 
 	def fit(self, sequence):
 		sequence = np.array(sequence)
 		sequence += 1 #REMEBER
 		nexts = []
-		max_search = len(sequence)-1
+		max_search = len(sequence)
 		matches = np.zeros((0,max_search))
 		for n in tqdm.tqdm(range(1, len(sequence)),total=len(sequence)-1):
 			cur_id = len(sequence) - n
@@ -40,18 +41,22 @@ class Sparse(object):
 			lookback = sequence[cur_id:]
 			search_space = sequence[start:cur_id]
 			out = _equally_sparse_match(lookback, search_space, overreach=self.overreach, roll = self.rolls)
-			if out and out[1].size != 0:
+			if out[1].size != 0:
 				padded = np.pad(out[0],((0,0),(max_search-out[0].shape[1],0)),constant_values=-1)
 				matches = np.append(matches,padded,axis=0)
 				nexts.append(out[1])
 			if self.reverse:
 				out = _equally_sparse_match(search_space, lookback, overreach=self.overreach, roll = self.rolls)
-				if out and out[1].size != 0:
+				if out[1].size != 0:
 					padded = np.pad(out[0],((0,0),(max_search-out[0].shape[1],0)),constant_values=-1)
 					matches = np.append(matches, padded, axis=0)
 					nexts.append(out[1])
 		nexts = np.hstack(nexts)
-		self.model = (matches,nexts)
+		if self.remove_subsets:
+			stacks = remove_subset_rows(np.hstack((matches,nexts[:,np.newaxis])))
+			self.model = (stacks[:,:-1],stacks[:,-1])
+		else:
+			self.model = (matches,nexts)
 
 	def predict(self, context, recency_weights=None, length_weights=None, from_dist = False):
 		#TODO: matches length original, recency original
@@ -130,15 +135,16 @@ class Sparse_old(object):
 		scanthrough = {}
 		matches = []
 		nexts = []
-		for n in tqdm.tqdm(range(1, len(sequence) * 2), total=len(sequence) * 2 - 1):
+		for n in tqdm.tqdm(range(1, len(sequence)), total=len(sequence) - 1):
 			cur_id = len(sequence) - n
 			if cur_id > 0:
 				lookback = sequence[cur_id:]
 				search_space = sequence[:cur_id]
-			elif cur_id < 0:
-				lookback = sequence[:cur_id]
-				search_space = sequence[cur_id:]
 			out = _equally_sparse_match_old(lookback, search_space)
+			if out:
+				matches.append(np.stack([x[0] for x in out]))
+				nexts.append(np.stack([x[1] for x in out]))
+			out = _equally_sparse_match_old(search_space, lookback)
 			if out:
 				matches.append(np.stack([x[0] for x in out]))
 				nexts.append(np.stack([x[1] for x in out]))

@@ -410,7 +410,7 @@ def markov_wrapper(trajectories_frame, test_size=.2, state_size=2, update=False,
 
 
 def sparse_wrapper(trajectories_frame, test_size=.2, state_size=0, averaged=True, length_weights=None, recency_weights=None, use_probs=False,
-                   overreach = True, reverse = False, old = False, rolls = True):
+                   overreach = True, reverse = False, old = False, rolls = True, remove_subsets = False):
 	split_ratio = 1 - test_size
 	train_frame, test_frame = split(trajectories_frame, split_ratio, state_size)
 	test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
@@ -420,7 +420,7 @@ def sparse_wrapper(trajectories_frame, test_size=.2, state_size=0, averaged=True
 			predictions_dic[uid] = Sparse_old()
 			predictions_dic[uid].fit(train_values.values)
 		else:
-			predictions_dic[uid] = Sparse(overreach=overreach, reverse=reverse, rolls = rolls)
+			predictions_dic[uid] = Sparse(overreach=overreach, reverse=reverse, rolls = rolls, remove_subsets = remove_subsets)
 			predictions_dic[uid].fit(train_values.values)
 	results_dic = {}
 	for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting

@@ -46,17 +46,23 @@ toploc_results = TopLoc(train_data=cv_data,
                         test_data=[data_splitter.test_frame_X, data_splitter.test_frame_Y]).predict()
 
 # SKLEARN CLASSIFICATION METHOD
-clf = RandomForestClassifier
-predic = SKLearnPred(algorithm=clf, training_data=data_splitter.cv_data,
-                     test_data=[data_splitter.test_frame_X, data_splitter.test_frame_Y],
-                     param_dist={'n_estimators': [x for x in range(500, 5000, 500)], 'max_depth': [None, 2, 4, 6, 8]},
-                     search_size=5, cv_size=2, parallel=False)
-predic.learn()
-predic.test()
-rf_scores = predic.scores
+# clf = RandomForestClassifier
+# predic = SKLearnPred(algorithm=clf, training_data=data_splitter.cv_data,
+#                      test_data=[data_splitter.test_frame_X, data_splitter.test_frame_Y],
+#                      param_dist={'n_estimators': [x for x in range(500, 5000, 500)], 'max_depth': [None, 2, 4, 6, 8]},
+#                      search_size=5, cv_size=2, parallel=False)
+# predic.learn()
+# predic.test()
+# rf_scores = predic.scores
 
 sparse_results = {}
 for c in comb:
+	sparse9 = sparse_wrapper(markovian_seq, test_size=.2, state_size=0, averaged=False, length_weights=c[0],
+	                         recency_weights=c[1], use_probs=c[2],
+	                         reverse=True, overreach=False, rolls = True, remove_subsets=True)
+	sparse10 = sparse_wrapper(markovian_seq, test_size=.2, state_size=0, averaged=False, length_weights=c[0],
+	                         recency_weights=c[1], use_probs=c[2],
+	                         reverse=True, overreach=True, rolls = True, remove_subsets=True)
 	sparse0 = sparse_wrapper(markovian_seq, test_size=.2, state_size=0, averaged=False, length_weights=c[0],
 	                         recency_weights=c[1], use_probs=c[2],
 	                         reverse=False, overreach=False, old=True)
@@ -83,6 +89,8 @@ for c in comb:
 	                         recency_weights=c[1], use_probs=c[2],
 	                         reverse=True, overreach=False, rolls = True)
 
+
+
 	x = pd.concat([pd.DataFrame().from_dict(sparse0, orient='index'),
 	               pd.DataFrame().from_dict(sparse1, orient='index'),
 	               pd.DataFrame().from_dict(sparse2, orient='index'),
@@ -92,6 +100,8 @@ for c in comb:
 	               pd.DataFrame().from_dict(sparse6, orient='index'),
 	               pd.DataFrame().from_dict(sparse7, orient='index'),
 	               pd.DataFrame().from_dict(sparse8, orient='index'),
+	               pd.DataFrame().from_dict(sparse9, orient='index'),
+	               pd.DataFrame().from_dict(sparse10, orient='index'),
 	               toploc_results[1]], axis=1)
 
 	print(sparse1) #TODO: Separate train type and prediction type (prediction type based on the same train type)

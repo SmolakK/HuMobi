@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy.optimize import fsolve
+import numba
 from numba import cuda, jit
 from math import ceil
 from Bio import pairwise2
@@ -258,6 +259,7 @@ def _iterative_global_align(s1, s2):
 	return sum(all_match) / (len(two) - 1)
 
 
+@jit(nopython=True)
 def extract_diaginfo(a):
 	shorter_size = a.shape[0] - 1
 	embed_array = np.zeros((a.shape[0], a.shape[1] + shorter_size * 2),dtype=int)
@@ -268,6 +270,7 @@ def extract_diaginfo(a):
 	return extracted
 
 
+@jit(nopython=True)
 def get_last_nonzero(a,return_index=False):
 	nonzero_a = np.flipud(np.argwhere(a))
 	last_ind = nonzero_a[np.unique(nonzero_a[:, 0], return_index=True)[1]]
@@ -276,6 +279,8 @@ def get_last_nonzero(a,return_index=False):
 	else:
 		return a[last_ind[:,0],last_ind[:,1]]
 
+
+@jit(nopython=True)
 def get_rolls(a):
 	"""
 	Repeats all the rows of a matrix below with a +1 roll to the right. Repats till last columns rolls over the end
@@ -292,9 +297,10 @@ def get_rolls(a):
 	tiles = tiles[~np.all(tiles == 0, axis=1),:]
 	return tiles
 
-
+@jit(nopython=True)
 def _equally_sparse_match(s1, s2, overreach = True, roll = True): #TODO: SPEEDUP SECOND FOLD & GPU
 	matrix = np.array([[c1 == c2 for c2 in s2] for c1 in s1], dtype=bool)  # where s1 (vertical) matches s2 (horizontal)
+
 	if not matrix.any():
 		return None
 
@@ -391,3 +397,28 @@ def _equally_sparse_match_old(s1, s2):
 			next_symbol = s2[int(y[-1] + x[-1])]
 			matches.append((matched_pattern, next_symbol))
 	return matches
+
+
+def remove_subset_rows(arr):
+    """Removes rows from arr that are subsets of other rows."""
+    unique_rows = {}
+
+    # Iterate over each row in arr
+    for row in arr:
+        # Convert the row to a tuple
+        row_tuple = tuple(row)
+
+        # Check if the row is a subset of any of the unique rows
+        is_subset = False
+        for unique_tuple in unique_rows:
+            if set(row_tuple).issubset(set(unique_tuple)):
+                is_subset = True
+                break
+
+        # If the row is not a subset of any of the unique rows, add it to the dictionary
+        if not is_subset:
+            unique_rows[row_tuple] = row
+
+    # Convert the dictionary values back to a numpy array
+    unique_arr = np.array(list(unique_rows.values()))
+    return unique_arr
