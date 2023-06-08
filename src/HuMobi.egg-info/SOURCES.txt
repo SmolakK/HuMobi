@@ -9,6 +9,7 @@ src/HuMobi.egg-info/dependency_links.txt
 src/HuMobi.egg-info/requires.txt
 src/HuMobi.egg-info/top_level.txt
 src/humobi/__init__.py
+src/humobi/sparse_experiment.py
 src/humobi/measures/__init__.py
 src/humobi/measures/collective.py
 src/humobi/measures/individual.py

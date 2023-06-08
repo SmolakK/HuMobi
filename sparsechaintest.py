@@ -2,19 +2,33 @@ from src.humobi.misc.generators import *
 from src.humobi.predictors.wrapper import *
 from src.humobi.predictors.deep import *
 from src.humobi.measures.individual import *
+import os
 from sklearn.ensemble import RandomForestClassifier
+#TODO: rolling hold-out
 
+comb_learn = []
+for x in [True,False]:
+	for y in [True,False]:
+		for z in [True,False]:
+			for a in [False,True]:
+				for b in [True,False]:
+					for n in range(20,100,10):
+						comb_learn.append((x,y,z,a,b,n))
 
-comb = []
+comb_pred = []
 for x in [None,'L','Q','IW','IWS']:
 	for y in [None, 'L', 'Q', 'IW', 'IWS']:
-		for z in [False,True]:
-			comb.append((x,y,z))
+		for z in [None, 'L', 'Q', 'IW', 'IWS']:
+			for a in [None, 'L', 'Q', 'IW', 'IWS']:
+				for b in [False,True]:
+					comb_pred.append((x,y,z,a,b))
 
+top_path = """D:\\Projekty\\Sparse Chains\\markovian"""
 # ALSO GENERATE SOME DATA
-# markovian_seq = markovian_sequences_generator(users=20, places=[2,4,10], length=[50,70,100,150], prob=[.3,.5,.7,.9])
+markovian_seq = markovian_sequences_generator(users=3, places=[2,4,10], length=[300,400], prob=[.3,.5,.7,.9])
+# markovian_seq.to_csv("markovian.csv")
 # markovian_seq = TrajectoriesFrame("markovian.csv")
-markovian_seq = random_sequences_generator(users=10, places=[2,4,10], length=[50,70,100])
+# markovian_seq = random_sequences_generator(users=10, places=[2,4,10], length=[50,70,100])
 # markovian_seq = deterministic_sequences_generator(users=10, places=10, repeats=10)
 # ex_seq = exploratory_sequences_generator(users=10, places=10)
 # st_seq = self_transitions_sequences_generator(users=10, places=10, length=100)
@@ -24,7 +38,7 @@ markovian_seq = random_sequences_generator(users=10, places=[2,4,10], length=[50
 # DATA PREPARING (TEST-TRAIN SPLIT OF MULTIPLE TRAJECTORIES)
 # markovian_seq = TrajectoriesFrame("D:\\Projekty\\bias\\london\\london_1H_111.7572900082951_1.csv",{'names':['id','datetime','temp','lat','lon','labels','start','end','geometry'],"skiprows":1})
 # markovian_seq = markovian_seq.uloc(markovian_seq.get_users()[:5]).fillna(0)
-data_splitter = Splitter(split_ratio=.2, horizon=5, n_splits=2)
+data_splitter = Splitter(split_ratio=.3, horizon=5, n_splits=1)
 data_splitter.stride_data(markovian_seq)
 test_frame_X = data_splitter.test_frame_X
 test_frame_Y = data_splitter.test_frame_Y
@@ -42,72 +56,63 @@ cv_data = data_splitter.cv_data
 # LET'S MAKE PREDICTIONS
 
 # TOPLOC ALGORITHM
-toploc_results = TopLoc(train_data=cv_data,
-                        test_data=[data_splitter.test_frame_X, data_splitter.test_frame_Y]).predict()
-
-# SKLEARN CLASSIFICATION METHOD
+# toploc_results = TopLoc(train_data=cv_data,
+#                         test_data=[data_splitter.test_frame_X, data_splitter.test_frame_Y]).predict()
+#
+# toploc_results[1].to_csv(os.path.join(top_path,'toploc.csv'))
+#
+# # SKLEARN CLASSIFICATION METHOD
+# start = time()
 # clf = RandomForestClassifier
 # predic = SKLearnPred(algorithm=clf, training_data=data_splitter.cv_data,
 #                      test_data=[data_splitter.test_frame_X, data_splitter.test_frame_Y],
 #                      param_dist={'n_estimators': [x for x in range(500, 5000, 500)], 'max_depth': [None, 2, 4, 6, 8]},
-#                      search_size=5, cv_size=2, parallel=False)
+#                      search_size=1, cv_size=1, parallel=False)
 # predic.learn()
+# end = time()
+# print("RF LEARN TIME",end-start)
+# start = time()
 # predic.test()
+# end = time()
+# print("RF PRED TIME",end-start)
 # rf_scores = predic.scores
+# rf_scores.to_csv(os.path.join(top_path,'rf.csv'))
 
 sparse_results = {}
-for c in comb:
-	sparse9 = sparse_wrapper(markovian_seq, test_size=.2, state_size=0, averaged=False, length_weights=c[0],
-	                         recency_weights=c[1], use_probs=c[2],
-	                         reverse=True, overreach=False, rolls = True, remove_subsets=True)
-	sparse10 = sparse_wrapper(markovian_seq, test_size=.2, state_size=0, averaged=False, length_weights=c[0],
-	                         recency_weights=c[1], use_probs=c[2],
-	                         reverse=True, overreach=True, rolls = True, remove_subsets=True)
-	sparse0 = sparse_wrapper(markovian_seq, test_size=.2, state_size=0, averaged=False, length_weights=c[0],
-	                         recency_weights=c[1], use_probs=c[2],
-	                         reverse=False, overreach=False, old=True)
-	sparse5 = sparse_wrapper(markovian_seq,test_size=.2,state_size=0,averaged=False,length_weights=c[0],recency_weights=c[1],use_probs=True,
-	                        reverse=False,overreach=False, rolls = True)
-	sparse6 = sparse_wrapper(markovian_seq, test_size=.2, state_size=0, averaged=False, length_weights=c[0],
-	                        recency_weights=c[1], use_probs=True,
-	                        reverse=False, overreach=True, rolls = True)
-	sparse7 = sparse_wrapper(markovian_seq, test_size=.2, state_size=0, averaged=False, length_weights=c[0],
-	                         recency_weights=c[1], use_probs=True,
-	                         reverse=True, overreach=True, rolls = True)
-	sparse8 = sparse_wrapper(markovian_seq, test_size=.2, state_size=0, averaged=False, length_weights=c[0],
-	                         recency_weights=c[1], use_probs=True,
-	                         reverse=True, overreach=False, rolls = True)
-	sparse1 = sparse_wrapper(markovian_seq,test_size=.2,state_size=0,averaged=False,length_weights=c[0],recency_weights=c[1],use_probs=c[2],
-	                        reverse=False,overreach=False, rolls = True)
-	sparse2 = sparse_wrapper(markovian_seq, test_size=.2, state_size=0, averaged=False, length_weights=c[0],
-	                        recency_weights=c[1], use_probs=c[2],
-	                        reverse=False, overreach=True, rolls = True)
-	sparse3 = sparse_wrapper(markovian_seq, test_size=.2, state_size=0, averaged=False, length_weights=c[0],
-	                         recency_weights=c[1], use_probs=c[2],
-	                         reverse=True, overreach=True, rolls = True)
-	sparse4 = sparse_wrapper(markovian_seq, test_size=.2, state_size=0, averaged=False, length_weights=c[0],
-	                         recency_weights=c[1], use_probs=c[2],
-	                         reverse=True, overreach=False, rolls = True)
 
+#EXPERIMENTAL SPARSES
+test_size = .2
+split_ratio = 1 - test_size
+train_frame, test_frame = split(markovian_seq, split_ratio, 0)
+test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
 
+for c in comb_learn:
+	start = time()
+	sparse_alg = sparse_wrapper_learn(train_frame, overreach=c[0], reverse=c[1], old=False,
+	                                  rolls=c[2], remove_subsets=c[3], reverse_overreach=c[4],jit=True,
+	                                  search_size=c[5], parallel=True)
+	end = time()
+	print("SPARSE LEARN TIME",c,end-start)
+	for cp in comb_pred:
+		start = time()
+		pred_res = sparse_wrapper_test(sparse_alg, test_frame, markovian_seq, split_ratio, test_lengths,
+                               length_weights=cp[0], recency_weights=cp[1],
+                            org_length_weights = cp[2], org_recency_weights= cp[3], use_probs=cp[4])
+		end = time()
+		print("SPARSE PRED TIME",cp,end-start)
+		scores = pd.Series(pred_res.values())
+		scores.to_csv(os.path.join(top_path,str(scores.mean()) + '_' + str(c)+'_'+str(cp)+'_sparse.csv'))
 
-	x = pd.concat([pd.DataFrame().from_dict(sparse0, orient='index'),
-	               pd.DataFrame().from_dict(sparse1, orient='index'),
-	               pd.DataFrame().from_dict(sparse2, orient='index'),
-	              pd.DataFrame().from_dict(sparse3, orient='index'),
-	               pd.DataFrame().from_dict(sparse4, orient='index'),
-	               pd.DataFrame().from_dict(sparse5, orient='index'),
-	               pd.DataFrame().from_dict(sparse6, orient='index'),
-	               pd.DataFrame().from_dict(sparse7, orient='index'),
-	               pd.DataFrame().from_dict(sparse8, orient='index'),
-	               pd.DataFrame().from_dict(sparse9, orient='index'),
-	               pd.DataFrame().from_dict(sparse10, orient='index'),
-	               toploc_results[1]], axis=1)
+# #FIRST - SPARSE LEARN TYPE, SECOND - WEIGHTING TYPE
+# sparse_alg = sparse_wrapper_learn(train_frame, overreach=True, reverse=True, old = False,
+#                                   rolls=True, remove_subsets=True, reverse_overreach=True,
+#                                   search_size=10)
+# alg_weights = {}
+# for c in comb:
+# 	pred_res = sparse_wrapper_test(sparse_alg, test_frame, markovian_seq, split_ratio, test_lengths,
+# 	                    length_weights=c[0],recency_weights=c[1],use_probs=c[2])
+# 	alg_weights[c] = pred_res
 
-	print(sparse1) #TODO: Separate train type and prediction type (prediction type based on the same train type)
-	print(sparse2)
-	print(sparse3)
-	print(sparse4)
 
 # # DEEP LEARNING METHODS
 # GRU = DeepPred("GRU", markovian_seq, test_size=.2, folds=5, window_size=10, batch_size=10, embedding_dim=512,
@@ -126,10 +131,9 @@ for c in comb:
 # GRU2_score = GRU2.scores
 
 # MARKOV CHAINS
-MC1 = markov_wrapper(markovian_seq, test_size=.2, state_size=1, update=False, online=True)
-MC2 = markov_wrapper(markovian_seq, test_size=.2, state_size=2, update=False, online=True)
-MC2_offline = markov_wrapper(markovian_seq, test_size=.2, state_size=2, update=False, online=False)
-MC2_updated = markov_wrapper(markovian_seq, test_size=.2, state_size=2, update=False, online=False)
+# MC1 = markov_wrapper(markovian_seq, test_size=.2, state_size=1, update=False, online=True)
+# MC2 = markov_wrapper(markovian_seq, test_size=.2, state_size=2, update=False, online=True)
+# MC2_offline = markov_wrapper(markovian_seq, test_size=.2, state_size=2, update=False, online=False)
+# MC2_updated = markov_wrapper(markovian_seq, test_size=.2, state_size=2, update=False, online=False)
 
-
-a
+markovian_test_file.close()

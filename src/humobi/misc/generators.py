@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from humobi.structures.trajectory import TrajectoriesFrame
+from src.humobi.structures.trajectory import TrajectoriesFrame
 
 
 def _Mseq(places,length,prob):
@@ -14,7 +14,7 @@ def _Mseq(places,length,prob):
 	return out_seq
 
 
-def markovian_sequences_generator(users,places,length,prob):
+def markovian_sequences_generator(users,places,length,prob,return_params=False):
 	"""
 	Generates synthetic frame wtih Markovian sequences.
 
@@ -50,10 +50,13 @@ def markovian_sequences_generator(users,places,length,prob):
 	generated_frame = generated_frame.reset_index()
 	generated_frame.columns = ['user_id', 'datetime', 'labels']
 	generated_frame = generated_frame.set_index(['user_id','datetime'])
-	return TrajectoriesFrame(generated_frame)
+	if return_params:
+		return TrajectoriesFrame(generated_frame), pd.concat((pd.Series(places), pd.Series(length), pd.Series(prob)),axis=1)
+	else:
+		return TrajectoriesFrame(generated_frame)
 
 
-def random_sequences_generator(users,places,length):
+def random_sequences_generator(users,places,length,return_params=False):
 	"""
 	Generates synthetic frame wtih random sequences.
 
@@ -75,7 +78,7 @@ def random_sequences_generator(users,places,length):
 		length = [length] * users
 	frames = []
 	for uid in range(users):
-		generated_track = np.random.randint(0,places[uid],length[uid])
+		generated_track = np.random.randint(0,places[uid],length[uid],dtype=np.int64)
 		tmstmps = pd.date_range(0,periods=length[uid],freq='h')
 		generated_frame = pd.concat({uid: pd.DataFrame(generated_track,index=tmstmps)})
 		frames.append(generated_frame)
@@ -83,7 +86,11 @@ def random_sequences_generator(users,places,length):
 	generated_frame = generated_frame.reset_index()
 	generated_frame.columns = ['user_id', 'datetime', 'labels']
 	generated_frame = generated_frame.set_index(['user_id','datetime'])
-	return TrajectoriesFrame(generated_frame)
+	if return_params:
+		return TrajectoriesFrame(generated_frame), pd.concat((pd.Series(places), pd.Series(length)),
+		                                                     axis=1)
+	else:
+		return TrajectoriesFrame(generated_frame)
 
 
 def deterministic_sequences_generator(users,places,repeats):
@@ -186,7 +193,7 @@ def self_transitions_sequences_generator(users,places,length):
 	return TrajectoriesFrame(generated_frame)
 
 
-def non_stationary_sequences_generator(users, places, states, length):
+def non_stationary_sequences_generator(users, places, states, length, return_params = False):
 	"""
 	Generates synthetic frame wtih non-stationary sequences. The algorithms chooses between states, each with different
 	generation routine.
@@ -231,4 +238,7 @@ def non_stationary_sequences_generator(users, places, states, length):
 	generated_frame = generated_frame.reset_index()
 	generated_frame.columns = ['user_id', 'datetime', 'labels']
 	generated_frame = generated_frame.set_index(['user_id','datetime'])
-	return TrajectoriesFrame(generated_frame)
+	if return_params:
+		return TrajectoriesFrame(generated_frame), pd.concat((pd.Series(places), pd.Series(length), pd.Series(states)),axis=1)
+	else:
+		return TrajectoriesFrame(generated_frame)

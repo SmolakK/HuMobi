@@ -1,6 +1,6 @@
 import pandas as pd
-from humobi.structures.trajectory import TrajectoriesFrame
-from humobi.preprocessing.filters import fill_gaps
+from src.humobi.structures.trajectory import TrajectoriesFrame
+from src.humobi.preprocessing.filters import fill_gaps
 import concurrent.futures as cf
 from tqdm import tqdm
 

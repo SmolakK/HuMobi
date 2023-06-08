@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from humobi.misc.utils import to_labels
+from src.humobi.misc.utils import to_labels
 from tqdm import tqdm
 tqdm.pandas()
 from src.humobi.predictors.markov import MarkovChain
@@ -10,6 +10,7 @@ import itertools
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.model_selection import RandomizedSearchCV
 import concurrent.futures as cf
+import warnings
 
 
 def iterate_random_values(S, n_check):
@@ -408,9 +409,45 @@ def markov_wrapper(trajectories_frame, test_size=.2, state_size=2, update=False,
 	# aligned = pd.concat([test_frame.droplevel([1,2]).groupby(level=0).apply(lambda x: x[state_size:]).droplevel([1]),predictions],axis=1)
 	return pd.DataFrame.from_dict(results_dic,orient='index')
 
+def sparse_wrapper_learn(train_frame, overreach = True, reverse = False, old = False, rolls = True,
+                         remove_subsets = False, reverse_overreach = False, search_size=None, jit=True, parallel = True,
+                         cuda = False):
+	if old == True and any((overreach,reverse,reverse_overreach,remove_subsets,rolls)):
+		warnings.warn("When old is set to True, other parameters have no effect")
+	predictions_dic = {}
+	for uid, train_values in train_frame.groupby(level=0):
+		if old:
+			predictions_dic[uid] = Sparse_old()
+			predictions_dic[uid].fit(train_values.values)
+		else:
+			predictions_dic[uid] = Sparse(overreach=overreach, reverse=reverse, rolls=rolls,
+			                              remove_subsets=remove_subsets, reverse_overreach=reverse_overreach,
+			                              search_size=search_size)
+			predictions_dic[uid].fit(train_values.values,jit=jit,parallel=parallel,cuda=cuda)
+	return predictions_dic
+
+
+def sparse_wrapper_test(predictions_dic, test_frame, trajectories_frame, split_ratio, test_lengths,
+                        length_weights=None, recency_weights=None, use_probs=False, org_recency_weights = None, org_length_weights = None):
+	results_dic = {}
+	for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting
+		uid = test_values[0]
+		test_values = test_values[1].values
+		forecast = []
+		split_ind = round(trajectories_frame.uloc(uid).shape[0] * split_ratio)
+		for n in tqdm(range(test_lengths.loc[uid]),total = test_lengths.loc[uid]):
+			context = trajectories_frame.uloc(uid).iloc[:split_ind].labels.values
+			pred = predictions_dic[uid].predict(context, length_weights=length_weights, recency_weights=recency_weights, from_dist=use_probs,
+			                                    org_length_weights = org_length_weights, org_recency_weights = org_recency_weights)
+			forecast.append(pred)
+			split_ind += 1
+		results_dic[uid] = sum(forecast == test_values) / len(forecast)
+	return results_dic
+
 
 def sparse_wrapper(trajectories_frame, test_size=.2, state_size=0, averaged=True, length_weights=None, recency_weights=None, use_probs=False,
-                   overreach = True, reverse = False, old = False, rolls = True, remove_subsets = False):
+                   overreach = True, reverse = False, old = False, rolls = True, remove_subsets = False, reverse_overreach = False,
+                   search_size = None):
 	split_ratio = 1 - test_size
 	train_frame, test_frame = split(trajectories_frame, split_ratio, state_size)
 	test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
@@ -420,7 +457,8 @@ def sparse_wrapper(trajectories_frame, test_size=.2, state_size=0, averaged=True
 			predictions_dic[uid] = Sparse_old()
 			predictions_dic[uid].fit(train_values.values)
 		else:
-			predictions_dic[uid] = Sparse(overreach=overreach, reverse=reverse, rolls = rolls, remove_subsets = remove_subsets)
+			predictions_dic[uid] = Sparse(overreach=overreach, reverse=reverse, rolls = rolls, remove_subsets = remove_subsets, reverse_overreach = reverse_overreach,
+			                              search_size=search_size)
 			predictions_dic[uid].fit(train_values.values)
 	results_dic = {}
 	for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting
@@ -430,7 +468,7 @@ def sparse_wrapper(trajectories_frame, test_size=.2, state_size=0, averaged=True
 		split_ind = round(trajectories_frame.uloc(uid).shape[0] * split_ratio)
 		for n in tqdm(range(test_lengths.loc[uid]),total = test_lengths.loc[uid]):
 			context = trajectories_frame.uloc(uid).iloc[:split_ind].labels.values
-			pred = predictions_dic[uid].predict(context, length_weights=length_weights, recency_weights=recency_weights, from_dist=use_probs)
+			pred = predictions_dic[uid].predict(context, length_weights=length_weights, recency_weights=recency_weights, from_dist=use_probs,)
 			forecast.append(pred)
 			split_ind += 1
 		results_dic[uid] = sum(forecast == test_values[state_size:]) / len(forecast)

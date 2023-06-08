@@ -5,6 +5,7 @@ import numba
 from numba import cuda, jit
 from math import ceil
 from Bio import pairwise2
+from time import time
 
 def normalize_chain(dicto):
 	"""
@@ -128,7 +129,7 @@ def matchfinder(gs, gpu=True):
 	return output
 
 
-@jit
+@jit(nopython=True)
 def _repeatfinder_dense(s1, s2):
 	output = np.zeros(len(s2))
 	for pos1 in range(0, len(s2)):
@@ -145,7 +146,7 @@ def _repeatfinder_dense(s1, s2):
 	return max(output)-1 / len(s2)-1
 
 
-@jit
+@jit(nopython=True)
 def _repeatfinder_sparse(s1, s2):
 	matrix = [[0 for x in range(len(s2))] for x in range(len(s1))]
 	for i in range(len(s1)):
@@ -259,7 +260,6 @@ def _iterative_global_align(s1, s2):
 	return sum(all_match) / (len(two) - 1)
 
 
-@jit(nopython=True)
 def extract_diaginfo(a):
 	shorter_size = a.shape[0] - 1
 	embed_array = np.zeros((a.shape[0], a.shape[1] + shorter_size * 2),dtype=int)
@@ -270,7 +270,32 @@ def extract_diaginfo(a):
 	return extracted
 
 
-@jit(nopython=True)
+@jit(nopython=True,cache=True)
+def extract_diaginfo_jit(a):
+	shorter_size = a.shape[0] - 1
+	rows, cols = a.shape
+	new_cols = cols + shorter_size * 2
+	embed_array = np.zeros((rows, new_cols), dtype=np.int32)
+	embed_array[:,shorter_size:embed_array.shape[1]-shorter_size] = a
+
+	max_diag_length = min(embed_array.shape[0], embed_array.shape[1])
+	diag_length = np.arange(-a.shape[0] + 1, a.shape[1]).size
+	extracted = np.zeros((diag_length, max_diag_length), dtype=np.int32)
+	extracted_count = 0
+
+	for i in range(-a.shape[0] + 1, a.shape[1]):
+		start_col = shorter_size + i
+		start_row = 0
+		diagonal = np.empty((1,max_diag_length))
+		for j in range(max_diag_length):
+			diagonal[0,j] = embed_array[start_row + j, start_col + j]
+		if np.sum(diagonal) != 0:
+			extracted[extracted_count, :] = diagonal
+			extracted_count += 1
+	extracted = extracted[:extracted_count,:]
+	return extracted
+
+
 def get_last_nonzero(a,return_index=False):
 	nonzero_a = np.flipud(np.argwhere(a))
 	last_ind = nonzero_a[np.unique(nonzero_a[:, 0], return_index=True)[1]]
@@ -280,10 +305,23 @@ def get_last_nonzero(a,return_index=False):
 		return a[last_ind[:,0],last_ind[:,1]]
 
 
-@jit(nopython=True)
+@jit(nopython=True,cache=True)
+def get_last_nonzero_jit(a,return_index=False):
+	lasts = np.empty(a.shape[0],dtype=np.int64)
+	for i in range(a.shape[0]):
+		cur_last = 0
+		for j in range(a[i].shape[0]):
+			if a[i][j] != 0:
+				if return_index:
+					cur_last = j
+				else:
+					cur_last = a[i][j]
+			lasts[i] = cur_last
+	return lasts
+
 def get_rolls(a):
 	"""
-	Repeats all the rows of a matrix below with a +1 roll to the right. Repats till last columns rolls over the end
+	Repeats all the rows of a matrix below with a +1 roll to the right. Repeats till last columns rolls over the end
 	of the matrix
 	:param a: matrix to roll
 	:return: rolled matrix with sum(0) rows removed
@@ -297,10 +335,81 @@ def get_rolls(a):
 	tiles = tiles[~np.all(tiles == 0, axis=1),:]
 	return tiles
 
-@jit(nopython=True)
-def _equally_sparse_match(s1, s2, overreach = True, roll = True): #TODO: SPEEDUP SECOND FOLD & GPU
-	matrix = np.array([[c1 == c2 for c2 in s2] for c1 in s1], dtype=bool)  # where s1 (vertical) matches s2 (horizontal)
 
+@jit(nopython=True,cache=True)
+def get_rolls_jit(a):
+	"""
+	Repeats all the rows of a matrix below with a +1 roll to the right. Repeats till last columns rolls over the end
+	of the matrix
+	:param a: matrix to roll
+	:return: rolled matrix with sum(0) rows removed
+	"""
+	tiles = np.zeros((a.shape[1]*a.shape[0],a.shape[1]),dtype=np.int32)
+	for i in range(a.shape[1]):
+		tiles[i*a.shape[0]:(i+1)*a.shape[0],:] = a
+
+	column_indices = np.empty((1,tiles.shape[1]),dtype=np.int32)
+	for j in range(tiles.shape[1]):
+		column_indices[0,j] = j
+	rolls_prepare = np.arange(a.shape[1])
+	rolls = np.empty(rolls_prepare.shape[0]*a.shape[0],dtype=np.int32)
+	for i in range(a.shape[1]):
+		rolls[i*a.shape[0]:(i+1)*a.shape[0]] = rolls_prepare[i]
+	column_indices = column_indices - rolls[:,np.newaxis]
+	new_tiles = np.zeros_like(tiles,dtype=np.int32)
+	nonzero = 0
+	for i in range(column_indices.shape[0]):
+		org_j = -1
+		j_sum = 0
+		for j in column_indices[i,:]:
+			org_j += 1
+			if j < 0:
+				continue
+			new_tiles[i,org_j] = tiles[i,j]
+			j_sum += tiles[i,j]
+		if j_sum > 0:
+			nonzero += 1
+	filtered_tiles = np.zeros((nonzero,new_tiles.shape[1]),dtype=np.int32)
+	i = 0
+	for j in new_tiles:
+		if np.sum(j) > 0:
+			filtered_tiles[i,:] = j
+			i += 1
+	return filtered_tiles
+
+
+@cuda.jit
+def get_rolls_cuda(a, new_tiles, translation_pattern):
+	pos = cuda.grid(1)
+	if pos < a.shape[0]:
+		for i in range(translation_pattern.shape[0]):
+			org_j = -1
+			for j in translation_pattern[i,:]:
+				org_j += 1
+				if j < 0:
+					continue
+				new_tiles[pos*a.shape[1]+i,org_j] = a[pos,j]
+
+
+def run_get_rolls_cuda(a):
+	threads_per_block = 128
+	blocks_per_grid = (a.shape[0] + (threads_per_block - 1)) // threads_per_block
+	new_tiles = np.zeros((a.shape[0]*a.shape[1],a.shape[1]),dtype=a.dtype)
+	translation_pattern = np.arange(a.shape[1]) - np.arange(a.shape[1])[:,np.newaxis]
+
+	a_gpu = cuda.to_device(a)
+	new_tiles_gpu = cuda.to_device(new_tiles)
+	translation_pattern_gpu = cuda.to_device(translation_pattern)
+
+	get_rolls_cuda[blocks_per_grid,threads_per_block](a_gpu,new_tiles_gpu,translation_pattern_gpu)
+
+	new_tiles = new_tiles_gpu.copy_to_host()
+	new_tiles = new_tiles[new_tiles.sum(axis=1)>0]
+	return new_tiles
+
+
+def _equally_sparse_match(s1, s2, overreach = True, roll = True): #TODO: SPEEDUP SECOND FOLD & GPU
+	matrix = np.array([[c1 == c2 for c2 in s2] for c1 in s1], dtype=np.bool_)  # where s1 (vertical) matches s2 (horizontal)
 	if not matrix.any():
 		return None
 
@@ -328,7 +437,59 @@ def _equally_sparse_match(s1, s2, overreach = True, roll = True): #TODO: SPEEDUP
 	syrolls = syrolls[reach_mask]
 	index_of_next_symbol = index_of_next_symbol[reach_mask]  # apply mask
 	next_symbols = np.array(s2)[index_of_next_symbol.astype(int)]  # get all next symbols
+
 	return syrolls-1, next_symbols-1
+
+
+@jit(nopython=True,cache=True)
+def _equally_sparse_match_jit(s1, s2, overreach = True, roll = True):
+	rows = len(s1)
+	cols = len(s2)
+	matrix = np.empty((rows, cols), dtype=np.bool_)
+	for i in range(rows):
+		for j in range(cols):
+			matrix[i, j] = s1[i] == s2[j]
+
+	if not matrix.any():
+		return None
+
+	s2_indi = np.zeros_like(matrix, dtype = np.int32)
+	for i in range(rows):
+		for j in range(cols):
+			s2_indi[i,j] = (j+1) * matrix[i,j]
+
+	symbols = np.zeros_like(matrix, dtype=np.int32)
+	for i in range(rows):
+		for j in range(cols):
+			symbols[i, j] = s2[j] * matrix[i, j]
+
+	if roll:
+		s2rolls = get_rolls_jit(extract_diaginfo_jit(s2_indi))  # extract diagonals with s2 matched indecies
+		syrolls = get_rolls_jit(extract_diaginfo_jit(symbols))  # extract diagonals with matched symbols
+	else:
+		s2rolls = extract_diaginfo_jit(s2_indi)
+		syrolls = extract_diaginfo_jit(symbols)
+
+	last_s1 = s2rolls.shape[1] - get_last_nonzero_jit(s2rolls,
+	                                              return_index=True)  # get the last index of matched diagonal in s1 #TODO: get last of all combs
+	last_s2 = get_last_nonzero_jit(s2rolls) - 1  # get the last index of matched diagonal in s2
+	# of matched symbol in s1 from the end (1 being first)
+
+	index_of_next_symbol = last_s1 + last_s2  # what symbol (index) from s2 will be after the match from s1 and s2
+	if overreach:
+		new_s2 = np.empty(s2.shape[0]+s1.shape[0],dtype=np.int64)
+		for i in range(s2.shape[0]):
+			new_s2[i] = s2[i]
+		for i in range(s1.shape[0]):
+			new_s2[i+s2.shape[0]] = s1[i]
+		s2 = new_s2
+	reach_mask = index_of_next_symbol < s2.size # check if that index is in s2 and produce masking
+	syrolls = syrolls[reach_mask]
+	index_of_next_symbol = index_of_next_symbol[reach_mask]  # apply mask
+	next_symbols = np.empty_like(index_of_next_symbol,dtype=np.int32)
+	for i in range(index_of_next_symbol.shape[0]):
+		next_symbols[i] = s2[index_of_next_symbol[i]]# get all next symbols
+	return syrolls - 1, next_symbols - 1
 
 
 def fano_inequality(distinct_locations, entropy):

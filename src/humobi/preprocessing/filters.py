@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-from humobi.structures.trajectory import TrajectoriesFrame
+from src.humobi.structures.trajectory import TrajectoriesFrame
 from tqdm import tqdm
 tqdm.pandas()
 import concurrent.futures as cf

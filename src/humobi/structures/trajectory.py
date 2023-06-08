@@ -148,7 +148,7 @@ class TrajectoriesFrame(gpd.GeoDataFrame):
 				self._geom_cols = infer_geometry(data)
 
 			data = gpd.GeoDataFrame(data, geometry=gpd.points_from_xy(*[data[x] for x in self._geom_cols]),
-			                        crs=self._crs)
+			                        crs= self._crs)
 
 		super().__init__(data)
 
@@ -156,7 +156,7 @@ class TrajectoriesFrame(gpd.GeoDataFrame):
 			data.columns = columns_user_defined
 
 		if isinstance(data, gpd.GeoDataFrame):
-			self.crs = data._crs
+			self.crs = data.crs
 			self.geom_cols = self._geom_cols
 
 	@property
