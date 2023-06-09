@@ -16,8 +16,7 @@ for x in [True,False]:
 		for z in [True,False]:
 			for a in [False]:
 				for b in [True,False]:
-					for n in range(20,100,10):
-						comb_learn.append((x,y,z,a,b,n))
+						comb_learn.append((x,y,z,a,b))
 comb_pred = []
 for x in [None,'L','Q','IW','IWS']:
 	for y in [None, 'L', 'Q', 'IW', 'IWS']:
@@ -34,7 +33,7 @@ for c in comb_learn:
 	lstart = time()
 	sparse_alg = sparse_wrapper_learn(train_frame, overreach=c[0], reverse=c[1], old=False,
 	                                  rolls=c[2], remove_subsets=c[3], reverse_overreach=c[4],jit=True,
-	                                  search_size=c[5], parallel=True)
+	                                  search_size=50, parallel=True)
 	lend = time()
 	ltime = lend - lstart
 	fname.write("Learn time %s %s \n" % (str(c), str(ltime)))
