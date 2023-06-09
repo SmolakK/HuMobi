@@ -13,4 +13,5 @@ cv_data = data_splitter.cv_data
 
 toploc_results = TopLoc(train_data=cv_data,
                         test_data=[data_splitter.test_frame_X, data_splitter.test_frame_Y]).predict()
-toploc_results[1].to_csv(os.path.join(top_path,'toploc.csv'))
+toploc_results[0].to_csv(os.path.join(top_path,'predictions_toploc_markovian.csv'))
+toploc_results[1].to_csv(os.path.join(top_path,'toploc_markovian.csv'))

@@ -163,7 +163,7 @@ class SKLearnPred():
 		self._cv_size = cv_size
 		self._tuned_alg = {}
 
-	def _user_learn(self, args_x, args_y, vals_x, vals_y):
+	def _user_learn(self, split, p_comb):
 		"""
 		For multithreading processing: single-user learn algorithm.
 
@@ -176,81 +176,53 @@ class SKLearnPred():
 		Returns:
 			user id and score board with accuracy for each hyperparameters combination
 		"""
-		params_to_check = iterate_random_values(self._param_dist, self._search_size)
-		score_board = {}
-		for p_comb in params_to_check:
-			score_board[tuple(sorted(p_comb.items()))] = []
-			fold_avg = []
-			for cv_fold in range(self._cv_size):
-				alg_run = self._algorithm(**p_comb).fit(args_x, args_y)
-				pred_run = alg_run.predict(vals_x)
-				metric_val = accuracy_score(pred_run, vals_y)
-				fold_avg.append(metric_val)
-			metric_val = np.mean(fold_avg)
-			score_board[tuple(sorted(p_comb.items()))].append(metric_val)
-		ids = args_x.index.get_level_values(0)[0]
-		return ids, score_board
+		args_x, args_y, vals_x, vals_y = split
+		alg_run = self._algorithm(**p_comb).fit(args_x, args_y)
+		pred_run = alg_run.predict(vals_x)
+		metric_val = accuracy_score(pred_run, vals_y)
+		return p_comb, metric_val
 
 	def learn(self):
 		"""
 		Learns the sklearn algorithm using cross-validation and passed input data.
 		"""
-		cnt = 0
 		result_dic = {}
-		for splits in self._training_data:  # for every cv split
-			cnt += 1
-			print("SPLIT: {}".format(cnt))
-			train_x, train_y, val_x, val_y = splits
-			if self._parallel:  # TODO: Finish result unpacking
-				with cf.ThreadPoolExecutor(max_workers=6) as executor:
-					args_x = [val for indi, val in train_x.groupby(level=0)]
-					args_y = [val for indi, val in train_y.groupby(level=0)]
-					vals_x = [val for indi, val in val_x.groupby(level=0)]
-					vals_y = [val for indi, val in val_y.groupby(level=0)]
-					results = list(
-						tqdm(executor.map(self._user_learn, args_x, args_y, vals_x, vals_y), total=len(vals_y)))
-				for result in results:
-					if result[0] in result_dic.keys():
-						result_dic[result[0]] += result[1]
-					else:
-						result_dic[result[0]] = result[1]
-			else:  # single-threaded processing
-				usrs = np.unique(train_x.index.get_level_values(0))
-				for ids in tqdm(usrs, total=len(usrs)):
-					params_to_check = iterate_random_values(self._param_dist, self._search_size)
-					score_board = {}
-					args_x = train_x.loc[ids]
-					args_y = train_y.loc[ids]
-					vals_x = val_x.loc[ids]
-					vals_y = val_y.loc[ids]
-					for p_comb in params_to_check:
-						fold_avg = []
-						for cv_fold in range(self._cv_size):
-							alg_run = self._algorithm(**p_comb, n_jobs=-1).fit(args_x, args_y)
-							pred_run = alg_run.predict(vals_x)
-							metric_val = accuracy_score(pred_run, vals_y)
-							fold_avg.append(metric_val)
-						metric_val = np.mean(fold_avg)
-						if tuple(sorted(p_comb.items())) in score_board.keys():
-							score_board[tuple(sorted(p_comb.items()))] += [metric_val]
-						else:
-							score_board[tuple(sorted(p_comb.items()))] = [metric_val]
-					if ids in result_dic.keys():
-						for k, v in score_board.items():
-							if k in result_dic[ids].keys():
-								result_dic[ids][k] += v
-							else:
-								result_dic[ids][k] = v
-					else:
-						result_dic[ids] = {}
-						for k, v in score_board.items():
-							result_dic[ids][k] = v
+		usrs = pd.unique(self._test_data[0].index.get_level_values(0))
+		for ids in tqdm(usrs, total=len(usrs)):
+			usr_split =[[a.loc[ids] for a in spl] for spl in self._training_data]
+			params_to_check = iterate_random_values(self._param_dist, self._search_size)
+			score_board = {}
+			if self._parallel:
+				for p_comb in params_to_check:
+					with cf.ThreadPoolExecutor(max_workers=len(usr_split)) as executor:
+						results = list(
+							tqdm(executor.map(self._user_learn, usr_split, itertools.repeat(p_comb)), total=len(usr_split)))
+					averaged = np.mean([v[1] for v in results])
+					score_board[tuple(sorted(results[0][0].items()))] = averaged
+					if averaged == 1:
+						break
+			else:
+				for p_comb in params_to_check:
+					fold_avg = []
+					cnt = 0
+					for splits in usr_split:
+						cnt += 1
+						print("SPLIT: {}".format(cnt))
+						args_x, args_y, vals_x, vals_y = splits
+						alg_run = self._algorithm(**p_comb, n_jobs=-1).fit(args_x, args_y)
+						pred_run = alg_run.predict(vals_x)
+						metric_val = accuracy_score(pred_run, vals_y)
+						fold_avg.append(metric_val)
+					metric_val = np.mean(fold_avg)
+					score_board[tuple(sorted(p_comb.items()))] = metric_val
+					if metric_val == 1:
+						break
+			result_dic[ids] = max(score_board.keys(), key=lambda x: score_board[x])
 		for usr, params in result_dic.items():  # selects the best params and trains the algorithm on them (for each user)
-			select = {k: np.mean(v) for k, v in params.items()}
-			best_params = dict(max(select.keys(), key=lambda x: select[x]))
+			params = {k:v for k,v in params}
 			concat_x = pd.concat([self._training_data[-1][0].loc[usr], self._training_data[-1][2].loc[usr]])
 			concat_y = pd.concat([self._training_data[-1][1].loc[usr], self._training_data[-1][3].loc[usr]])
-			self._tuned_alg[usr] = self.algorithm(**best_params).fit(concat_x, concat_y)
+			self._tuned_alg[usr] = self.algorithm(**params).fit(concat_x, concat_y)
 
 	def test(self):
 		"""
@@ -405,9 +377,14 @@ def markov_wrapper(trajectories_frame, test_size=.2, state_size=2, update=False,
 		else:
 			results_dic[uid] = sum(test_values[state_size:] == predictions_dic[prediction_values]) / len(test_values)
 			to_conc[uid] = predictions_dic[prediction_values]
-	# predictions = pd.DataFrame.from_dict(to_conc).unstack().droplevel(1)
-	# aligned = pd.concat([test_frame.droplevel([1,2]).groupby(level=0).apply(lambda x: x[state_size:]).droplevel([1]),predictions],axis=1)
-	return pd.DataFrame.from_dict(results_dic,orient='index')
+	predictions = pd.DataFrame().from_dict(to_conc, orient='index').T.unstack().droplevel(1)
+	predictions = predictions[~predictions.isna()]
+	test_frame_stack = test_frame.droplevel([1, 2]).groupby(level=0).apply(lambda x: x[state_size:])
+	if test_frame_stack.index.nlevels == 2:
+		test_frame_stack = test_frame_stack.droplevel(1)
+	aligned = pd.concat([predictions,test_frame_stack],axis=1)
+	aligned.columns = ['predictions','y_set']
+	return aligned, pd.DataFrame.from_dict(results_dic,orient='index')
 
 def sparse_wrapper_learn(train_frame, overreach = True, reverse = False, old = False, rolls = True,
                          remove_subsets = False, reverse_overreach = False, search_size=None, jit=True, parallel = True,
@@ -430,6 +407,7 @@ def sparse_wrapper_learn(train_frame, overreach = True, reverse = False, old = F
 def sparse_wrapper_test(predictions_dic, test_frame, trajectories_frame, split_ratio, test_lengths,
                         length_weights=None, recency_weights=None, use_probs=False, org_recency_weights = None, org_length_weights = None):
 	results_dic = {}
+	forecast_dic = {}
 	for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting
 		uid = test_values[0]
 		test_values = test_values[1].values
@@ -442,7 +420,13 @@ def sparse_wrapper_test(predictions_dic, test_frame, trajectories_frame, split_r
 			forecast.append(pred)
 			split_ind += 1
 		results_dic[uid] = sum(forecast == test_values) / len(forecast)
-	return results_dic
+		forecast_dic[uid] = forecast
+	forecast_df = pd.DataFrame().from_dict(forecast_dic, orient='index').T.unstack().droplevel(1)
+	forecast_df = forecast_df[~forecast_df.isna()]
+	forecast_df = pd.concat([forecast_df,test_frame.droplevel([1,2])],axis=1)
+	forecast_df.columns = ['predictions','y_set']
+	results_dic = pd.DataFrame().from_dict(results_dic, orient='index')
+	return forecast_df, results_dic
 
 
 def sparse_wrapper(trajectories_frame, test_size=.2, state_size=0, averaged=True, length_weights=None, recency_weights=None, use_probs=False,
