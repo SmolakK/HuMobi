@@ -11,7 +11,7 @@ import json
 df = TrajectoriesFrame("D:\\Projekty\\bias\\london\\london_seq_111.7572900082951_1.csv",
                        {'names':['id','datetime','lat','lon','geometry','labels','start','end'],"skiprows":1})
 df['labels'] = df.labels.astype(np.int64)
-df = df.uloc(df.get_users()[:100])
+df = df.uloc(df.get_users()[92:100])
 fname = open(os.path.join(top_path,'humanNP_RF_times.txt'),'w')
 
 for usr in range(0,len(df.get_users())-2,2):

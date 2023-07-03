@@ -200,27 +200,22 @@ class DeepPred():
 
 	def _user_learn(self, tr_data, ts_data):
 		ts_dataset = tf.data.Dataset.from_tensor_slices(ts_data)  # transform test set into tensor
-		if self.folds != 1:  # if there is more than single fold
-			train_folds = [(tf.data.Dataset.from_tensor_slices(x), tf.data.Dataset.from_tensor_slices(y)) for x, y in
-			               gen(tr_data, self.folds)]  # then split data into the list folds
-		else:  # if there is a single fold
-			train_folds = [[(tf.data.Dataset.from_tensor_slices(x), tf.data.Dataset.from_tensor_slices(y)) for x, y in
-			                gen(tr_data, 2)][0]]  # make it a one set of data
+		split = int(tr_data.size*self.split_ratio)
+		val_data = tr_data[:split]
+		tr_data = tr_data[split:]
+		tr_dataset = tf.data.Dataset.from_tensor_slices(tr_data) # make it a one set of data
+		val_dataset = tf.data.Dataset.from_tensor_slices(val_data)
 		self.s_regions = np.hstack([tr_data, ts_data]).max() + 1  # read the number of unique symbols from the dataset
-		sequences_train = [dataset_train[0].batch(self.window_size + 1, drop_remainder=True) for dataset_train in
-		                   train_folds]  # prepare the batches of sequences for training
-		sequences_val = [dataset_train[1].batch(self.window_size + 1, drop_remainder=True) for dataset_train in
-		                 train_folds]  # prepare the batches of sequences for validation
+
+		sequences_train = tr_dataset.batch(self.window_size + 1, drop_remainder=True) # prepare the batches of sequences for training
+		sequences_val = val_dataset.batch(self.window_size +1, drop_remainder=True)
 		sequences_test = ts_dataset.batch(self.window_size + 1, drop_remainder=True)  # prepare the batches of
 		# sequences for tests
-		dataset_train = [t.map(split_input_target) for t in sequences_train]  # and convert them using the windowing algorithm
-		dataset_val = [v.map(split_input_target) for v in sequences_val]
+		dataset_train = sequences_train.map(split_input_target)  # and convert them using the windowing algorithm
+		dataset_val = sequences_val.map(split_input_target)
 		dataset_test = sequences_test.map(split_input_target)  # data test is split but not used - just for debugging
-		data_tr = [t.shuffle(1000).batch(self.batch_size, drop_remainder=True) for t in
-		           dataset_train]  # shuffle the data for training and batch
-		data_val = [v.shuffle(1000).batch(self.batch_size, drop_remainder=True) for v in
-		            dataset_val]  # shuffle the data for testing and batch
-		fold = 1  # the counter of folds
+		data_tr = dataset_train
+		data_val = dataset_val
 		callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=2)  # initialise the EarlyStopping mechanism
 		# Initialiase selected models - the dropout rate is fixed
 		if self.model == "GRU":
@@ -228,11 +223,7 @@ class DeepPred():
 		elif self.model == "GRU2":
 			model = GRUModel2(self.s_regions, self.embedding_dim, self.rnn_units, 0.2, self.batch_size, self.window_size)
 		model.compile(optimizer='adam', loss=loss, metrics=['accuracy'])  # compile the model
-		for x, v in zip(data_tr, data_val):  # the CV training process
-			print("FOLD:{}".format(fold))
-			self.history = model.fit(x, epochs=30, validation_data=v, callbacks=[callback], batch_size=self.batch_size)
-			fold += 1
-		model.reset_states()
+		self.history = model.fit(data_tr, epochs=30, validation_data=data_val, callbacks=[callback], batch_size=self.batch_size)
 		return model
 
 	def learn_predict(self):

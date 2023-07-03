@@ -7,6 +7,8 @@ import concurrent.futures as cf
 from itertools import repeat
 from collections import deque
 from numba import jit, prange
+import pandas as pd
+
 
 def normalize_list(l):
 	suml = np.sum(l)
@@ -110,9 +112,11 @@ class Sparse(object):
 				if not self._search_size is None:
 					start = cur_id - self._search_size
 					start = np.clip(start, 0, None)
+					end = cur_id + self._search_size
+					end = np.clip(end, None, len(sequence))
 				else:
 					start = 0
-				lookback = sequence[cur_id:]
+				lookback = sequence[cur_id:end]
 				search_space = sequence[start:cur_id]
 				if jit:
 					out = _equally_sparse_match_jit(lookback, search_space, overreach=self.overreach, roll=self.rolls)
@@ -150,25 +154,47 @@ class Sparse(object):
 			                org_recency_weights, org_length_weights)
 
 	def _predict(self, context, recency_weights=None, length_weights=None, from_dist=False,
-	            org_recency_weights=None, org_length_weights=None):
+	            org_recency_weights=None, org_length_weights=None, truncate = 0.5): #TODO: check unq without following, new weighs: completness, uniquness, ideas: separate weighing, separate truncate if goood, independent weights
 		model_size = self.model[0].shape[1]
 		pad_size = model_size - context.shape[0]
 		if pad_size > 0:
 			context = np.pad(context, (pad_size, 0))
 		elif pad_size < 0:
 			context = context[-model_size:]
-		matches = (self.model[0] == context)
+
+		#TRUNCATE
+		if truncate is not None:
+			stacked_model = np.hstack((self.model[0], self.model[1].reshape(-1, 1)))
+			unq_list, unq_counts = np.unique(stacked_model, return_counts=True, axis=0)
+			stacked_unq = np.hstack((unq_counts.reshape(-1,1),unq_list))
+			stacked_unq = stacked_unq[stacked_unq[:,0].argsort()][::-1]
+			unq_list = stacked_unq[:,1:]
+			unq_counts = stacked_unq[:,0]
+			proportion = np.cumsum(unq_counts/np.sum(unq_counts))
+			filter_by_proportion = proportion > truncate
+			reconstructed = np.repeat(unq_list[filter_by_proportion],unq_counts[filter_by_proportion],axis=0)
+			model = reconstructed[:,:-1]
+			candidates = reconstructed[:,-1]
+		else:
+			model = self.model[0]
+			candidates = self.model[1]
+
+		#MATCHING
+		matches = (model == context)
 		match_mask = np.sum(matches, axis=1) >= 1
 		if np.sum(match_mask) == 0:
 			unq = np.unique(self.model[1], return_counts=True)
-			SMC = np.random.choice(unq[0], p=unq[1] / np.sum(unq[1]))
-			return SMC
+			p = unq[1]/np.sum(unq[1])
+			SMC = unq[0][np.argmax(p)]
+			counte = pd.DataFrame(unq[1] / sum(unq[1]))
+			counte.index = unq[0]
+			return SMC, counte.T.to_dict(orient='index')
 
 		# Weights
 		matches = matches[match_mask]
 		matches_sum = np.sum(matches, axis=1)
-		if org_recency_weights is not None and org_length_weights is not None:
-			flatmodel = (self.model[0]+1)[match_mask]
+		if org_recency_weights is not None or org_length_weights is not None:
+			flatmodel = (model+1)[match_mask]
 			if org_recency_weights is not None:
 				org_recency = self.weight_recency(flatmodel, org_recency_weights)
 				matches_sum = np.multiply(matches_sum, org_recency)
@@ -184,7 +210,7 @@ class Sparse(object):
 			matches_sum = np.multiply(matches_sum, lengths)
 
 		# PREDICTION
-		candidates = self.model[1][match_mask]
+		candidates = candidates[match_mask]
 		joined = np.vstack([matches_sum.T, candidates]).T
 		joined = joined[joined[:, 1].argsort()]
 		spliter = np.unique(joined[:, 1], return_index=True)
@@ -195,7 +221,9 @@ class Sparse(object):
 			SMC = np.random.choice(spliter[0], p=probs)
 		else:
 			SMC = spliter[0][np.argmax(probs)]
-		return SMC
+		probs = pd.DataFrame(probs)
+		probs.index = spliter[0]
+		return SMC, probs.T.to_dict(orient='index')
 
 	def weight_recency(self, vect, recency_weights):
 		nonzero_elements = np.argwhere(np.fliplr(vect))
@@ -315,4 +343,6 @@ class Sparse_old(object):
 			SMC = np.random.choice(spliter[0], p=probs)
 		else:
 			SMC = spliter[0][np.argmax(probs)]
-		return SMC
+		probs = pd.DataFrame(probs)
+		probs.index = spliter[0]
+		return SMC, probs.T.to_dict(orient='index')

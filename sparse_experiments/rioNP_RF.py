@@ -1,5 +1,5 @@
-top_path = """D:\\Projekty\\Sparse Chains\\markovian"""
-save_path = """D:\\Projekty\\Sparse Chains\\RF"""
+file_path = """D:\\processing_vanessa"""
+save_path = """D:\\Projekty\\Sparse Chains\\RIO_NP"""
 from src.humobi.predictors.wrapper import *
 from src.humobi.measures.individual import *
 from src.humobi.misc.generators import *
@@ -9,8 +9,10 @@ import os
 from time import time
 import json
 
-df = TrajectoriesFrame(os.path.join(top_path, "markovian.csv"))
-# fname = open(os.path.join(top_path,'markovian_RF_times.txt'),'w')
+df = TrajectoriesFrame(os.path.join(file_path,"RIO_NP.csv"))
+df['labels'] = df.labels.astype(np.int64)
+df = df.uloc(df.get_users())
+fname = open(os.path.join(save_path,'humanNP_RF_times.txt'),'w')
 
 for usr in range(0,len(df.get_users())-2,2):
 	# SKLEARN CLASSIFICATION METHOD
@@ -18,7 +20,7 @@ for usr in range(0,len(df.get_users())-2,2):
 	df_part = df.loc[users[usr:usr+2]]
 	test_size = .2
 	split_ratio = 1 - test_size
-	data_splitter = Splitter(split_ratio=test_size, horizon=10, n_splits=5)
+	data_splitter = Splitter(split_ratio=test_size, horizon=20, n_splits=5)
 	data_splitter.stride_data(df_part)
 	test_frame_X = data_splitter.test_frame_X
 	test_frame_Y = data_splitter.test_frame_Y
@@ -36,18 +38,18 @@ for usr in range(0,len(df.get_users())-2,2):
 	predic.learn()
 	end = time()
 	print("RF LEARN TIME", end - start)
-	# fname.write("Learn time %s \n" % str((end-start)/2))
+	fname.write("Learn time %s \n" % str((end-start)/2))
 	start = time()
 	predic.test()
 	end = time()
 	print("RF PRED TIME", end - start)
-	# fname.write("PRED time %s \n" % str((end-start)/2))
+	fname.write("PRED time %s \n" % str((end-start)/2))
 	rf_predictions = predic.predictions
 	rf_predictions.columns = ['predictions','y_set']
 	rf_scores = predic.scores
-	rf_scores.to_csv(os.path.join(save_path,'RF_part_markovian','%s_markovian_RF_scores.csv' % usr))
-	rf_predictions.to_csv(os.path.join(save_path, 'RF_part_markovian', '%s_markovian_RF_predictions.csv' % usr))
+	rf_scores.to_csv(os.path.join(save_path,'RF_part','%s_humanNP_RF_scores.csv' % usr))
+	rf_predictions.to_csv(os.path.join(save_path, 'RF_part', '%s_humanNP_RF_predictions.csv' % usr))
 	rf_topk = predic.predictions_proba
-	with open(os.path.join(save_path,'RF_part_markovian','%s_topk_RC.csv'% usr),'w ') as ff:
+	with open(os.path.join(save_path,'RF_part','%s_topk_RC.csv'% usr),'w') as ff:
 		json.dump(rf_topk,ff)
-# fname.close()
+fname.close()

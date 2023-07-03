@@ -355,7 +355,7 @@ def get_rolls_jit(a):
 	rolls = np.empty(rolls_prepare.shape[0]*a.shape[0],dtype=np.int32)
 	for i in range(a.shape[1]):
 		rolls[i*a.shape[0]:(i+1)*a.shape[0]] = rolls_prepare[i]
-	column_indices = column_indices - rolls[:,np.newaxis]
+	column_indices = column_indices - rolls.reshape(-1,1)
 	new_tiles = np.zeros_like(tiles,dtype=np.int32)
 	nonzero = 0
 	for i in range(column_indices.shape[0]):

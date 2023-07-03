@@ -101,8 +101,9 @@ class MarkovChain(object):
 			transit = normalize_chain(temp_model[lower_state])
 		else:
 			transit = normalize_chain(self.model[state])  # normalize chain
-		prediction = np.random.choice(list(transit.keys()), p=list(transit.values()))  # make prediction
-		return prediction
+		# prediction = np.random.choice(list(transit.keys()), p=list(transit.values()))  # make prediction
+		prediction = max(transit, key=transit.get)
+		return prediction, transit
 
 	def move_from_build(self, horizon, update=False):
 		"""

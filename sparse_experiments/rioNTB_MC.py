@@ -1,4 +1,5 @@
-top_path = """D:\\Projekty\\Sparse Chains\\markovian"""
+file_path = """D:\\processing_vanessa"""
+save_path = """D:\\Projekty\\Sparse Chains\\RIO_NTB"""
 from src.humobi.predictors.wrapper import *
 from src.humobi.measures.individual import *
 from src.humobi.misc.generators import *
@@ -7,12 +8,13 @@ from time import time
 import json
 
 
-df = TrajectoriesFrame(os.path.join(top_path,"markovian.csv"))
+df = TrajectoriesFrame(os.path.join(file_path,"RIO_1H.csv"))
+df = df[~df.labels.isna()]
 test_size = .2
 split_ratio = 1 - test_size
 train_frame, test_frame = split(df, split_ratio, 0)
 test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
-fname = open(os.path.join(top_path,'markovian_MC_times.txt'),'w')
+fname = open(os.path.join(save_path,'MC_times.txt'),'w')
 
 # MARKOV CHAINS
 for state_size in range(10):
@@ -21,10 +23,10 @@ for state_size in range(10):
 	end = time()
 	print(end-start)
 	fname.write("MC%s: %s\n" % (str(state_size),str(end-start)))
-	MC1.to_csv(open(os.path.join(top_path,'markovian_MC'+str(state_size)+'.csv'),'w'))
-	predictions.to_csv(open(os.path.join(top_path,'predictions_markovian_MC'+str(state_size)+'.csv'),'w'))
+	MC1.to_csv(open(os.path.join(save_path,'MC'+str(state_size)+'.csv'),'w'))
+	predictions.to_csv(open(os.path.join(save_path,'predictons_MC'+str(state_size)+'.csv'),'w'))
 	print(MC1.mean())
-	with open(os.path.join(top_path,'topk_MC'+str(state_size)+'.csv'),'w') as ff:
-		json.dump({str(k):v for k,v in topk.items()},ff)
+	with open(os.path.join(save_path,'topk_MC'+str(state_size)+'.csv'),'w') as ff:
+		json.dump(topk,ff)
 
 fname.close()

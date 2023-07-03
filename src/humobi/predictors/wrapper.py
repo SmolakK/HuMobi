@@ -232,14 +232,19 @@ class SKLearnPred():
 		usrs = np.unique(test_x.index.get_level_values(0))
 		metrics = {}
 		predictions_dic = {}
+		predictions_dic_proba = {}
 		for ids in tqdm(usrs, total=len(usrs)):
 			cur_alg = self._tuned_alg[ids]
 			preds = cur_alg.predict(test_x.loc[ids])
+			preds_proba = pd.DataFrame(cur_alg.predict_proba(test_x.loc[ids]))
+			preds_proba.columns = cur_alg.classes_
 			metric_val = accuracy_score(preds, test_y.loc[ids])
 			predictions_dic[ids] = preds
 			metrics[ids] = metric_val
+			predictions_dic_proba[str(ids)] = preds_proba.to_dict(orient='index')
 		self.scores = pd.Series(metrics)
 		self.predictions = pd.concat([pd.concat({k: pd.Series(v) for k,v in predictions_dic.items()}).droplevel(1),test_y.droplevel(1)],axis=1)
+		self.predictions_proba = predictions_dic_proba
 
 	@property
 	def algorithm(self):
@@ -365,26 +370,31 @@ def markov_wrapper(trajectories_frame, test_size=.2, state_size=2, update=False,
 			continue
 	results_dic = {}
 	to_conc = {}
+	to_conc_topk = {}
 	for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting
 		uid = test_values[0]
 		test_values = test_values[1].values
 		if online:
 			forecast = []
+			topk = []
 			for current_state in range(len(test_values) - state_size):
-				forecast.append(predictions_dic[uid].move(test_values[current_state:current_state + state_size]))
+				pred = predictions_dic[uid].move(test_values[current_state:current_state + state_size])
+				forecast.append(pred[0])
+				topk.append({str(k):v for k,v in pred[1].items()})
 			to_conc[uid] = forecast
 			results_dic[uid] = sum(forecast == test_values[state_size:]) / len(forecast)
+			to_conc_topk[uid] = topk
 		else:
 			results_dic[uid] = sum(test_values[state_size:] == predictions_dic[prediction_values]) / len(test_values)
 			to_conc[uid] = predictions_dic[prediction_values]
 	predictions = pd.DataFrame().from_dict(to_conc, orient='index').T.unstack().droplevel(1)
 	predictions = predictions[~predictions.isna()]
-	test_frame_stack = test_frame.droplevel([1, 2]).groupby(level=0).apply(lambda x: x[state_size:])
+	test_frame_stack = test_frame.groupby(level=0).apply(lambda x: x[state_size:]).droplevel([1,2])
 	if test_frame_stack.index.nlevels == 2:
 		test_frame_stack = test_frame_stack.droplevel(1)
 	aligned = pd.concat([predictions,test_frame_stack],axis=1)
 	aligned.columns = ['predictions','y_set']
-	return aligned, pd.DataFrame.from_dict(results_dic,orient='index')
+	return aligned, pd.DataFrame.from_dict(results_dic,orient='index'), to_conc_topk
 
 def sparse_wrapper_learn(train_frame, overreach = True, reverse = False, old = False, rolls = True,
                          remove_subsets = False, reverse_overreach = False, search_size=None, jit=True, parallel = True,
@@ -408,25 +418,29 @@ def sparse_wrapper_test(predictions_dic, test_frame, trajectories_frame, split_r
                         length_weights=None, recency_weights=None, use_probs=False, org_recency_weights = None, org_length_weights = None):
 	results_dic = {}
 	forecast_dic = {}
+	topk_dic = {}
 	for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting
 		uid = test_values[0]
 		test_values = test_values[1].values
 		forecast = []
-		split_ind = round(trajectories_frame.uloc(uid).shape[0] * split_ratio)
+		topk = []
+		split_ind = round(trajectories_frame.loc[uid].shape[0] * split_ratio)
 		for n in tqdm(range(test_lengths.loc[uid]),total = test_lengths.loc[uid]):
-			context = trajectories_frame.uloc(uid).iloc[:split_ind].labels.values
+			context = trajectories_frame.loc[uid].iloc[:split_ind].values
 			pred = predictions_dic[uid].predict(context, length_weights=length_weights, recency_weights=recency_weights, from_dist=use_probs,
 			                                    org_length_weights = org_length_weights, org_recency_weights = org_recency_weights)
-			forecast.append(pred)
+			topk.append(pred[1])
+			forecast.append(pred[0])
 			split_ind += 1
 		results_dic[uid] = sum(forecast == test_values) / len(forecast)
 		forecast_dic[uid] = forecast
+		topk_dic[uid] = topk
 	forecast_df = pd.DataFrame().from_dict(forecast_dic, orient='index').T.unstack().droplevel(1)
 	forecast_df = forecast_df[~forecast_df.isna()]
 	forecast_df = pd.concat([forecast_df,test_frame.droplevel([1,2])],axis=1)
 	forecast_df.columns = ['predictions','y_set']
 	results_dic = pd.DataFrame().from_dict(results_dic, orient='index')
-	return forecast_df, results_dic
+	return forecast_df, results_dic, topk_dic
 
 
 def sparse_wrapper(trajectories_frame, test_size=.2, state_size=0, averaged=True, length_weights=None, recency_weights=None, use_probs=False,
