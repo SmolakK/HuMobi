@@ -20,20 +20,21 @@ test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
 lstart = time()
 sparse_alg = sparse_wrapper_learn(train_frame, overreach=False, reverse=True, old=False,
 								  rolls=True, remove_subsets=False, reverse_overreach=False,jit=True,
-								  search_size=50, parallel=True)
+								  search_size=100, parallel=True, truncate=0.6)
 lend = time()
 ltime = lend - lstart
 fname.write("Learn time %s \n" % (str(ltime)))
 
 tstart = time()
 forecast_df, pred_res, topk_res = sparse_wrapper_test(sparse_alg, test_frame, df.labels, split_ratio, test_lengths,
-											length_weights='L', recency_weights=None,
-											org_length_weights=None, org_recency_weights=None, use_probs=False)
+											length_weights=None, recency_weights=None,
+											org_length_weights=None, org_recency_weights=None, use_probs=False,
+													  uniqueness_weights='F',completeness_weights='Q')
 tend = time()
 ttime = tend - tstart
 fname.write("Pred time %s \n" % (str(ttime)))
-pred_res.to_csv(os.path.join(top_path, 'markovian_sparse_scores.csv'))
-forecast_df.to_csv(os.path.join(top_path,'markovian_sparse_predictions.csv'))
-with open(os.path.join(top_path,'markovian_sparse_topk_100'),'w') as ff:
+pred_res.to_csv(os.path.join(top_path, 'markovian_sparse_scores_100_U.csv'))
+forecast_df.to_csv(os.path.join(top_path,'markovian_sparse_predictions_100_U.csv'))
+with open(os.path.join(top_path,'markovian_sparse_topk_100_U'),'w') as ff:
     json.dump(topk_res,ff)
 

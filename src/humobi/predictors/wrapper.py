@@ -398,7 +398,7 @@ def markov_wrapper(trajectories_frame, test_size=.2, state_size=2, update=False,
 
 def sparse_wrapper_learn(train_frame, overreach = True, reverse = False, old = False, rolls = True,
                          remove_subsets = False, reverse_overreach = False, search_size=None, jit=True, parallel = True,
-                         cuda = False):
+                         cuda = False, truncate = 0):
 	if old == True and any((overreach,reverse,reverse_overreach,remove_subsets,rolls)):
 		warnings.warn("When old is set to True, other parameters have no effect")
 	predictions_dic = {}
@@ -410,12 +410,13 @@ def sparse_wrapper_learn(train_frame, overreach = True, reverse = False, old = F
 			predictions_dic[uid] = Sparse(overreach=overreach, reverse=reverse, rolls=rolls,
 			                              remove_subsets=remove_subsets, reverse_overreach=reverse_overreach,
 			                              search_size=search_size)
-			predictions_dic[uid].fit(train_values.values,jit=jit,parallel=parallel,cuda=cuda)
+			predictions_dic[uid].fit(train_values.values,jit=jit,parallel=parallel,cuda=cuda, truncate = truncate)
 	return predictions_dic
 
 
 def sparse_wrapper_test(predictions_dic, test_frame, trajectories_frame, split_ratio, test_lengths,
-                        length_weights=None, recency_weights=None, use_probs=False, org_recency_weights = None, org_length_weights = None):
+                        length_weights=None, recency_weights=None, use_probs=False, org_recency_weights = None, org_length_weights = None,
+						completeness_weights=None,uniqueness_weights=None):
 	results_dic = {}
 	forecast_dic = {}
 	topk_dic = {}
@@ -428,7 +429,8 @@ def sparse_wrapper_test(predictions_dic, test_frame, trajectories_frame, split_r
 		for n in tqdm(range(test_lengths.loc[uid]),total = test_lengths.loc[uid]):
 			context = trajectories_frame.loc[uid].iloc[:split_ind].values
 			pred = predictions_dic[uid].predict(context, length_weights=length_weights, recency_weights=recency_weights, from_dist=use_probs,
-			                                    org_length_weights = org_length_weights, org_recency_weights = org_recency_weights)
+			                                    org_length_weights = org_length_weights, org_recency_weights = org_recency_weights,
+												completeness_weights=completeness_weights,uniqueness_weights=uniqueness_weights)
 			topk.append(pred[1])
 			forecast.append(pred[0])
 			split_ind += 1

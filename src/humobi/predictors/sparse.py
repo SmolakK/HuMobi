@@ -89,7 +89,7 @@ class Sparse(object):
 			nexts = np.hstack(nexts)
 		return matches,nexts
 
-	def fit(self, sequence, jit = True, parallel = True, cuda = False):
+	def fit(self, sequence, jit = True, parallel = True, cuda = False, truncate = 0.6):
 		sequence = np.array(sequence)
 		sequence += 1  # REMEMBER
 		nexts = deque([])
@@ -142,29 +142,10 @@ class Sparse(object):
 						nexts.append(out[1])
 			nexts = np.hstack(nexts)
 			matches = np.vstack(matches)
-		if self.remove_subsets:
-			stacks = remove_subset_rows(np.hstack((matches, nexts[:, np.newaxis])))
-			self.model = (stacks[:, :-1], stacks[:, -1])
-		else:
-			self.model = (matches, nexts)
-
-	def predict(self, context, recency_weights=None, length_weights=None, from_dist=False,
-	            org_recency_weights=None, org_length_weights=None, jit = True):
-		return self._predict(context, recency_weights, length_weights, from_dist,
-			                org_recency_weights, org_length_weights)
-
-	def _predict(self, context, recency_weights=None, length_weights=None, from_dist=False,
-	            org_recency_weights=None, org_length_weights=None, truncate = 0.5): #TODO: check unq without following, new weighs: completness, uniquness, ideas: separate weighing, separate truncate if goood, independent weights
-		model_size = self.model[0].shape[1]
-		pad_size = model_size - context.shape[0]
-		if pad_size > 0:
-			context = np.pad(context, (pad_size, 0))
-		elif pad_size < 0:
-			context = context[-model_size:]
 
 		#TRUNCATE
 		if truncate is not None:
-			stacked_model = np.hstack((self.model[0], self.model[1].reshape(-1, 1)))
+			stacked_model = np.hstack((matches, nexts.reshape(-1, 1)))
 			unq_list, unq_counts = np.unique(stacked_model, return_counts=True, axis=0)
 			stacked_unq = np.hstack((unq_counts.reshape(-1,1),unq_list))
 			stacked_unq = stacked_unq[stacked_unq[:,0].argsort()][::-1]
@@ -172,12 +153,41 @@ class Sparse(object):
 			unq_counts = stacked_unq[:,0]
 			proportion = np.cumsum(unq_counts/np.sum(unq_counts))
 			filter_by_proportion = proportion > truncate
-			reconstructed = np.repeat(unq_list[filter_by_proportion],unq_counts[filter_by_proportion],axis=0)
-			model = reconstructed[:,:-1]
-			candidates = reconstructed[:,-1]
+			unq_list = unq_list[filter_by_proportion]
+			unq_counts = unq_counts[filter_by_proportion]
+			org_unq_weights = np.repeat(unq_counts, unq_counts, axis=0)
+			reconstructed = np.repeat(unq_list,unq_counts,axis=0)
+			matches = reconstructed[:,:-1]
+			nexts = reconstructed[:,-1]
+
+		if self.remove_subsets:
+			stacks = remove_subset_rows(np.hstack((matches, nexts[:, np.newaxis])))
+			self.model = (stacks[:, :-1], stacks[:, -1])
 		else:
-			model = self.model[0]
-			candidates = self.model[1]
+			self.model = (matches, nexts, org_unq_weights)
+
+	def predict(self, context, recency_weights=None, length_weights=None, from_dist=False,
+	            org_recency_weights=None, org_length_weights=None, jit = True, completeness_weights=None,uniqueness_weights=None):
+		return self._predict(context, recency_weights, length_weights, from_dist,
+			                org_recency_weights, org_length_weights,completeness_weights=completeness_weights,
+							 uniqueness_weights=uniqueness_weights)
+
+	def _predict(self, context, recency_weights=None, length_weights=None, from_dist=False,
+	            org_recency_weights=None, org_length_weights=None, completeness_weights=None, uniqueness_weights=None):
+		#TODO: check unq without following,
+		# new weighs: completness: DONE, uniquness,
+		# ideas: separate weighing,
+		# separate truncate if goood,
+		# independent weights: DONE
+		model_size = self.model[0].shape[1]
+		pad_size = model_size - context.shape[0]
+		if pad_size > 0:
+			context = np.pad(context, (pad_size, 0))
+		elif pad_size < 0:
+			context = context[-model_size:]
+
+		model = self.model[0]
+		candidates = self.model[1]
 
 		#MATCHING
 		matches = (model == context)
@@ -193,21 +203,52 @@ class Sparse(object):
 		# Weights
 		matches = matches[match_mask]
 		matches_sum = np.sum(matches, axis=1)
-		if org_recency_weights is not None or org_length_weights is not None:
+		if uniqueness_weights is not None:
+			# stacked_model = np.hstack((matches, candidates[match_mask].reshape(-1,1)))
+			# unq_list, unq_counts = np.unique(stacked_model, return_counts=True, axis=0)
+			# unq_weights = np.repeat(unq_counts,unq_counts,axis=0)
+			unq_weights = self.weight_unq(self.model[2][match_mask],uniqueness_weights)
+		else:
+			unq_weights = np.ones_like(matches_sum)
+		if org_recency_weights is not None or org_length_weights is not None or completeness_weights is not None:
 			flatmodel = (model+1)[match_mask]
+			if completeness_weights is not None:
+				vect_org_lengths = np.sum(np.clip(flatmodel, 0, 1), axis=1)
+				completeness_measure = matches_sum/vect_org_lengths
+				completeness = self.weight_completeness(completeness_measure,completeness_weights)
+			else:
+				completeness = np.ones_like(matches_sum)
 			if org_recency_weights is not None:
 				org_recency = self.weight_recency(flatmodel, org_recency_weights)
-				matches_sum = np.multiply(matches_sum, org_recency)
+				# matches_sum = np.multiply(matches_sum, org_recency)
+			else:
+				org_recency = np.ones_like(matches_sum)
 			if org_length_weights is not None:
 				vect_org_lengths = np.sum(np.clip(flatmodel,0,1), axis=1)
 				org_lengths = self.weight_length(vect_org_lengths, org_length_weights)
-				matches_sum = np.multiply(matches_sum, org_lengths)
+				# matches_sum = np.multiply(matches_sum, org_lengths)
+			else:
+				org_lengths = np.ones_like(matches_sum)
+		else:
+			org_recency = np.ones_like(matches_sum)
+			org_lengths = np.ones_like(matches_sum)
+			completeness = np.ones_like(matches_sum)
 		if recency_weights is not None:
 			recency = self.weight_recency(matches, recency_weights)
-			matches_sum = np.multiply(matches_sum, recency)
+			# matches_sum = np.multiply(matches_sum, recency)
+		else:
+			recency = np.ones_like(matches_sum)
 		if length_weights is not None:
 			lengths = self.weight_length(matches_sum, length_weights)
-			matches_sum = np.multiply(matches_sum, lengths)
+			# matches_sum = np.multiply(matches_sum, lengths)
+		else:
+			lengths = np.ones_like(matches_sum)
+		matches_sum = np.multiply(matches_sum,org_recency)
+		matches_sum = np.multiply(matches_sum, org_lengths)
+		matches_sum = np.multiply(matches_sum, recency)
+		matches_sum = np.multiply(matches_sum, lengths)
+		matches_sum = np.multiply(matches_sum, completeness)
+		matches_sum = np.multiply(matches_sum, unq_weights)
 
 		# PREDICTION
 		candidates = candidates[match_mask]
@@ -235,6 +276,9 @@ class Sparse(object):
 		elif recency_weights in ['inverted squared', 'IWS']:
 			recency_func = lambda x: 1 / x ** 2
 			recency = np.array(list(map(recency_func, last_nonzero)))
+		elif recency_weights in ['inverted qubic', 'IWQ']:
+			recency_func = lambda x: 1 / x ** 3
+			recency = np.array(list(map(recency_func, last_nonzero)))
 		elif recency_weights in ['linear', 'quadratic', 'L', 'Q']:
 			last_nonzero = self.model[0].shape[1] - last_nonzero + 1
 			if recency_weights in ['linear', 'L']:
@@ -255,6 +299,40 @@ class Sparse(object):
 		lengths = np.array(list(map(weights_func, vect)))
 		lengths = scale_vector(lengths)
 		return lengths
+
+	def weight_completeness(self, vect, comp_weights):
+		if comp_weights in ['inverted', 'IW']:
+			weights_func = lambda x: 1 / x
+		elif comp_weights in ['inverted squared', 'IWS']:
+			weights_func = lambda x: 1 / x ** 2
+		elif comp_weights in ['linear', 'L']:
+			weights_func = lambda x: x
+		elif comp_weights in ['quadratic', 'Q']:
+			weights_func = lambda x: x ** 2
+		elif comp_weights in ['flat','F']:
+			weights_func = lambda x: x
+		lengths = np.array(list(map(weights_func, vect)))
+		lengths = scale_vector(lengths)
+		return lengths
+
+	def weight_unq(self, vect, unq_weights):
+		if unq_weights in ['inverted', 'IW']:
+			weights_func = lambda x: 1 / x
+			unqs = np.array(list(map(weights_func, vect)))
+		elif unq_weights in ['inverted squared', 'IWS']:
+			weights_func = lambda x: 1 / x ** 2
+			unqs = np.array(list(map(weights_func, vect)))
+		elif unq_weights in ['inverted qubic', 'IWQ']:
+			weights_func = lambda x: 1 / x ** 3
+			unqs = np.array(list(map(weights_func, vect)))
+		elif unq_weights in ['linear', 'L']:
+			vect_reversed = (vect.max() - vect) + 1
+			unqs = scale_vector(vect_reversed)
+		elif unq_weights in ['quadratic', 'Q']:
+			vect_reversed = (vect.max() - vect) + 1
+			unqs = scale_vector(vect_reversed**2)
+		return unqs
+
 
 
 class Sparse_old(object):

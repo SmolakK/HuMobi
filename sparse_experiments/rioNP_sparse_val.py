@@ -9,15 +9,17 @@ import json
 
 df = TrajectoriesFrame(os.path.join(file_path, "RIO_NP.csv"))
 df['labels'] = df.labels.astype(np.int64)
-df = df.uloc(df.get_users()[:5])
+df = df.uloc(df.get_users()[:10])
 # fname = open(os.path.join(save_path, 'rioNP_sparse_times.txt'), 'w')
 
 comb_pred = []
-for x in ['Q',None, 'L', 'Q','IW','IWS']:
+for x in [None, 'L', 'Q','IW','IWS']:
     for y in ['IW', None, 'L', 'Q','IW','IWS']:
-        for z in ['IWS', None, 'L', 'Q','IW','IWS']:
-            for a in ['Q', None, 'L', 'Q','IW','IWS']:
-                comb_pred.append((x, y, z, a))
+        for z in [None, 'L', 'Q','IW','IWS']:
+            for a in ['L', None, 'L', 'Q','IW','IWS']:
+                for b in [None,'F','L','Q',None]:
+                    for c in [None,'IWS','L','Q','IW','IWS',None]:
+                        comb_pred.append((x, y, z, a, b, c))
 
 test_size = .2
 split_ratio = 1 - test_size
@@ -36,7 +38,8 @@ for cp in comb_pred:
     tstart = time()
     forecast_df, pred_res, topk_res = sparse_wrapper_test(sparse_alg, val_frame, valtrain_frame, split_ratio, test_lengths,
                                                 length_weights=cp[0], recency_weights=cp[1],
-                                                org_length_weights=cp[2], org_recency_weights=cp[3], use_probs=False)
+                                                org_length_weights=cp[2], org_recency_weights=cp[3], use_probs=False,
+                                                          completeness_weights = cp[4], uniqueness_weights = cp[5])
     tend = time()
     ttime = tend - tstart
     # fname.write("Pred time %s %s \n" % (str(cp), str(ttime)))
