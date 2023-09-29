@@ -68,7 +68,7 @@ def infer_geometry(trajectories_frame):
 			latitude_column = 'lat'
 			longitude_column = 'lon'
 			warnings.warn("TrajectoriesFrame: No coordinates, adding empty floats")
-	return longitude_column, latitude_column
+	return latitude_column, longitude_column
 
 
 def infer_id(trajectories_frame):
@@ -86,7 +86,7 @@ def infer_id(trajectories_frame):
 			id_col = [x for x in trajectories_frame.columns if 'id' in x.lower()][0]
 			return id_col
 		except:
-			samples = trajectories_frame.sample(1000)
+			samples = trajectories_frame.sample(1000,replace=True)
 			id_col = np.argmax([samples.groupby(x).size().mean() for x in samples.columns])
 			id_col = trajectories_frame.columns[id_col]
 			warnings.warn("ID column was infered but to avoid mistakes ensure that TrajectoriesFrame contains an ID "
@@ -120,7 +120,8 @@ class TrajectoriesFrame(gpd.GeoDataFrame):
 		try:
 			self._crs = data.crs
 		except AttributeError:
-			self._crs = params.pop('crs', None)
+			passed_crs = params.pop('crs', None)
+			self._crs = passed_crs
 
 		if isinstance(data, str):
 			data = pd.read_csv(data, **params)
@@ -141,8 +142,12 @@ class TrajectoriesFrame(gpd.GeoDataFrame):
 						data["datetime"] = pd.to_datetime(data[date_cols])
 					else:
 						data["datetime"] = pd.to_datetime(data[date_cols[0]] + " " + data[date_cols[1]])
+					if date_cols != 'datetime':
+						data = data.drop(date_cols, axis=1)
 				id_col = infer_id(data)
-				data['user_id'] = data[id_col]
+				if id_col != 'user_id':
+					data['user_id'] = data[id_col]
+					data = data.drop(id_col,axis=1)
 				data = data.set_index(['user_id', "datetime"])
 			if self._geom_cols is None:
 				self._geom_cols = infer_geometry(data)
@@ -156,7 +161,8 @@ class TrajectoriesFrame(gpd.GeoDataFrame):
 			data.columns = columns_user_defined
 
 		if isinstance(data, gpd.GeoDataFrame):
-			self.crs = data._crs
+			if self._crs is None:
+				self.crs = passed_crs
 			self.geom_cols = self._geom_cols
 
 	@property
