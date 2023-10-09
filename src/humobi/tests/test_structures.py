@@ -73,4 +73,10 @@ class TestStructures:
 		result = gpd.GeoDataFrame(result).reset_index()
 		assert_geodataframe_equal(result.dropna(), expected.dropna())
 
-ts = TestStructures().test_read_from_file()
+	def test_to_crs(self):
+		file_path = r"sample_data_header.csv"
+		result = traj.TrajectoriesFrame(file_path, {'crs': 27700})
+		result.to_crs("3857")
+
+
+ts = TestStructures().test_to_crs()

@@ -152,7 +152,7 @@ class TrajectoriesFrame(gpd.GeoDataFrame):
 			if self._geom_cols is None:
 				self._geom_cols = infer_geometry(data)
 
-			data = gpd.GeoDataFrame(data, geometry=gpd.points_from_xy(*[data[x] for x in self._geom_cols]),
+			data = gpd.GeoDataFrame(data, geometry=gpd.points_from_xy(*[data[x] for x in self._geom_cols[::-1]]),
 			                        crs=self._crs)
 
 		super().__init__(data)
