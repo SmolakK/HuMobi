@@ -45,6 +45,8 @@ src/humobi/preprocessing/spatial_aggregation.py
 src/humobi/preprocessing/temporal_aggregation.py
 src/humobi/structures/__init__.py
 src/humobi/structures/trajectory.py
+src/humobi/tests/__init__.py
+src/humobi/tests/test_structures.py
 src/humobi/tools/__init__.py
 src/humobi/tools/processing.py
 src/humobi/tools/user_statistics.py

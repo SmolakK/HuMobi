@@ -72,3 +72,5 @@ class TestStructures:
 		                            crs=27700)
 		result = gpd.GeoDataFrame(result).reset_index()
 		assert_geodataframe_equal(result.dropna(), expected.dropna())
+
+ts = TestStructures().test_read_from_file()

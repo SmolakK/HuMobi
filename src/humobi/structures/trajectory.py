@@ -59,7 +59,7 @@ def infer_geometry(trajectories_frame):
 			pass
 	if not latitude_column or not longitude_column:
 		try:
-			longitude_column, latitude_column = trajectories_frame.columns[
+			latitude_column, longitude_column = trajectories_frame.columns[
 				trajectories_frame.dtypes == 'float64'].values
 			warnings.warn("TrajectoriesFrame: Selecting first two columns of float")
 		except:
