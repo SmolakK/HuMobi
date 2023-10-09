@@ -9,7 +9,7 @@ import json
 
 
 df = TrajectoriesFrame(os.path.join(file_path,"markovian.csv"))
-df = df.loc[df.get_users()]
+df = df.loc[df.get_users()[:20]]
 fname = open(os.path.join(top_path,'markovian_sparse_times.txt'),'w')
 fname.close()
 comb_learn = [.3,.2]
@@ -27,10 +27,10 @@ comb_learn = [.3,.2]
 # 						comb_pred.append((x, y, z, a, b, c))
 
 comb_pred = []
-for x in [None,'Q','L']:
-	for y in [None,'IW','IWS']:
-		for z in [None,'IW','IWS']:
-			for a in [None,'Q','L']:
+for x in ['Q',None,'Q','L']:
+	for y in ['Q',None,'IW','IWS']:
+		for z in ['Q',None,'IW','IWS']:
+			for a in ['Q',None,'Q','L']:
 				for b in ['Q']:
 					for c in ['Q']:
 						comb_pred.append((x, y, z, a, b, c))
@@ -46,7 +46,7 @@ for cl in comb_learn:
 	lstart = time()
 	sparse_alg = sparse_wrapper_learn(train_frame, overreach=False, reverse=True, old=False,
 									  rolls=True, remove_subsets=False, reverse_overreach=False,jit=True,
-									  search_size=100, parallel=True, truncate = cl)
+									  search_size=100, parallel=True, truncate = None)
 	lend = time()
 	ltime = lend - lstart
 	with open(os.path.join(top_path, 'markovian_sparse_times.txt'), 'a') as ff:
