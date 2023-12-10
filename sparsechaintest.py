@@ -21,11 +21,12 @@ for x in [None,'L','Q','IW','IWS']:
 		for z in [None, 'L', 'Q', 'IW', 'IWS']:
 			for a in [None, 'L', 'Q', 'IW', 'IWS']:
 				for b in [False,True]:
-					comb_pred.append((x,y,z,a,b))
+					for c in [None, 'F', 'L', 'IW', 'IWS']:
+						comb_pred.append((x,y,z,a,b,c))
 
 top_path = """D:\\Projekty\\Sparse Chains\\markovian"""
 # ALSO GENERATE SOME DATA
-markovian_seq = markovian_sequences_generator(users=3, places=[2,4,10], length=[300,400], prob=[.3,.5,.7,.9])
+markovian_seq = markovian_sequences_generator(users=300, places=[2,4,10], length=[100,500], prob=[.3,.5,.7,.9])
 # markovian_seq.to_csv("markovian.csv")
 # markovian_seq = TrajectoriesFrame("markovian.csv")
 # markovian_seq = random_sequences_generator(users=10, places=[2,4,10], length=[50,70,100])
@@ -95,9 +96,9 @@ for c in comb_learn:
 	print("SPARSE LEARN TIME",c,end-start)
 	for cp in comb_pred:
 		start = time()
-		pred_res = sparse_wrapper_test(sparse_alg, test_frame, markovian_seq, split_ratio, test_lengths,
+		pred_res = sparse_wrapper_test(sparse_alg, test_frame, markovian_seq.labels, split_ratio, test_lengths,
                                length_weights=cp[0], recency_weights=cp[1],
-                            org_length_weights = cp[2], org_recency_weights= cp[3], use_probs=cp[4])
+                            org_length_weights = cp[2], org_recency_weights= cp[3], use_probs=cp[4], count_weights=cp[5])
 		end = time()
 		print("SPARSE PRED TIME",cp,end-start)
 		scores = pd.Series(pred_res.values())

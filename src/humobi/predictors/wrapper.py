@@ -425,7 +425,7 @@ def sparse_wrapper_learn(train_frame, overreach=True, reverse=False, old=False, 
 def sparse_wrapper_test(predictions_dic, test_frame, trajectories_frame, split_ratio, test_lengths,
                         length_weights=None, recency_weights=None, use_probs=False, org_recency_weights=None,
                         org_length_weights=None,
-                        completeness_weights=None, uniqueness_weights=None, parallel=True):
+                        completeness_weights=None, uniqueness_weights=None, count_weights=None,parallel=True):
     results_dic = {}
     forecast_dic = {}
     topk_dic = {}
@@ -445,7 +445,8 @@ def sparse_wrapper_test(predictions_dic, test_frame, trajectories_frame, split_r
                                                repeat(org_length_weights),
                                                repeat(org_recency_weights),
                                                repeat(completeness_weights),
-                                               repeat(uniqueness_weights)),
+                                               repeat(uniqueness_weights),
+                                               repeat(count_weights)),
                              total=test_lengths.loc[uid]))
                 forecast = [x[0] for x in preds]
                 topk = [x[1] for x in preds]
