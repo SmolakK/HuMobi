@@ -26,7 +26,7 @@ for x in [None,'L','Q','IW','IWS']:
 
 top_path = """D:\\Projekty\\Sparse Chains\\markovian"""
 # ALSO GENERATE SOME DATA
-markovian_seq = markovian_sequences_generator(users=300, places=[2,4,10], length=[100,500], prob=[.3,.5,.7,.9])
+markovian_seq = markovian_sequences_generator(users=30, places=[2,4,10], length=[100,500], prob=[.3,.5,.7,.9])
 # markovian_seq.to_csv("markovian.csv")
 # markovian_seq = TrajectoriesFrame("markovian.csv")
 # markovian_seq = random_sequences_generator(users=10, places=[2,4,10], length=[50,70,100])

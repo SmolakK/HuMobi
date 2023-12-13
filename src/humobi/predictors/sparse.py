@@ -162,6 +162,7 @@ class Sparse(object):
 			# org_recency = np.repeat(org_recency, unq_counts, axis=0)
 			# org_length = np.repeat(org_length, unq_counts, axis=0)
 			# reconstructed = np.repeat(unq_list, unq_counts, axis=0)
+			unq_list = unq_list[~(unq_list == -1).all(axis=1),:]
 			matches = unq_list[:, :-1]
 			nexts = unq_list[:, -1]
 
