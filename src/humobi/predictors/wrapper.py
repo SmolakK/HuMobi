@@ -425,7 +425,7 @@ def sparse_wrapper_learn(train_frame, overreach=True, reverse=False, old=False, 
 def sparse_wrapper_test(predictions_dic, test_frame, trajectories_frame, split_ratio, test_lengths,
                         length_weights=None, recency_weights=None, use_probs=False, org_recency_weights=None,
                         org_length_weights=None,
-                        completeness_weights=None, uniqueness_weights=None, count_weights=None,parallel=True):
+                        completeness_weights=None, uniqueness_weights=None, count_weights=None,parallel=True,jit=True):
     results_dic = {}
     forecast_dic = {}
     topk_dic = {}
@@ -438,18 +438,20 @@ def sparse_wrapper_test(predictions_dic, test_frame, trajectories_frame, split_r
         if parallel:
             with cf.ThreadPoolExecutor() as executor:
                 contexts = [trajectories_frame.loc[uid].iloc[:split_ind + n].values for n in range(test_lengths.loc[uid])]
-                preds = list(tqdm(executor.map(predictions_dic[uid].predict, contexts,
-                                               repeat(length_weights),
+                preds = list(tqdm(executor.map(predictions_dic[uid].predict,
+                                               contexts,
                                                repeat(recency_weights),
+                                               repeat(length_weights),
                                                repeat(use_probs),
-                                               repeat(org_length_weights),
                                                repeat(org_recency_weights),
+                                               repeat(org_length_weights),
+                                               repeat(jit),
                                                repeat(completeness_weights),
                                                repeat(uniqueness_weights),
                                                repeat(count_weights)),
                              total=test_lengths.loc[uid]))
                 forecast = [x[0] for x in preds]
-                topk = [x[1] for x in preds]
+                topk = {k: x[1] for k,x in enumerate(preds)}
         else:
             for n in tqdm(range(test_lengths.loc[uid]), total=test_lengths.loc[uid]):
                 context = trajectories_frame.loc[uid].iloc[:split_ind].values

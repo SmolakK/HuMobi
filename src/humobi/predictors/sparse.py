@@ -147,6 +147,7 @@ class Sparse(object):
 		# TRUNCATE
 		if truncate is not None and truncate < 1:
 			stacked_model = np.hstack((matches, nexts.reshape(-1, 1)))
+			stacked_model = stacked_model[~(stacked_model == -1).all(axis=1),:]
 			# unq_list, unq_counts = np.unique(stacked_model, return_counts=True, axis=0)
 			stacked_model = cupy_sort_lines(stacked_model)
 			unq_list, unq_counts = unq_counts_model(stacked_model)
@@ -162,7 +163,6 @@ class Sparse(object):
 			# org_recency = np.repeat(org_recency, unq_counts, axis=0)
 			# org_length = np.repeat(org_length, unq_counts, axis=0)
 			# reconstructed = np.repeat(unq_list, unq_counts, axis=0)
-			unq_list = unq_list[~(unq_list == -1).all(axis=1),:]
 			matches = unq_list[:, :-1]
 			nexts = unq_list[:, -1]
 
@@ -190,20 +190,24 @@ class Sparse(object):
 
 	def predict(self, context, recency_weights=None, length_weights=None, from_dist=False,
 	            org_recency_weights=None, org_length_weights=None, jit=True, completeness_weights=None,
-	            uniqueness_weights=None):
+	            uniqueness_weights=None, count_weights=None):
 
 		if jit:
-			prediction = sparse_predict_jit(context, self.model[0], self.model[1], self.model[2], recency_weights,
+			prediction = sparse_predict_jit(context, self.model[0], self.model[1], self.model[2], self.model[3],
+			                                self.model[4],
+			                                recency_weights,
 			                                length_weights,
 			                                from_dist,
 			                                org_recency_weights, org_length_weights,
 			                                completeness_weights=completeness_weights,
-			                                uniqueness_weights=uniqueness_weights)
+			                                uniqueness_weights=uniqueness_weights,
+			                                count_weights = count_weights)
 		else:
 			prediction = self._predict(context, recency_weights, length_weights, from_dist,
 			                           org_recency_weights, org_length_weights,
 			                           completeness_weights=completeness_weights,
-			                           uniqueness_weights=uniqueness_weights)
+			                           uniqueness_weights=uniqueness_weights,
+			                           count_weights = count_weights)
 		return prediction
 
 	def _predict(self, context, recency_weights=None, length_weights=None, from_dist=False,

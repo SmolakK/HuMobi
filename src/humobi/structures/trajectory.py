@@ -48,7 +48,7 @@ def infer_geometry(trajectories_frame):
 	"""
 	latitude_column = None
 	longitude_column = None
-	if trajectories_frame.columns.dtype is 'str' or trajectories_frame.columns.is_object():
+	if trajectories_frame.columns.dtype == 'str' or trajectories_frame.columns.is_object():
 		try:
 			latitude_column = [x for x in trajectories_frame.columns if 'lat' in x.lower()][0]
 		except:

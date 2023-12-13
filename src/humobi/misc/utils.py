@@ -592,12 +592,14 @@ def remove_subset_rows(arr):
 
 
 @jit(nopython=True)
-def sparse_predict_jit(context, model, candidates, pre_weights, recency_weights=None, length_weights=None,
+def sparse_predict_jit(context, model, candidates, counts, recency, lengths,
+                       recency_weights=None, length_weights=None,
                        from_dist=False,
                        org_recency_weights=None, org_length_weights=None, completeness_weights=None,
-                       uniqueness_weights=None):
+                       uniqueness_weights=None, count_weights=None):
 	model_size = model.shape[1]
 	n_matches = model.shape[0]
+	context = context.astype(np.int64)
 	pad_size = model_size - context.shape[0]
 	if pad_size > 0:
 		context = np.hstack((np.zeros(pad_size, dtype=np.int64), context))
@@ -619,69 +621,69 @@ def sparse_predict_jit(context, model, candidates, pre_weights, recency_weights=
 		for j in candidates:
 			candidates_counts[j] += 1
 		SMC = np.argmax(candidates_counts)
-		candidates_counts = (candidates_counts / sum(candidates_counts))
-		counte = {k: v for k, v in enumerate(candidates_counts)}
-		return SMC, counte
+		candidates_counts = (candidates_counts / np.sum(candidates_counts))
+		return SMC, candidates_counts
 
 	# Weights
 	matches = matches[match_mask]
+	candidates = candidates[match_mask]
+	counts = counts[match_mask]
+	recency = recency[match_mask]
+	lengths = lengths[match_mask]
+
 	matches_sum = np.sum(matches, axis=1, dtype=np.float64)
 	if uniqueness_weights is not None:
-		# stacked_model = np.hstack((matches, candidates[match_mask].reshape(-1,1)))
-		# unq_list, unq_counts = np.unique(stacked_model, return_counts=True, axis=0)
-		# weights = np.repeat(unq_counts,unq_counts,axis=0)
-		unq_weights = weight_unq_jit(pre_weights[match_mask], uniqueness_weights)
+		unq_weights = weight_reversed_jit(counts, uniqueness_weights)
 	else:
 		unq_weights = np.ones_like(matches_sum)
-	if org_recency_weights is not None or org_length_weights is not None or completeness_weights is not None:
-		flatmodel = (model[match_mask] + 1)
-		vect_org_lengths = np.sum(flatmodel > 0, axis=1)
-		if completeness_weights is not None:
-			completeness_measure = matches_sum / vect_org_lengths
-			completeness = weight_completeness_jit(completeness_measure, completeness_weights)
-		else:
-			completeness = np.ones_like(matches_sum)
-		if org_recency_weights is not None:
-			org_recency = weight_recency_jit(flatmodel, org_recency_weights)
-		# matches_sum = np.multiply(matches_sum, org_recency)
-		else:
-			org_recency = np.ones_like(matches_sum)
-		if org_length_weights is not None:
-			org_lengths = weight_length_jit(vect_org_lengths, org_length_weights)
-		# matches_sum = np.multiply(matches_sum, org_lengths)
-		else:
-			org_lengths = np.ones_like(matches_sum)
+
+	if org_recency_weights is not None:
+		org_recency = weight_reversed_jit(recency, org_recency_weights)
 	else:
 		org_recency = np.ones_like(matches_sum)
+
+	if org_length_weights is not None:
+		org_lengths = weight_jit(lengths, org_length_weights)
+	else:
 		org_lengths = np.ones_like(matches_sum)
-		completeness = np.ones_like(matches_sum)
+
+	if completeness_weights is not None:
+		completeness_measure = matches_sum / lengths
+		completeness_weigh = weight_jit(completeness_measure, completeness_weights)
+	else:
+		completeness_weigh = np.ones_like(matches_sum)
+
+	if count_weights is not None:
+		count_weights = weight_jit(counts, count_weights)
+	else:
+		count_weights = np.ones_like(matches_sum)
+
 	if recency_weights is not None:
 		recency = weight_recency_jit(matches, recency_weights)
-	# matches_sum = np.multiply(matches_sum, recency)
 	else:
 		recency = np.ones_like(matches_sum)
+
 	if length_weights is not None:
-		lengths = weight_length_jit(matches_sum, length_weights)
-	# matches_sum = np.multiply(matches_sum, lengths)
+		lengths = weight_jit(matches_sum, length_weights)
 	else:
 		lengths = np.ones_like(matches_sum)
+
 	matches_sum = matches_sum * org_recency
 	matches_sum = matches_sum * org_lengths
 	matches_sum = matches_sum * recency
 	matches_sum = matches_sum * lengths
-	matches_sum = matches_sum * completeness
+	matches_sum = matches_sum * completeness_weigh
 	matches_sum = matches_sum * unq_weights
+	matches_sum = matches_sum * count_weights
 
 	# PREDICTION
-	candidates = candidates[match_mask]
 	unique_candidates = np.unique(candidates)
 	candidates_probs = np.zeros(unique_candidates.max() + 1)
 	for j in range(candidates.shape[0]):
 		candidates_probs[candidates[j]] += matches_sum[j]
-	candidates_probs /= sum(candidates_probs)
+	candidates_probs /= np.sum(candidates_probs)
 	SMC = np.argmax(candidates_probs)
-	probs = {k: v for k, v in enumerate(candidates_probs)}
-	return SMC, probs
+	return SMC, candidates_probs
 
 
 @jit(nopython=True)
@@ -711,23 +713,7 @@ def weight_recency_jit(vect, recency_weights):
 
 
 @jit(nopython=True)
-def weight_length_jit(vect, length_weights):
-	if length_weights in ['inverted', 'IW']:
-		weights_func = lambda x: 1 / x
-	elif length_weights in ['inverted squared', 'IWS']:
-		weights_func = lambda x: 1 / x ** 2
-	elif length_weights in ['linear', 'L']:
-		weights_func = lambda x: x
-	elif length_weights in ['quadratic', 'Q']:
-		weights_func = lambda x: x ** 2
-	# lengths = np.array(list(map(weights_func, vect)))
-	lengths = np.array([weights_func(x) for x in vect], dtype=np.float64)
-	lengths = scale_vector(lengths)
-	return lengths
-
-
-@jit(nopython=True)
-def weight_completeness_jit(vect, comp_weights):
+def weight_jit(vect, comp_weights):
 	if comp_weights in ['inverted', 'IW']:
 		weights_func = lambda x: 1 / x
 	elif comp_weights in ['inverted squared', 'IWS']:
@@ -738,23 +724,26 @@ def weight_completeness_jit(vect, comp_weights):
 		weights_func = lambda x: x ** 2
 	elif comp_weights in ['flat', 'F']:
 		weights_func = lambda x: x
-	# lengths = np.array(list(map(weights_func, vect)),dtype=np.float64)
 	lengths = np.array([weights_func(x) for x in vect], dtype=np.float64)
-	lengths = scale_vector(lengths)
+	if comp_weights not in ['flat', 'F']:
+		lengths = scale_vector(lengths)
 	return lengths
 
 
 @jit(nopython=True)
-def weight_unq_jit(vect, unq_weights):
+def weight_reversed_jit(vect, unq_weights):
 	if unq_weights in ['inverted', 'IW']:
 		weights_func = lambda x: 1 / x
 		unqs = np.array(list(map(weights_func, vect)))
+		unqs = scale_vector(unqs)
 	elif unq_weights in ['inverted squared', 'IWS']:
 		weights_func = lambda x: 1 / x ** 2
 		unqs = np.array(list(map(weights_func, vect)))
+		unqs = scale_vector(unqs)
 	elif unq_weights in ['inverted qubic', 'IWQ']:
 		weights_func = lambda x: 1 / x ** 3
 		unqs = np.array(list(map(weights_func, vect)))
+		unqs = scale_vector(unqs)
 	elif unq_weights in ['linear', 'L']:
 		vect_reversed = (vect.max() - vect) + 1
 		unqs = scale_vector(vect_reversed)

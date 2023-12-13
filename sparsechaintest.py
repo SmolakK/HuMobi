@@ -12,23 +12,25 @@ for x in [True,False]:
 		for z in [True,False]:
 			for a in [False,True]:
 				for b in [True,False]:
-					for n in range(20,100,10):
+					for n in range(90,100,10):
 						comb_learn.append((x,y,z,a,b,n))
 
 comb_pred = []
 for x in [None,'L','Q','IW','IWS']:
-	for y in [None, 'L', 'Q', 'IW', 'IWS']:
+	for y in ['L', 'Q', 'IW', 'IWS',None]:
 		for z in [None, 'L', 'Q', 'IW', 'IWS']:
 			for a in [None, 'L', 'Q', 'IW', 'IWS']:
 				for b in [False,True]:
-					for c in [None, 'F', 'L', 'IW', 'IWS']:
-						comb_pred.append((x,y,z,a,b,c))
+					for c in [None, 'L', 'Q', 'IW', 'IWS']:
+						for e in [None, 'F', 'L', 'Q', 'IW', 'IWS']:
+								for f in [None, 'F', 'L', 'Q', 'IW', 'IWS']:
+									comb_pred.append((x,y,z,a,b,c,e,f))
 
 top_path = """D:\\Projekty\\Sparse Chains\\markovian"""
 # ALSO GENERATE SOME DATA
-markovian_seq = markovian_sequences_generator(users=30, places=[2,4,10], length=[100,500], prob=[.3,.5,.7,.9])
+# markovian_seq = markovian_sequences_generator(users=5, places=[2,4,10], length=[100,500], prob=[.3,.5,.7,.9])
 # markovian_seq.to_csv("markovian.csv")
-# markovian_seq = TrajectoriesFrame("markovian.csv")
+markovian_seq = TrajectoriesFrame("markovian.csv")
 # markovian_seq = random_sequences_generator(users=10, places=[2,4,10], length=[50,70,100])
 # markovian_seq = deterministic_sequences_generator(users=10, places=10, repeats=10)
 # ex_seq = exploratory_sequences_generator(users=10, places=10)
@@ -96,13 +98,12 @@ for c in comb_learn:
 	print("SPARSE LEARN TIME",c,end-start)
 	for cp in comb_pred:
 		start = time()
-		pred_res = sparse_wrapper_test(sparse_alg, test_frame, markovian_seq.labels, split_ratio, test_lengths,
+		forecast_df, scores, topk_dic = sparse_wrapper_test(sparse_alg, test_frame, markovian_seq.labels, split_ratio, test_lengths,
                                length_weights=cp[0], recency_weights=cp[1],
-                            org_length_weights = cp[2], org_recency_weights= cp[3], use_probs=cp[4], count_weights=cp[5])
+                            org_length_weights = cp[2], org_recency_weights= cp[3], use_probs=cp[4], count_weights=cp[6], uniqueness_weights=cp[5], completeness_weights=cp[7])
 		end = time()
 		print("SPARSE PRED TIME",cp,end-start)
-		scores = pd.Series(pred_res.values())
-		scores.to_csv(os.path.join(top_path,str(scores.mean()) + '_' + str(c)+'_'+str(cp)+'_sparse.csv'))
+		scores.to_csv(os.path.join(top_path,str(round(scores.mean().values[0],2)) + '_' + str(c)+'_'+str(cp)+'_sparse.csv'))
 
 # #FIRST - SPARSE LEARN TYPE, SECOND - WEIGHTING TYPE
 # sparse_alg = sparse_wrapper_learn(train_frame, overreach=True, reverse=True, old = False,
