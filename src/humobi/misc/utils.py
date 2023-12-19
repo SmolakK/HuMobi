@@ -714,19 +714,21 @@ def weight_recency_jit(vect, recency_weights):
 
 @jit(nopython=True)
 def weight_jit(vect, comp_weights):
+	vect = vect.astype(np.float64)
 	if comp_weights in ['inverted', 'IW']:
-		weights_func = lambda x: 1 / x
+		# weights_func = lambda x: 1 / x
+		lengths = 1 / vect
 	elif comp_weights in ['inverted squared', 'IWS']:
-		weights_func = lambda x: 1 / x ** 2
+		# weights_func = lambda x: 1 / x ** 2
+		lengths = 1/(vect**2)
 	elif comp_weights in ['linear', 'L']:
-		weights_func = lambda x: x
+		# weights_func = lambda x: x
+		lengths = vect
 	elif comp_weights in ['quadratic', 'Q']:
-		weights_func = lambda x: x ** 2
-	elif comp_weights in ['flat', 'F']:
-		weights_func = lambda x: x
-	lengths = np.array([weights_func(x) for x in vect], dtype=np.float64)
-	if comp_weights not in ['flat', 'F']:
-		lengths = scale_vector(lengths)
+		# weights_func = lambda x: x ** 2
+		lengths = vect ** 2
+	# lengths = np.array(list(map(weights_func, vect)), dtype=np.float64)
+	lengths = scale_vector(lengths)
 	return lengths
 
 

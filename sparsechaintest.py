@@ -6,14 +6,7 @@ import os
 from sklearn.ensemble import RandomForestClassifier
 #TODO: rolling hold-out
 
-comb_learn = []
-for x in [True,False]:
-	for y in [True,False]:
-		for z in [True,False]:
-			for a in [False,True]:
-				for b in [True,False]:
-					for n in range(90,100,10):
-						comb_learn.append((x,y,z,a,b,n))
+SEARCH_SIZE = 30
 
 comb_pred = []
 for x in [None,'L','Q','IW','IWS']:
@@ -87,7 +80,9 @@ sparse_results = {}
 test_size = .2
 split_ratio = 1 - test_size
 train_frame, test_frame = split(markovian_seq, split_ratio, 0)
-test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
+
+sparse_wrapper(train_frame=train_frame, test_frame = test_frame,
+               trajectories_frame = markovian_seq.labels, split_ratio = split_ratio, search_size = SEARCH_SIZE)
 
 for c in comb_learn:
 	start = time()

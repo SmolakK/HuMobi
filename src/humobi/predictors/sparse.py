@@ -30,7 +30,7 @@ class Sparse(object):
 	"""
 	_search_size: int
 
-	def __init__(self, search_size=None, reverse=False, overreach=False, rolls=True, remove_subsets=True,
+	def __init__(self, search_size=None, reverse=False, overreach=False, rolls=True,
 	             reverse_overreach=True):
 		self._search_size = search_size
 		self.model = None
@@ -38,7 +38,6 @@ class Sparse(object):
 		self.overreach = overreach
 		self.reverse_overreach = reverse_overreach
 		self.rolls = rolls
-		self.remove_subsets = remove_subsets
 
 	def _fit_multi(self, sequence, jit, max_search, n):
 		nexts = deque([])
@@ -89,7 +88,7 @@ class Sparse(object):
 			nexts = np.hstack(nexts)
 		return matches, nexts
 
-	def fit(self, sequence, jit=True, parallel=True, cuda=False, truncate=0.6):
+	def fit(self, sequence, jit=True, parallel=True):
 		sequence = np.array(sequence, dtype=np.int64)
 		sequence += 1  # REMEMBER     # TODO: flatten context/model
 		nexts = deque([])
@@ -144,49 +143,21 @@ class Sparse(object):
 			nexts = np.hstack(nexts)
 			matches = np.vstack(matches)
 
-		# TRUNCATE
-		if truncate is not None and truncate < 1:
-			stacked_model = np.hstack((matches, nexts.reshape(-1, 1)))
-			stacked_model = stacked_model[~(stacked_model == -1).all(axis=1),:]
-			# unq_list, unq_counts = np.unique(stacked_model, return_counts=True, axis=0)
-			stacked_model = cupy_sort_lines(stacked_model)
-			unq_list, unq_counts = unq_counts_model(stacked_model)
-			# stacked_unq = np.hstack((unq_counts.reshape(-1, 1), unq_list))
-			# stacked_unq = stacked_unq[stacked_unq[:, 0].argsort()][::-1]
-			# unq_list = stacked_unq[:, 1:]
-			# unq_counts = stacked_unq[:, 0]
-			# proportion = np.cumsum(unq_counts / np.sum(unq_counts))
-			# filter_by_proportion = proportion > truncate
-			# unq_list = unq_list[filter_by_proportion]
-			# unq_counts = unq_counts[filter_by_proportion]
-			# org_unq_weights = np.repeat(unq_counts, unq_counts, axis=0)
-			# org_recency = np.repeat(org_recency, unq_counts, axis=0)
-			# org_length = np.repeat(org_length, unq_counts, axis=0)
-			# reconstructed = np.repeat(unq_list, unq_counts, axis=0)
-			matches = unq_list[:, :-1]
-			nexts = unq_list[:, -1]
+		stacked_model = np.hstack((matches, nexts.reshape(-1, 1)))
+		stacked_model = stacked_model[~(stacked_model == -1).all(axis=1),:]
+		stacked_model = cupy_sort_lines(stacked_model)
+		unq_list, unq_counts = unq_counts_model(stacked_model)
+		matches = unq_list[:, :-1]
+		nexts = unq_list[:, -1]
 
-			flatmodel = matches + 1
-			nonzero_elements = np.argwhere(np.fliplr(flatmodel))
-			ind_first = np.unique(nonzero_elements[:, 0], return_index=True)[1]
-			org_recency = nonzero_elements[ind_first, 1] + 1
-			org_length = np.sum(np.clip(flatmodel, 0, 1), axis=1)
-		# else:
-		# unique_vals, unique_counts = unq_counts_model(matches,nexts)
-		# unique_counts = np.array(unique_counts)
-		# unique_rows = np.array(unique_vals)
-		# org_unq_weights = np.repeat(unique_counts, unique_counts)
-		# rebuilt = np.repeat(unique_rows, unique_counts, axis=0)
-		# matches = rebuilt[:, :-1]
-		# nexts = rebuilt[:, -1]
+		flatmodel = matches + 1
+		nonzero_elements = np.argwhere(np.fliplr(flatmodel))
+		ind_first = np.unique(nonzero_elements[:, 0], return_index=True)[1]
+		org_recency = nonzero_elements[ind_first, 1] + 1
+		org_length = np.sum(np.clip(flatmodel, 0, 1), axis=1)
 
-		if self.remove_subsets:
-			stacks = remove_subset_rows(np.hstack((matches, nexts[:, np.newaxis])))
-			self.model = (stacks[:, :-1], stacks[:, -1])
-		else:
-			self.model = (matches, nexts, unq_counts, org_recency,
-			              org_length)  # matches, nexts, counts-compression, recency, lengths - all compressed)
-		# self.model = (matches, nexts)
+		self.model = (matches, nexts, unq_counts, org_recency,
+		              org_length)  # matches, nexts, counts-compression, recency, lengths - all compressed)
 
 	def predict(self, context, recency_weights=None, length_weights=None, from_dist=False,
 	            org_recency_weights=None, org_length_weights=None, jit=True, completeness_weights=None,
