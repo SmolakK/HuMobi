@@ -19,7 +19,7 @@ import optuna
 
 
 def iterate_random_values(S, n_check):
-	"""
+    """
     Takes a random combination of items of a given size.
 
     Args:
@@ -29,14 +29,14 @@ def iterate_random_values(S, n_check):
     Returns:
         A random combination
     """
-	keys, values = zip(*S.items())
-	combs = [dict(zip(keys, row)) for row in itertools.product(*values)]
-	combs = np.random.choice(combs, n_check)
-	return combs
+    keys, values = zip(*S.items())
+    combs = [dict(zip(keys, row)) for row in itertools.product(*values)]
+    combs = np.random.choice(combs, n_check)
+    return combs
 
 
 class Splitter():
-	"""
+    """
     This is a Splitter class responsible for data preparation for shallow machine learning-based models from sklearn library.
 
     Args:
@@ -46,27 +46,27 @@ class Splitter():
         n_splits: The number of splits for cross-validation process
     """
 
-	def __init__(self, split_ratio, horizon=1, n_splits=1):
-		"""
+    def __init__(self, split_ratio, horizon=1, n_splits=1):
+        """
         Class initialisation. Calls data splitting routine, hence after initialisation data is already prepared.
         """
-		self._train_ratio = 1 - split_ratio
-		if horizon < 1:
-			raise ValueError("Horizon value has to be a positive integer")
-		self._horizon = horizon
-		self._n_splits = n_splits
-		self.cv_data = []
+        self._train_ratio = 1 - split_ratio
+        if horizon < 1:
+            raise ValueError("Horizon value has to be a positive integer")
+        self._horizon = horizon
+        self._n_splits = n_splits
+        self.cv_data = []
 
-	@property
-	def test_ratio(self):
-		return self._train_ratio
+    @property
+    def test_ratio(self):
+        return self._train_ratio
 
-	@property
-	def horizon(self):
-		return self._horizon
+    @property
+    def horizon(self):
+        return self._horizon
 
-	def _test_split(self, X, Y):
-		"""
+    def _test_split(self, X, Y):
+        """
         Splits test data into training and testing sets. Uses windowed data.
 
         Args:
@@ -76,18 +76,18 @@ class Splitter():
         Returns:
             Training and testing sets of data
         """
-		train_frame_X = X.groupby(level=0).progress_apply(lambda x: x.iloc[:round(len(x) * self.test_ratio)]).droplevel(
-			1)
-		train_frame_Y = Y.groupby(level=0).progress_apply(lambda x: x.iloc[:round(len(x) * self.test_ratio)]).droplevel(
-			1)
-		test_frame_X = X.groupby(level=0).progress_apply(lambda x: x.iloc[round(len(x) * self.test_ratio):]).droplevel(
-			1)
-		test_frame_Y = Y.groupby(level=0).progress_apply(lambda x: x.iloc[round(len(x) * self.test_ratio):]).droplevel(
-			1)
-		return train_frame_X, train_frame_Y, test_frame_X, test_frame_Y
+        train_frame_X = X.groupby(level=0).progress_apply(lambda x: x.iloc[:round(len(x) * self.test_ratio)]).droplevel(
+            1)
+        train_frame_Y = Y.groupby(level=0).progress_apply(lambda x: x.iloc[:round(len(x) * self.test_ratio)]).droplevel(
+            1)
+        test_frame_X = X.groupby(level=0).progress_apply(lambda x: x.iloc[round(len(x) * self.test_ratio):]).droplevel(
+            1)
+        test_frame_Y = Y.groupby(level=0).progress_apply(lambda x: x.iloc[round(len(x) * self.test_ratio):]).droplevel(
+            1)
+        return train_frame_X, train_frame_Y, test_frame_X, test_frame_Y
 
-	def _cv_split(self, frame_X, frame_Y, n_splits=5):
-		"""
+    def _cv_split(self, frame_X, frame_Y, n_splits=5):
+        """
         Splits training data into the training and validation sets using cross-validation approach.
 
         Args:
@@ -95,20 +95,20 @@ class Splitter():
             frame_Y: Training targets
             n_splits: The number of splits to be applied
         """
-		for n in range(1, n_splits + 1):
-			train_set_X = frame_X.groupby(level=0).apply(
-				lambda x: x.iloc[:round(x.shape[0] * (n / (n_splits + 1)))]).droplevel(0)
-			train_set_Y = frame_Y.groupby(level=0).apply(
-				lambda x: x.iloc[:round(x.shape[0] * (n / (n_splits + 1)))]).droplevel(0)
-			val_set_X = frame_X.groupby(level=0).apply(lambda x: x.iloc[round(x.shape[0] * (n / (n_splits + 1))):round(
-				x.shape[0] * ((n + 1) / (n_splits + 1)))]).droplevel(0)
-			val_set_Y = frame_Y.groupby(level=0).apply(lambda x: x.iloc[round(
-				x.shape[0] * (n / (n_splits + 1))):round(
-				x.shape[0] * ((n + 1) / (n_splits + 1)))]).droplevel(0)
-			self.cv_data.append((train_set_X, train_set_Y, val_set_X, val_set_Y))
+        for n in range(1, n_splits + 1):
+            train_set_X = frame_X.groupby(level=0).apply(
+                lambda x: x.iloc[:round(x.shape[0] * (n / (n_splits + 1)))]).droplevel(0)
+            train_set_Y = frame_Y.groupby(level=0).apply(
+                lambda x: x.iloc[:round(x.shape[0] * (n / (n_splits + 1)))]).droplevel(0)
+            val_set_X = frame_X.groupby(level=0).apply(lambda x: x.iloc[round(x.shape[0] * (n / (n_splits + 1))):round(
+                x.shape[0] * ((n + 1) / (n_splits + 1)))]).droplevel(0)
+            val_set_Y = frame_Y.groupby(level=0).apply(lambda x: x.iloc[round(
+                x.shape[0] * (n / (n_splits + 1))):round(
+                x.shape[0] * ((n + 1) / (n_splits + 1)))]).droplevel(0)
+            self.cv_data.append((train_set_X, train_set_Y, val_set_X, val_set_Y))
 
-	def _stride_data_single(self, frame):
-		"""
+    def _stride_data_single(self, frame):
+        """
         Uses windowing algorithm to prepare time-series data from sequences to prediction. Takes labels and horizon size
         to create chunks of data.
 
@@ -118,31 +118,31 @@ class Splitter():
         Returns:
             Chunks of data in a DataFrame - features and targets
         """
-		to_concat = []
-		for uid, traj in frame.groupby(level=0):
-			traj = traj.reset_index()
-			for x in range(1, self.horizon + 1):
-				traj['labels{}'.format(x)] = traj['labels'].shift(-x)
-			traj['datetime'] = traj['datetime'].shift(-self.horizon)
-			traj = traj.set_index(['user_id', 'datetime'])
-			to_concat.append(traj[:-self.horizon])
-		frame_ready = pd.concat(to_concat)
-		frame_X = frame_ready.iloc[:, :self.horizon]
-		frame_Y = frame_ready.iloc[:, -1]
-		return frame_X, frame_Y
+        to_concat = []
+        for uid, traj in frame.groupby(level=0):
+            traj = traj.reset_index()
+            for x in range(1, self.horizon + 1):
+                traj['labels{}'.format(x)] = traj['labels'].shift(-x)
+            traj['datetime'] = traj['datetime'].shift(-self.horizon)
+            traj = traj.set_index(['user_id', 'datetime'])
+            to_concat.append(traj[:-self.horizon])
+        frame_ready = pd.concat(to_concat)
+        frame_X = frame_ready.iloc[:, :self.horizon]
+        frame_Y = frame_ready.iloc[:, -1]
+        return frame_X, frame_Y
 
-	def stride_data(self, sequence):
-		"""
+    def stride_data(self, sequence):
+        """
         A wrapper function for data windowing algorithm. Calls windowing algorithm for every unique user in the dataset.
         After it splits data into three datasets - test, train and validation.
         """
-		strided_X, strided_Y = self._stride_data_single(sequence['labels'])
-		train_frame_X, train_frame_Y, self.test_frame_X, self.test_frame_Y = self._test_split(strided_X, strided_Y)
-		self._cv_split(train_frame_X, train_frame_Y, n_splits=self._n_splits)
+        strided_X, strided_Y = self._stride_data_single(sequence['labels'])
+        train_frame_X, train_frame_Y, self.test_frame_X, self.test_frame_Y = self._test_split(strided_X, strided_Y)
+        self._cv_split(train_frame_X, train_frame_Y, n_splits=self._n_splits)
 
 
 class SKLearnPred():
-	"""
+    """
     This is a wrapper for classification function from sklearn library which can be used for prediction here.
 
     Args:
@@ -155,21 +155,21 @@ class SKLearnPred():
         parallel: Whether random search should be performed using multithreading
     """
 
-	def __init__(self, algorithm, training_data, test_data, param_dist, search_size, cv_size=3, parallel=False):
-		"""
+    def __init__(self, algorithm, training_data, test_data, param_dist, search_size, cv_size=3, parallel=False):
+        """
         Class initialisation.
         """
-		self._parallel = parallel
-		self._training_data = training_data
-		self._test_data = test_data
-		self._algorithm = algorithm
-		self._param_dist = param_dist
-		self._search_size = search_size
-		self._cv_size = cv_size
-		self._tuned_alg = {}
+        self._parallel = parallel
+        self._training_data = training_data
+        self._test_data = test_data
+        self._algorithm = algorithm
+        self._param_dist = param_dist
+        self._search_size = search_size
+        self._cv_size = cv_size
+        self._tuned_alg = {}
 
-	def _user_learn(self, split, p_comb):
-		"""
+    def _user_learn(self, split, p_comb):
+        """
         For multithreading processing: single-user learn algorithm.
 
         Args:
@@ -181,86 +181,86 @@ class SKLearnPred():
         Returns:
             user id and score board with accuracy for each hyperparameters combination
         """
-		args_x, args_y, vals_x, vals_y = split
-		alg_run = self._algorithm(**p_comb).fit(args_x, args_y)
-		pred_run = alg_run.predict(vals_x)
-		metric_val = accuracy_score(pred_run, vals_y)
-		return p_comb, metric_val
+        args_x, args_y, vals_x, vals_y = split
+        alg_run = self._algorithm(**p_comb).fit(args_x, args_y)
+        pred_run = alg_run.predict(vals_x)
+        metric_val = accuracy_score(pred_run, vals_y)
+        return p_comb, metric_val
 
-	def learn(self):
-		"""
+    def learn(self):
+        """
         Learns the sklearn algorithm using cross-validation and passed input data.
         """
-		result_dic = {}
-		usrs = pd.unique(self._test_data[0].index.get_level_values(0))
-		for ids in tqdm(usrs, total=len(usrs)):
-			usr_split = [[a.loc[ids] for a in spl] for spl in self._training_data]
-			params_to_check = iterate_random_values(self._param_dist, self._search_size)
-			score_board = {}
-			if self._parallel:
-				for p_comb in params_to_check:
-					with cf.ThreadPoolExecutor(max_workers=len(usr_split)) as executor:
-						results = list(
-							tqdm(executor.map(self._user_learn, usr_split, itertools.repeat(p_comb)),
-							     total=len(usr_split)))
-					averaged = np.mean([v[1] for v in results])
-					score_board[tuple(sorted(results[0][0].items()))] = averaged
-					if averaged == 1:
-						break
-			else:
-				for p_comb in params_to_check:
-					fold_avg = []
-					cnt = 0
-					for splits in usr_split:
-						cnt += 1
-						print("SPLIT: {}".format(cnt))
-						args_x, args_y, vals_x, vals_y = splits
-						alg_run = self._algorithm(**p_comb, n_jobs=-1).fit(args_x, args_y)
-						pred_run = alg_run.predict(vals_x)
-						metric_val = accuracy_score(pred_run, vals_y)
-						fold_avg.append(metric_val)
-					metric_val = np.mean(fold_avg)
-					score_board[tuple(sorted(p_comb.items()))] = metric_val
-					if metric_val == 1:
-						break
-			result_dic[ids] = max(score_board.keys(), key=lambda x: score_board[x])
-		for usr, params in result_dic.items():  # selects the best params and trains the algorithm on them (for each user)
-			params = {k: v for k, v in params}
-			concat_x = pd.concat([self._training_data[-1][0].loc[usr], self._training_data[-1][2].loc[usr]])
-			concat_y = pd.concat([self._training_data[-1][1].loc[usr], self._training_data[-1][3].loc[usr]])
-			self._tuned_alg[usr] = self.algorithm(**params).fit(concat_x, concat_y)
+        result_dic = {}
+        usrs = pd.unique(self._test_data[0].index.get_level_values(0))
+        for ids in tqdm(usrs, total=len(usrs)):
+            usr_split = [[a.loc[ids] for a in spl] for spl in self._training_data]
+            params_to_check = iterate_random_values(self._param_dist, self._search_size)
+            score_board = {}
+            if self._parallel:
+                for p_comb in params_to_check:
+                    with cf.ThreadPoolExecutor(max_workers=len(usr_split)) as executor:
+                        results = list(
+                            tqdm(executor.map(self._user_learn, usr_split, itertools.repeat(p_comb)),
+                                 total=len(usr_split)))
+                    averaged = np.mean([v[1] for v in results])
+                    score_board[tuple(sorted(results[0][0].items()))] = averaged
+                    if averaged == 1:
+                        break
+            else:
+                for p_comb in params_to_check:
+                    fold_avg = []
+                    cnt = 0
+                    for splits in usr_split:
+                        cnt += 1
+                        print("SPLIT: {}".format(cnt))
+                        args_x, args_y, vals_x, vals_y = splits
+                        alg_run = self._algorithm(**p_comb, n_jobs=-1).fit(args_x, args_y)
+                        pred_run = alg_run.predict(vals_x)
+                        metric_val = accuracy_score(pred_run, vals_y)
+                        fold_avg.append(metric_val)
+                    metric_val = np.mean(fold_avg)
+                    score_board[tuple(sorted(p_comb.items()))] = metric_val
+                    if metric_val == 1:
+                        break
+            result_dic[ids] = max(score_board.keys(), key=lambda x: score_board[x])
+        for usr, params in result_dic.items():  # selects the best params and trains the algorithm on them (for each user)
+            params = {k: v for k, v in params}
+            concat_x = pd.concat([self._training_data[-1][0].loc[usr], self._training_data[-1][2].loc[usr]])
+            concat_y = pd.concat([self._training_data[-1][1].loc[usr], self._training_data[-1][3].loc[usr]])
+            self._tuned_alg[usr] = self.algorithm(**params).fit(concat_x, concat_y)
 
-	def test(self):
-		"""
+    def test(self):
+        """
         Implements one and final algorithm test and saves the score.
         """
-		test_x, test_y = self._test_data
-		usrs = np.unique(test_x.index.get_level_values(0))
-		metrics = {}
-		predictions_dic = {}
-		predictions_dic_proba = {}
-		for ids in tqdm(usrs, total=len(usrs)):
-			cur_alg = self._tuned_alg[ids]
-			preds = cur_alg.predict(test_x.loc[ids])
-			preds_proba = pd.DataFrame(cur_alg.predict_proba(test_x.loc[ids]))
-			preds_proba.columns = cur_alg.classes_
-			metric_val = accuracy_score(preds, test_y.loc[ids])
-			predictions_dic[ids] = preds
-			metrics[ids] = metric_val
-			predictions_dic_proba[str(ids)] = preds_proba.to_dict(orient='index')
-		self.scores = pd.Series(metrics)
-		self.predictions = pd.concat(
-			[pd.concat({k: pd.Series(v) for k, v in predictions_dic.items()}).droplevel(1), test_y.droplevel(1)],
-			axis=1)
-		self.predictions_proba = predictions_dic_proba
+        test_x, test_y = self._test_data
+        usrs = np.unique(test_x.index.get_level_values(0))
+        metrics = {}
+        predictions_dic = {}
+        predictions_dic_proba = {}
+        for ids in tqdm(usrs, total=len(usrs)):
+            cur_alg = self._tuned_alg[ids]
+            preds = cur_alg.predict(test_x.loc[ids])
+            preds_proba = pd.DataFrame(cur_alg.predict_proba(test_x.loc[ids]))
+            preds_proba.columns = cur_alg.classes_
+            metric_val = accuracy_score(preds, test_y.loc[ids])
+            predictions_dic[ids] = preds
+            metrics[ids] = metric_val
+            predictions_dic_proba[str(ids)] = preds_proba.to_dict(orient='index')
+        self.scores = pd.Series(metrics)
+        self.predictions = pd.concat(
+            [pd.concat({k: pd.Series(v) for k, v in predictions_dic.items()}).droplevel(1), test_y.droplevel(1)],
+            axis=1)
+        self.predictions_proba = predictions_dic_proba
 
-	@property
-	def algorithm(self):
-		return self._algorithm
+    @property
+    def algorithm(self):
+        return self._algorithm
 
 
 class Baseline():
-	"""
+    """
     The baseline algorithm which assumes the next symbol be identical to the next one. Be aware that it uses information
     from the test set and thus, has advantage over other methods. Only test dataset is needed.
 
@@ -268,32 +268,32 @@ class Baseline():
         test_data: Test dataset. Do not use split data.
     """
 
-	def __init__(self, test_data):
-		"""
+    def __init__(self, test_data):
+        """
         Class initialisation.
         """
-		self._test_data = test_data
-		self.prediction = []
+        self._test_data = test_data
+        self.prediction = []
 
-	def predict(self):
-		"""
+    def predict(self):
+        """
         Baseline prediction algorithm. This method only evaluates the accuracy of the method and do not return the
         predictions. Predictions are stored within the class attributes.
 
         Returns:
             accuracy score
         """
-		self.prediction = self._test_data[0].groupby(level=0).apply(lambda x: x.iloc[:, -1]).droplevel(
-			1)  # make predictions
-		aligned = pd.concat([self._test_data[1], self.prediction], axis=1)  # align predictions and true labels
-		acc_score = aligned.groupby(level=0).apply(
-			lambda x: sum(x.iloc[:, 0] == x.iloc[:, 1]) / x.shape[0])  # quickly evaluate the score
-		print("SCORE: {}".format(acc_score.mean()))
-		return aligned, acc_score
+        self.prediction = self._test_data[0].groupby(level=0).apply(lambda x: x.iloc[:, -1]).droplevel(
+            1)  # make predictions
+        aligned = pd.concat([self._test_data[1], self.prediction], axis=1)  # align predictions and true labels
+        acc_score = aligned.groupby(level=0).apply(
+            lambda x: sum(x.iloc[:, 0] == x.iloc[:, 1]) / x.shape[0])  # quickly evaluate the score
+        print("SCORE: {}".format(acc_score.mean()))
+        return aligned, acc_score
 
 
 class TopLoc():
-	"""
+    """
     This is a naive algorithm which assumes every symbol in the test dataset being the most frequently occurring symbol
     in the training data.
 
@@ -302,36 +302,36 @@ class TopLoc():
         test_data: Test dataset, from the Splitter class. Do not use split data.
     """
 
-	def __init__(self, train_data, test_data):
-		"""
+    def __init__(self, train_data, test_data):
+        """
         Class initialisation.
         """
-		self._train_data = train_data
-		self._test_data = test_data
-		self.prediction = []
+        self._train_data = train_data
+        self._test_data = test_data
+        self.prediction = []
 
-	def predict(self):
-		"""
+    def predict(self):
+        """
         Makes the prediction and returns the score. Predictions are stored within the class.
 
         Returns:
             Accuracy score
         """
-		tr_data = pd.concat([self._train_data[0][1], self._train_data[0][3]])
-		top_location = tr_data.groupby(level=0).apply(lambda x: x.groupby(x).count().idxmax())
-		to_conc = {}
-		for uid, vals in self._test_data[1].groupby(level=0):
-			vals[vals > -1] = top_location.loc[uid]
-			to_conc[uid] = vals
-		self.prediction = pd.concat(to_conc).droplevel(1)
-		aligned = pd.concat([self._test_data[1], self.prediction], axis=1)
-		acc_score = aligned.groupby(level=0).apply(lambda x: sum(x.iloc[:, 0] == x.iloc[:, 1]) / x.shape[0])
-		print("SCORE: {}".format(acc_score.mean()))
-		return aligned, acc_score
+        tr_data = pd.concat([self._train_data[0][1], self._train_data[0][3]])
+        top_location = tr_data.groupby(level=0).apply(lambda x: x.groupby(x).count().idxmax())
+        to_conc = {}
+        for uid, vals in self._test_data[1].groupby(level=0):
+            vals[vals > -1] = top_location.loc[uid]
+            to_conc[uid] = vals
+        self.prediction = pd.concat(to_conc).droplevel(1)
+        aligned = pd.concat([self._test_data[1], self.prediction], axis=1)
+        acc_score = aligned.groupby(level=0).apply(lambda x: sum(x.iloc[:, 0] == x.iloc[:, 1]) / x.shape[0])
+        print("SCORE: {}".format(acc_score.mean()))
+        return aligned, acc_score
 
 
 def split(trajectories_frame, train_size, state_size):
-	"""
+    """
     Simple train-test data split for a Markov Chain.
 
     Args:
@@ -342,15 +342,15 @@ def split(trajectories_frame, train_size, state_size):
     Returns:
         Split data
     """
-	train_frame = trajectories_frame['labels'].groupby(level=0).progress_apply(
-		lambda x: x.iloc[:round(len(x) * train_size)])
-	test_frame = trajectories_frame['labels'].groupby(level=0).progress_apply(
-		lambda x: x.iloc[round(len(x) * train_size) - state_size:])
-	return train_frame, test_frame
+    train_frame = trajectories_frame['labels'].groupby(level=0).progress_apply(
+        lambda x: x.iloc[:round(len(x) * train_size)])
+    test_frame = trajectories_frame['labels'].groupby(level=0).progress_apply(
+        lambda x: x.iloc[round(len(x) * train_size) - state_size:])
+    return train_frame, test_frame
 
 
 def markov_wrapper(trajectories_frame, test_size=.2, state_size=2, update=False, online=True):
-	"""
+    """
     The wrapper, one stop shop algorithm for the Markov Chain. Splits the data, learns the model and makes predictions
     on the test set.
 
@@ -365,64 +365,64 @@ def markov_wrapper(trajectories_frame, test_size=.2, state_size=2, update=False,
     Returns:
         Prediction scores
     """
-	train_size = 1 - test_size
-	train_frame, test_frame = split(trajectories_frame, train_size, state_size)  # train test split
-	test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
-	predictions_dic = {}
-	for uid, train_values in train_frame.groupby(level=0):  # training
-		try:
-			if online:
-				predictions_dic[uid] = MarkovChain(list(train_values.values), state_size)
-			else:
-				predictions_dic[uid] = MarkovChain(list(train_values.values), state_size).move_from_build(
-					test_lengths.loc[uid], update)
-		except:
-			continue
-	results_dic = {}
-	to_conc = {}
-	to_conc_topk = {}
-	for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting
-		uid = test_values[0]
-		test_values = test_values[1].values
-		if online:
-			forecast = []
-			topk = []
-			for current_state in range(len(test_values) - state_size):
-				pred = predictions_dic[uid].move(test_values[current_state:current_state + state_size])
-				forecast.append(pred[0])
-				topk.append({str(k): v for k, v in pred[1].items()})
-			to_conc[uid] = forecast
-			results_dic[uid] = sum(forecast == test_values[state_size:]) / len(forecast)
-			to_conc_topk[uid] = topk
-		else:
-			results_dic[uid] = sum(test_values[state_size:] == predictions_dic[prediction_values]) / len(test_values)
-			to_conc[uid] = predictions_dic[prediction_values]
-	predictions = pd.DataFrame().from_dict(to_conc, orient='index').T.unstack().droplevel(1)
-	predictions = predictions[~predictions.isna()]
-	test_frame_stack = test_frame.groupby(level=0).apply(lambda x: x[state_size:]).droplevel([1, 2])
-	if test_frame_stack.index.nlevels == 2:
-		test_frame_stack = test_frame_stack.droplevel(1)
-	aligned = pd.concat([predictions, test_frame_stack], axis=1)
-	aligned.columns = ['predictions', 'y_set']
-	return aligned, pd.DataFrame.from_dict(results_dic, orient='index'), to_conc_topk
+    train_size = 1 - test_size
+    train_frame, test_frame = split(trajectories_frame, train_size, state_size)  # train test split
+    test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
+    predictions_dic = {}
+    for uid, train_values in train_frame.groupby(level=0):  # training
+        try:
+            if online:
+                predictions_dic[uid] = MarkovChain(list(train_values.values), state_size)
+            else:
+                predictions_dic[uid] = MarkovChain(list(train_values.values), state_size).move_from_build(
+                    test_lengths.loc[uid], update)
+        except:
+            continue
+    results_dic = {}
+    to_conc = {}
+    to_conc_topk = {}
+    for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting
+        uid = test_values[0]
+        test_values = test_values[1].values
+        if online:
+            forecast = []
+            topk = []
+            for current_state in range(len(test_values) - state_size):
+                pred = predictions_dic[uid].move(test_values[current_state:current_state + state_size])
+                forecast.append(pred[0])
+                topk.append({str(k): v for k, v in pred[1].items()})
+            to_conc[uid] = forecast
+            results_dic[uid] = sum(forecast == test_values[state_size:]) / len(forecast)
+            to_conc_topk[uid] = topk
+        else:
+            results_dic[uid] = sum(test_values[state_size:] == predictions_dic[prediction_values]) / len(test_values)
+            to_conc[uid] = predictions_dic[prediction_values]
+    predictions = pd.DataFrame().from_dict(to_conc, orient='index').T.unstack().droplevel(1)
+    predictions = predictions[~predictions.isna()]
+    test_frame_stack = test_frame.groupby(level=0).apply(lambda x: x[state_size:]).droplevel([1, 2])
+    if test_frame_stack.index.nlevels == 2:
+        test_frame_stack = test_frame_stack.droplevel(1)
+    aligned = pd.concat([predictions, test_frame_stack], axis=1)
+    aligned.columns = ['predictions', 'y_set']
+    return aligned, pd.DataFrame.from_dict(results_dic, orient='index'), to_conc_topk
 
 
 def sparse_wrapper_learn(train_frame, overreach=True, reverse=False, old=False, rolls=True,
                          remove_subsets=False, reverse_overreach=False, search_size=None, jit=True, parallel=True,
                          cuda=False, truncate=0):
-	if old == True and any((overreach, reverse, reverse_overreach, remove_subsets, rolls)):
-		warnings.warn("When old is set to True, other parameters have no effect")
-	predictions_dic = {}
-	for uid, train_values in train_frame.groupby(level=0):
-		if old:
-			predictions_dic[uid] = Sparse_old()
-			predictions_dic[uid].fit(train_values.values)
-		else:
-			predictions_dic[uid] = Sparse(overreach=overreach, reverse=reverse, rolls=rolls,
-			                              remove_subsets=remove_subsets, reverse_overreach=reverse_overreach,
-			                              search_size=search_size)
-			predictions_dic[uid].fit(train_values.values, jit=jit, parallel=parallel, cuda=cuda, truncate=truncate)
-	return predictions_dic
+    if old == True and any((overreach, reverse, reverse_overreach, remove_subsets, rolls)):
+        warnings.warn("When old is set to True, other parameters have no effect")
+    predictions_dic = {}
+    for uid, train_values in train_frame.groupby(level=0):
+        if old:
+            predictions_dic[uid] = Sparse_old()
+            predictions_dic[uid].fit(train_values.values)
+        else:
+            predictions_dic[uid] = Sparse(overreach=overreach, reverse=reverse, rolls=rolls,
+                                          remove_subsets=remove_subsets, reverse_overreach=reverse_overreach,
+                                          search_size=search_size)
+            predictions_dic[uid].fit(train_values.values, jit=jit, parallel=parallel, cuda=cuda, truncate=truncate)
+    return predictions_dic
 
 
 def sparse_wrapper_test(predictions_dic, test_frame, trajectories_frame, split_ratio, test_lengths,
@@ -430,162 +430,129 @@ def sparse_wrapper_test(predictions_dic, test_frame, trajectories_frame, split_r
                         org_length_weights=None,
                         completeness_weights=None, uniqueness_weights=None, count_weights=None, parallel=True,
                         jit=True):
-	results_dic = {}
-	forecast_dic = {}
-	topk_dic = {}
-	for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting
-		uid = test_values[0]
-		test_values = test_values[1].values
-		forecast = []
-		topk = []
-		split_ind = round(trajectories_frame.loc[uid].shape[0] * split_ratio)
-		if parallel:
-			with cf.ThreadPoolExecutor() as executor:
-				contexts = [trajectories_frame.loc[uid].iloc[:split_ind + n].values for n in
-				            range(test_lengths.loc[uid])]
-				preds = list(tqdm(executor.map(predictions_dic[uid].predict,
-				                               contexts,
-				                               repeat(recency_weights),
-				                               repeat(length_weights),
-				                               repeat(use_probs),
-				                               repeat(org_recency_weights),
-				                               repeat(org_length_weights),
-				                               repeat(jit),
-				                               repeat(completeness_weights),
-				                               repeat(uniqueness_weights),
-				                               repeat(count_weights)),
-				                  total=test_lengths.loc[uid]))
-				forecast = [x[0] for x in preds]
-				topk = {k: x[1] for k, x in enumerate(preds)}
-		else:
-			for n in tqdm(range(test_lengths.loc[uid]), total=test_lengths.loc[uid]):
-				context = trajectories_frame.loc[uid].iloc[:split_ind].values
-				pred = predictions_dic[uid].predict(context, length_weights=length_weights,
-				                                    recency_weights=recency_weights,
-				                                    from_dist=use_probs,
-				                                    org_length_weights=org_length_weights,
-				                                    org_recency_weights=org_recency_weights,
-				                                    completeness_weights=completeness_weights,
-				                                    uniqueness_weights=uniqueness_weights)
-				topk.append(pred[1])
-				forecast.append(pred[0])
-				split_ind += 1
-		results_dic[uid] = sum(forecast == test_values) / len(forecast)
-		forecast_dic[uid] = forecast
-		topk_dic[uid] = topk
-	forecast_df = pd.DataFrame().from_dict(forecast_dic, orient='index').T.unstack().droplevel(1)
-	forecast_df = forecast_df[~forecast_df.isna()]
-	forecast_df = pd.concat([forecast_df, test_frame.droplevel([1, 2])], axis=1)
-	forecast_df.columns = ['predictions', 'y_set']
-	results_dic = pd.DataFrame().from_dict(results_dic, orient='index')
-	return forecast_df, results_dic, topk_dic
+    results_dic = {}
+    forecast_dic = {}
+    topk_dic = {}
+    for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting
+        uid = test_values[0]
+        test_values = test_values[1].values
+        forecast = []
+        topk = []
+        split_ind = round(trajectories_frame.loc[uid].shape[0] * split_ratio)
+        if parallel:
+            with cf.ThreadPoolExecutor() as executor:
+                contexts = [trajectories_frame.loc[uid].iloc[:split_ind + n].values for n in
+                            range(test_lengths.loc[uid])]
+                preds = list(tqdm(executor.map(predictions_dic[uid].predict,
+                                               contexts,
+                                               repeat(recency_weights),
+                                               repeat(length_weights),
+                                               repeat(use_probs),
+                                               repeat(org_recency_weights),
+                                               repeat(org_length_weights),
+                                               repeat(jit),
+                                               repeat(completeness_weights),
+                                               repeat(uniqueness_weights),
+                                               repeat(count_weights)),
+                                  total=test_lengths.loc[uid]))
+                forecast = [x[0] for x in preds]
+                topk = {k: x[1] for k, x in enumerate(preds)}
+        else:
+            for n in tqdm(range(test_lengths.loc[uid]), total=test_lengths.loc[uid]):
+                context = trajectories_frame.loc[uid].iloc[:split_ind].values
+                pred = predictions_dic[uid].predict(context, length_weights=length_weights,
+                                                    recency_weights=recency_weights,
+                                                    from_dist=use_probs,
+                                                    org_length_weights=org_length_weights,
+                                                    org_recency_weights=org_recency_weights,
+                                                    completeness_weights=completeness_weights,
+                                                    uniqueness_weights=uniqueness_weights)
+                topk.append(pred[1])
+                forecast.append(pred[0])
+                split_ind += 1
+        results_dic[uid] = sum(forecast == test_values) / len(forecast)
+        forecast_dic[uid] = forecast
+        topk_dic[uid] = topk
+    forecast_df = pd.DataFrame().from_dict(forecast_dic, orient='index').T.unstack().droplevel(1)
+    forecast_df = forecast_df[~forecast_df.isna()]
+    forecast_df = pd.concat([forecast_df, test_frame.droplevel([1, 2])], axis=1)
+    forecast_df.columns = ['predictions', 'y_set']
+    results_dic = pd.DataFrame().from_dict(results_dic, orient='index')
+    return forecast_df, results_dic, topk_dic
 
 
-def sparse_wrapper(train_frame, test_frame, trajectories_frame, split_ratio, search_size):
-	predictions_dic = {}
-	overreach = True
-	reverse = True
-	rolls = True
-	reverse_overreach = True  # the only changeable
-	jit = True
-	parallel = True
+def sparse_wrapper(train_frame, test_frame, trajectories_frame, split_ratio, search_size, parallel=True):
+    predictions_dic = {}
+    overreach = True
+    reverse = True
+    rolls = True
+    reverse_overreach = True  # the only changeable
+    jit = True
 
-	test_lengths = test_frame.groupby(level=0).size()
-	for uid, train_values in train_frame.groupby(level=0):
-		predictions_dic[uid] = Sparse(overreach=overreach, reverse=reverse, rolls=rolls,
-		                              reverse_overreach=reverse_overreach,
-		                              search_size=search_size)
-		predictions_dic[uid].fit(train_values.values, jit=jit, parallel=parallel)
+    test_lengths = test_frame.groupby(level=0).size()
+    for uid, train_values in train_frame.groupby(level=0):
+        predictions_dic[uid] = Sparse(overreach=overreach, reverse=reverse, rolls=rolls,
+                                      reverse_overreach=reverse_overreach,
+                                      search_size=search_size)
+        predictions_dic[uid].fit(train_values.values, jit=jit, parallel=parallel)
 
-	# PREDICTION
-	results_dic = {}
-	forecast_dic = {}
-	topk_dic = {}
-	possible_weights = {
-		'recency_weights': [None, 'L', 'Q', 'IW', 'IWS'],
-		'length_weights': [None, 'L', 'Q', 'IW', 'IWS'],
-		'use_probs': [False, True],
-		'org_recency_weights': [None, 'L', 'Q', 'IW', 'IWS'],
-		'org_length_weights': [None, 'L', 'Q', 'IW', 'IWS'],
-		'completeness_weights': [None, 'L', 'Q', 'IW', 'IWS'],
-		'uniqueness_weights': [None, 'L', 'Q', 'IW', 'IWS'],
-		'count_weights': ['L', 'Q', 'IW', 'IWS', None],
-	}
-	possible_weights = OrderedDict(possible_weights)
-	users_combo = {}
-	for uid, test_values in test_frame.groupby(level=0):
-		test_values = test_values.values
-		forecast = []
-		topk = []
-		split_ind = round(trajectories_frame.loc[uid].shape[0] * split_ratio)
-		combo_results = {}
-		best_combo = [None for _ in range(len(possible_weights))]
-		shuffled_params = list(possible_weights.keys())
-		shuffle(shuffled_params)
-		for parameter in shuffled_params:
-			p_index = list(possible_weights.keys()).index(parameter)
-			weight_results = {}
-			for weight_val in possible_weights[parameter]:
-				current_check = best_combo.copy()
-				current_check[p_index] = weight_val
-				if parallel:
-					with cf.ThreadPoolExecutor() as executor:
-						contexts = [trajectories_frame.loc[uid].iloc[:split_ind + n].values for n in
-						            range(test_lengths.loc[uid])]
-						preds = list(tqdm(executor.map(predictions_dic[uid].predict,
-						                               contexts,
-						                               repeat(current_check[0]),
-						                               repeat(current_check[1]),
-						                               repeat(current_check[2]),
-						                               repeat(current_check[3]),
-						                               repeat(current_check[4]),
-						                               repeat(True),
-						                               repeat(current_check[5]),
-						                               repeat(current_check[6]),
-						                               repeat(current_check[7])),
-						                  total=test_lengths.loc[uid]))
-						forecast = [x[0] for x in preds]
-						weight_results[weight_val] = sum(forecast == test_values) / len(forecast)
-			best_weight = max(weight_results, key=weight_results.get)
-			best_combo[p_index] = best_weight
-			#  TODO: smaller search_space for search? retrain for test, random param start! opt problem
-		users_combo[uid] = combo_results
+    # PREDICTION
+    for uid, test_values in test_frame.groupby(level=0):
+        test_values = test_values.values
+        # Create a study object for each user and optimize the objective function
+        study = optuna.create_study(direction='maximize',
+                                    sampler=optuna.samplers.TPESampler(),
+                                    pruner=optuna.pruners.MedianPruner())
+        study.optimize(
+	        lambda trial: objective(trial, uid, trajectories_frame, split_ratio, test_lengths, predictions_dic, test_values),
+	        n_trials=100)
+        best_params = study.best_params
+        print("Best hyperparameters:", best_params)
+	    #DO SEPARATE OPTIMIZATION ALG TOO
 
 
-def objective(trial, trajectories_frame, uid, predictions_dic, split_ind, test_lengths, test_values):
-	rw = trial.suggest_categorical('recency_weights', [None, 'L', 'Q', 'IW', 'IWS'])
-	lw = trial.suggest_categorical('length_weights', [None, 'L', 'Q', 'IW', 'IWS'])
-	up = trial.suggest_categorical('use_probs', [False, True])
-	orw = trial.suggest_categorical('org_recency_weights', [None, 'L', 'Q', 'IW', 'IWS'])
-	olw = trial.suggest_categorical('org_length_weights', [None, 'L', 'Q', 'IW', 'IWS'])
-	cw = trial.suggest_categorical('completeness_weights', [None, 'L', 'Q', 'IW', 'IWS'])
-	uw = trial.suggest_categorical('uniqueness_weights', [None, 'L', 'Q', 'IW', 'IWS'])
-	cntw = trial.suggest_categorical('count_weights', ['L', 'Q', 'IW', 'IWS', None])
-	contexts = [trajectories_frame.loc[uid].iloc[:split_ind + n].values for n in
-	            range(test_lengths.loc[uid])]
-	preds = list(tqdm(executor.map(predictions_dic[uid].predict,
-	                               contexts,
-	                               repeat(rw),
-	                               repeat(lw),
-	                               repeat(up),
-	                               repeat(orw),
-	                               repeat(olw),
-	                               repeat(True),
-	                               repeat(cw),
-	                               repeat(uw),
-	                               repeat(cntw)),
-	                  total=test_lengths.loc[uid]))
-	forecast = [x[0] for x in preds]
-	result = sum(forecast == test_values) / len(forecast)
-	return result
+def predict_with_hyperparameters(uid, trajectories_frame, split_ratio, test_lengths, recency_weights, length_weights,
+                                 use_probs, org_recency_weights, org_length_weights, jit, completeness_weights,
+                                 uniqueness_weights, count_weights, predictions_dic, parallel=True):
+    split_ind = round(trajectories_frame.loc[uid].shape[0] * split_ratio)
+
+    if parallel:
+        with cf.ThreadPoolExecutor() as executor:
+            contexts = [trajectories_frame.loc[uid].iloc[:split_ind + n].values for n in range(test_lengths.loc[uid])]
+            preds = list(tqdm(executor.map(predictions_dic[uid].predict,
+                                           contexts,
+                                           repeat(recency_weights),
+                                           repeat(length_weights),
+                                           repeat(use_probs),
+                                           repeat(org_recency_weights),
+                                           repeat(org_length_weights),
+                                           repeat(jit),
+                                           repeat(completeness_weights),
+                                           repeat(uniqueness_weights),
+                                           repeat(count_weights)),
+                              total=test_lengths.loc[uid]))
+            forecast = [x[0] for x in preds]
+            topk = {k: x[1] for k, x in enumerate(preds)}
+
+    return forecast, topk
 
 
-# Create a study object and optimize the objective function
-study = optuna.create_study(direction='maximize')
-study.optimize(objective, n_trials=50)
+def objective(trial, uid, trajectories_frame, split_ratio, test_lengths, predictions_dic, test_values):
+    # Define the hyperparameter search space
+    recency_weights = trial.suggest_categorical('recency_weights', [None, 'L', 'Q', 'IW', 'IWS'])
+    length_weights = trial.suggest_categorical('length_weights', [None, 'L', 'Q', 'IW', 'IWS'])
+    use_probs = trial.suggest_categorical('use_probs', [False, True])
+    org_recency_weights = trial.suggest_categorical('org_recency_weights', [None, 'L', 'Q', 'IW', 'IWS'])
+    org_length_weights = trial.suggest_categorical('org_length_weights', [None, 'L', 'Q', 'IW', 'IWS'])
+    completeness_weights = trial.suggest_categorical('completeness_weights', [None, 'L', 'Q', 'IW', 'IWS'])
+    uniqueness_weights = trial.suggest_categorical('uniqueness_weights', [None, 'L', 'Q', 'IW', 'IWS'])
+    count_weights = trial.suggest_categorical('count_weights', ['L', 'Q', 'IW', 'IWS', None])
 
-# Print the best hyperparameters
-best_params = study.best_params
-print("Best hyperparameters:", best_params)
+    # Call the function with the specified hyperparameters
+    forecast, topk = predict_with_hyperparameters(uid, trajectories_frame, split_ratio, test_lengths, recency_weights, length_weights,
+                                          use_probs, org_recency_weights, org_length_weights, True, completeness_weights,
+                                          uniqueness_weights, count_weights, predictions_dic)
 
-#return loss inside with param passed
+    # Calculate and return the objective value (metric to be maximized)
+    accuracy = sum(forecast == test_values) / len(forecast)
+    return accuracy  # We want to maximize accuracy
