@@ -481,7 +481,7 @@ def sparse_wrapper_test(predictions_dic, test_frame, trajectories_frame, split_r
     return forecast_df, results_dic, topk_dic
 
 
-def sparse_wrapper(train_frame, test_frame, trajectories_frame, split_ratio, search_size, parallel=True):
+def sparse_wrapper(train_frame, test_frame, trajectories_frame, split_ratio, search_size, parallel=True, optune = True):
     predictions_dic = {}
     overreach = True
     reverse = True
@@ -497,18 +497,22 @@ def sparse_wrapper(train_frame, test_frame, trajectories_frame, split_ratio, sea
         predictions_dic[uid].fit(train_values.values, jit=jit, parallel=parallel)
 
     # PREDICTION
+    best_combos = {}
     for uid, test_values in test_frame.groupby(level=0):
         test_values = test_values.values
         # Create a study object for each user and optimize the objective function
-        study = optuna.create_study(direction='maximize',
-                                    sampler=optuna.samplers.TPESampler(),
-                                    pruner=optuna.pruners.MedianPruner())
-        study.optimize(
-	        lambda trial: objective(trial, uid, trajectories_frame, split_ratio, test_lengths, predictions_dic, test_values),
-	        n_trials=100)
-        best_params = study.best_params
-        print("Best hyperparameters:", best_params)
-	    #DO SEPARATE OPTIMIZATION ALG TOO
+        if optuna:
+            study = optuna.create_study(direction='maximize',
+                                        sampler=optuna.samplers.TPESampler(),
+                                        pruner=optuna.pruners.HyperbandPruner())
+            study.optimize(
+                lambda trial: objective(trial, uid, trajectories_frame, split_ratio, test_lengths, predictions_dic, test_values),
+                n_trials=100)
+            best_params = study.best_params
+        else:
+            best_params = optimize_separate(uid, trajectories_frame, split_ratio, test_lengths, predictions_dic, test_values)
+        best_combos[uid] = best_params
+
 
 
 def predict_with_hyperparameters(uid, trajectories_frame, split_ratio, test_lengths, recency_weights, length_weights,
@@ -556,3 +560,36 @@ def objective(trial, uid, trajectories_frame, split_ratio, test_lengths, predict
     # Calculate and return the objective value (metric to be maximized)
     accuracy = sum(forecast == test_values) / len(forecast)
     return accuracy  # We want to maximize accuracy
+
+
+def optimize_separate(uid, trajectories_frame, split_ratio, test_lengths, predictions_dic, test_values):
+    trial_parameters = {
+        'recency_weights': [None, 'L', 'Q', 'IW', 'IWS'],
+        'length_weights': [None, 'L', 'Q', 'IW', 'IWS'],
+        'use_probs': [False, True],
+        'org_recency_weights': [None, 'L', 'Q', 'IW', 'IWS'],
+        'org_length_weights': [None, 'L', 'Q', 'IW', 'IWS'],
+        'completeness_weights': [None, 'L', 'Q', 'IW', 'IWS'],
+        'uniqueness_weights': [None, 'L', 'Q', 'IW', 'IWS'],
+        'count_weights': ['L', 'Q', 'IW', 'IWS', None]
+    }
+    combo_results = {}
+    best_combo = [None for _ in range(len(trial_parameters))]
+    shuffled_parameters = list(trial_parameters.keys())
+    shuffle(shuffled_parameters)
+    for parameter in shuffled_parameters:
+        p_index = list(trial_parameters.keys()).index(parameter)
+        weight_results = {}
+        for weight_val in trial_parameters[parameter]:
+            current_check = best_combo.copy()
+            current_check[p_index] = weight_val
+            forecast, topk = predict_with_hyperparameters(uid, trajectories_frame, split_ratio, test_lengths,
+                                         current_check[0], current_check[1], current_check[2], current_check[3],
+                                         current_check[4], True, current_check[5], current_check[6], current_check[7],
+                                         predictions_dic)
+            # Calculate and return the objective value (metric to be maximized)
+            accuracy = sum(forecast == test_values) / len(forecast)
+            weight_results[weight_val] = accuracy
+        best_weight = max(weight_results, key=weight_results.get)
+        best_combo[p_index] = best_weight
+    return best_combo

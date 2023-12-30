@@ -82,7 +82,7 @@ split_ratio = 1 - test_size
 train_frame, test_frame = split(markovian_seq, split_ratio, 0)
 
 sparse_wrapper(train_frame=train_frame, test_frame = test_frame,
-               trajectories_frame = markovian_seq.labels, split_ratio = split_ratio, search_size = SEARCH_SIZE)
+               trajectories_frame = markovian_seq.labels, split_ratio = split_ratio, search_size = SEARCH_SIZE, optune=True)
 
 for c in comb_learn:
 	start = time()
