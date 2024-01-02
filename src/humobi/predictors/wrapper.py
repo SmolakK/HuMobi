@@ -52,7 +52,7 @@ class Splitter():
         """
         self._train_ratio = 1 - split_ratio
         if horizon < 1:
-            raise ValueError("Horizon value has to be a positive integer")
+            raise ValueError("Horizon value has to be either a positive integer or zero")
         self._horizon = horizon
         self._n_splits = n_splits
         self.cv_data = []
@@ -349,6 +349,16 @@ def split(trajectories_frame, train_size, state_size):
     return train_frame, test_frame
 
 
+def expanding_split(trajectories_frame, n_splits):
+    splits = []
+    n_splits += 1
+    for n in range(1,n_splits):
+        xs = trajectories_frame.groupby(level=0).apply(lambda x: x.iloc[:round((x.size/n_splits)*n)]).droplevel(0)
+        ys = trajectories_frame.groupby(level=0).apply(lambda x: x.iloc[round((x.size/n_splits)*n):round((x.size/n_splits)*(n+1))]).droplevel(0)
+        splits.append((xs,ys))
+    return splits
+
+
 def markov_wrapper(trajectories_frame, test_size=.2, state_size=2, update=False, online=True):
     """
     The wrapper, one stop shop algorithm for the Markov Chain. Splits the data, learns the model and makes predictions
@@ -481,49 +491,47 @@ def sparse_wrapper_test(predictions_dic, test_frame, trajectories_frame, split_r
     return forecast_df, results_dic, topk_dic
 
 
-def sparse_wrapper(train_frame, test_frame, trajectories_frame, split_ratio, search_size, parallel=True, optune = True):
+def sparse_wrapper(trajectories_frame, search_size, parallel=True):
     predictions_dic = {}
+    best_combos = {}
+    fit_models = {}
+
+    all_uids = pd.unique(trajectories_frame[0][0].index.get_level_values(0))
+    retrain_data = pd.concat(trajectories_frame[-1]).sort_index(level=0)
+
+    # define training hyperparameters
     overreach = True
     reverse = True
     rolls = True
     reverse_overreach = True  # the only changeable
     jit = True
 
-    test_lengths = test_frame.groupby(level=0).size()
-    for uid, train_values in train_frame.groupby(level=0):
-        predictions_dic[uid] = Sparse(overreach=overreach, reverse=reverse, rolls=rolls,
+    for uid in all_uids:
+        predictions_dic[uid] = {fold:Sparse(overreach=overreach, reverse=reverse, rolls=rolls,
                                       reverse_overreach=reverse_overreach,
-                                      search_size=search_size)
-        predictions_dic[uid].fit(train_values.values, jit=jit, parallel=parallel)
+                                      search_size=search_size) for fold in range(len(trajectories_frame))}
 
-    # PREDICTION
-    best_combos = {}
-    for uid, test_values in test_frame.groupby(level=0):
-        test_values = test_values.values
         # Create a study object for each user and optimize the objective function
-        if optuna:
-            study = optuna.create_study(direction='maximize',
-                                        sampler=optuna.samplers.TPESampler(),
-                                        pruner=optuna.pruners.HyperbandPruner())
-            study.optimize(
-                lambda trial: objective(trial, uid, trajectories_frame, split_ratio, test_lengths, predictions_dic, test_values),
-                n_trials=100)
-            best_params = study.best_params
-        else:
-            best_params = optimize_separate(uid, trajectories_frame, split_ratio, test_lengths, predictions_dic, test_values)
+        study = optuna.create_study(direction='minimize',
+                                    sampler=optuna.samplers.TPESampler(),
+                                    pruner=optuna.pruners.HyperbandPruner())
+        study.optimize(
+            lambda trial: objective(trial, uid, trajectories_frame, predictions_dic, jit, parallel),
+            n_trials=10)
+        best_params = study.best_params
         best_combos[uid] = best_params
+    return best_combos
 
 
-
-def predict_with_hyperparameters(uid, trajectories_frame, split_ratio, test_lengths, recency_weights, length_weights,
+def predict_with_hyperparameters(train_frame, test_frame, recency_weights, length_weights,
                                  use_probs, org_recency_weights, org_length_weights, jit, completeness_weights,
-                                 uniqueness_weights, count_weights, predictions_dic, parallel=True):
-    split_ind = round(trajectories_frame.loc[uid].shape[0] * split_ratio)
+                                 uniqueness_weights, count_weights, cur_model, parallel=True):
+    merged = np.hstack([train_frame,test_frame])
 
     if parallel:
         with cf.ThreadPoolExecutor() as executor:
-            contexts = [trajectories_frame.loc[uid].iloc[:split_ind + n].values for n in range(test_lengths.loc[uid])]
-            preds = list(tqdm(executor.map(predictions_dic[uid].predict,
+            contexts = [merged[:train_frame.size + n] for n in range(test_frame.size)]
+            preds = list(tqdm(executor.map(cur_model.predict,
                                            contexts,
                                            repeat(recency_weights),
                                            repeat(length_weights),
@@ -534,32 +542,40 @@ def predict_with_hyperparameters(uid, trajectories_frame, split_ratio, test_leng
                                            repeat(completeness_weights),
                                            repeat(uniqueness_weights),
                                            repeat(count_weights)),
-                              total=test_lengths.loc[uid]))
+                              total=test_frame.size))
             forecast = [x[0] for x in preds]
             topk = {k: x[1] for k, x in enumerate(preds)}
 
     return forecast, topk
 
 
-def objective(trial, uid, trajectories_frame, split_ratio, test_lengths, predictions_dic, test_values):
+def objective(trial, uid, trajectories_frame, predictions_dic, jit, parallel):
     # Define the hyperparameter search space
     recency_weights = trial.suggest_categorical('recency_weights', [None, 'L', 'Q', 'IW', 'IWS'])
     length_weights = trial.suggest_categorical('length_weights', [None, 'L', 'Q', 'IW', 'IWS'])
-    use_probs = trial.suggest_categorical('use_probs', [False, True])
     org_recency_weights = trial.suggest_categorical('org_recency_weights', [None, 'L', 'Q', 'IW', 'IWS'])
     org_length_weights = trial.suggest_categorical('org_length_weights', [None, 'L', 'Q', 'IW', 'IWS'])
     completeness_weights = trial.suggest_categorical('completeness_weights', [None, 'L', 'Q', 'IW', 'IWS'])
     uniqueness_weights = trial.suggest_categorical('uniqueness_weights', [None, 'L', 'Q', 'IW', 'IWS'])
     count_weights = trial.suggest_categorical('count_weights', ['L', 'Q', 'IW', 'IWS', None])
+    average_acc = []
+    for fold, (fold_train, fold_val) in enumerate(trajectories_frame):
+        train_frame_X = fold_train.loc[uid].values.ravel()
+        test_frame_X = fold_val.loc[uid].values.ravel()
+        cur_model = predictions_dic[uid][fold]
+        if not cur_model.fit_done:
+            cur_model.fit(train_frame_X, jit=jit, parallel=parallel)
 
-    # Call the function with the specified hyperparameters
-    forecast, topk = predict_with_hyperparameters(uid, trajectories_frame, split_ratio, test_lengths, recency_weights, length_weights,
-                                          use_probs, org_recency_weights, org_length_weights, True, completeness_weights,
-                                          uniqueness_weights, count_weights, predictions_dic)
+        # Call the function with the specified hyperparameters
+        forecast, topk = predict_with_hyperparameters(train_frame_X, test_frame_X, recency_weights, length_weights,
+                                              False, org_recency_weights, org_length_weights, True, completeness_weights,
+                                              uniqueness_weights, count_weights, cur_model)
 
-    # Calculate and return the objective value (metric to be maximized)
-    accuracy = sum(forecast == test_values) / len(forecast)
-    return accuracy  # We want to maximize accuracy
+        # Calculate and return the objective value (metric to be maximized)
+        accuracy = sum(forecast == test_frame_X) / len(forecast)
+        average_acc.append(accuracy)
+    average_acc = sum(average_acc)/len(average_acc)
+    return 1 - average_acc  # We want to maximize accuracy
 
 
 def optimize_separate(uid, trajectories_frame, split_ratio, test_lengths, predictions_dic, test_values):

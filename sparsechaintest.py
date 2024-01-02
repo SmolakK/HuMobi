@@ -4,26 +4,13 @@ from src.humobi.predictors.deep import *
 from src.humobi.measures.individual import *
 import os
 from sklearn.ensemble import RandomForestClassifier
-#TODO: rolling hold-out
 
 SEARCH_SIZE = 30
-
-comb_pred = []
-for x in [None,'L','Q','IW','IWS']:
-	for y in ['L', 'Q', 'IW', 'IWS',None]:
-		for z in [None, 'L', 'Q', 'IW', 'IWS']:
-			for a in [None, 'L', 'Q', 'IW', 'IWS']:
-				for b in [False,True]:
-					for c in [None, 'L', 'Q', 'IW', 'IWS']:
-						for e in [None, 'F', 'L', 'Q', 'IW', 'IWS']:
-								for f in [None, 'F', 'L', 'Q', 'IW', 'IWS']:
-									comb_pred.append((x,y,z,a,b,c,e,f))
-
-top_path = """D:\\Projekty\\Sparse Chains\\markovian"""
+# top_path = """D:\\Projekty\\Sparse Chains\\markovian"""
 # ALSO GENERATE SOME DATA
-# markovian_seq = markovian_sequences_generator(users=5, places=[2,4,10], length=[100,500], prob=[.3,.5,.7,.9])
+markovian_seq = markovian_sequences_generator(users=5, places=[2,4,10], length=[100,500], prob=[.3,.5,.7,.9])
 # markovian_seq.to_csv("markovian.csv")
-markovian_seq = TrajectoriesFrame("markovian.csv")
+# markovian_seq = TrajectoriesFrame("markovian.csv")
 # markovian_seq = random_sequences_generator(users=10, places=[2,4,10], length=[50,70,100])
 # markovian_seq = deterministic_sequences_generator(users=10, places=10, repeats=10)
 # ex_seq = exploratory_sequences_generator(users=10, places=10)
@@ -33,7 +20,7 @@ markovian_seq = TrajectoriesFrame("markovian.csv")
 # NOW LET'S DO SOME PREDICTIONS
 # DATA PREPARING (TEST-TRAIN SPLIT OF MULTIPLE TRAJECTORIES)
 # markovian_seq = TrajectoriesFrame("D:\\Projekty\\bias\\london\\london_1H_111.7572900082951_1.csv",{'names':['id','datetime','temp','lat','lon','labels','start','end','geometry'],"skiprows":1})
-# markovian_seq = markovian_seq.uloc(markovian_seq.get_users()[:5]).fillna(0)
+# markovian_seq = markovian_seq.uloc(markovian_seq.get_users()[1:6]).fillna(0)
 data_splitter = Splitter(split_ratio=.3, horizon=5, n_splits=1)
 data_splitter.stride_data(markovian_seq)
 test_frame_X = data_splitter.test_frame_X
@@ -77,28 +64,31 @@ cv_data = data_splitter.cv_data
 sparse_results = {}
 
 #EXPERIMENTAL SPARSES
+overreach = True
+reverse = True
+rolls = True
+reverse_overreach = True  # the only changeable
+jit = True
+
 test_size = .2
-split_ratio = 1 - test_size
-train_frame, test_frame = split(markovian_seq, split_ratio, 0)
+train, test = [x.droplevel(0) for x in split(markovian_seq,1-test_size,0)]
+cv_data = expanding_split(train,5)
 
-sparse_wrapper(train_frame=train_frame, test_frame = test_frame,
-               trajectories_frame = markovian_seq.labels, split_ratio = split_ratio, search_size = SEARCH_SIZE, optune=True)
-
-for c in comb_learn:
-	start = time()
-	sparse_alg = sparse_wrapper_learn(train_frame, overreach=c[0], reverse=c[1], old=False,
-	                                  rolls=c[2], remove_subsets=c[3], reverse_overreach=c[4],jit=True,
-	                                  search_size=c[5], parallel=True)
-	end = time()
-	print("SPARSE LEARN TIME",c,end-start)
-	for cp in comb_pred:
-		start = time()
-		forecast_df, scores, topk_dic = sparse_wrapper_test(sparse_alg, test_frame, markovian_seq.labels, split_ratio, test_lengths,
-                               length_weights=cp[0], recency_weights=cp[1],
-                            org_length_weights = cp[2], org_recency_weights= cp[3], use_probs=cp[4], count_weights=cp[6], uniqueness_weights=cp[5], completeness_weights=cp[7])
-		end = time()
-		print("SPARSE PRED TIME",cp,end-start)
-		scores.to_csv(os.path.join(top_path,str(round(scores.mean().values[0],2)) + '_' + str(c)+'_'+str(cp)+'_sparse.csv'))
+best_combos = sparse_wrapper(trajectories_frame = cv_data, search_size = SEARCH_SIZE)
+accs = {}
+topks = {}
+for uid in pd.unique(train.index.get_level_values(0)):
+    uid_model = Sparse(overreach=overreach, reverse=reverse, rolls=rolls,
+           reverse_overreach=reverse_overreach,
+           search_size=SEARCH_SIZE)
+    train_frame_X = train.loc[uid]
+    test_frame_X = test.loc[uid]
+    uid_model.fit(train.loc[uid].values.ravel())
+    forecast, topk = predict_with_hyperparameters(train_frame_X, test_frame_X, cur_model = uid_model, jit = True, use_probs = False, **best_combos[uid])
+    accuracy_score = sum(forecast == test_frame_X.values.ravel())/len(forecast)
+    accs[uid] = accuracy_score
+    topks[uid] = topk
+accs
 
 # #FIRST - SPARSE LEARN TYPE, SECOND - WEIGHTING TYPE
 # sparse_alg = sparse_wrapper_learn(train_frame, overreach=True, reverse=True, old = False,
