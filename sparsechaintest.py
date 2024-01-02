@@ -10,7 +10,7 @@ SEARCH_SIZE = 30
 # ALSO GENERATE SOME DATA
 markovian_seq = markovian_sequences_generator(users=5, places=[2,4,10], length=[100,500], prob=[.3,.5,.7,.9])
 # markovian_seq.to_csv("markovian.csv")
-# markovian_seq = TrajectoriesFrame("markovian.csv")
+markovian_seq = TrajectoriesFrame("markovian.csv")
 # markovian_seq = random_sequences_generator(users=10, places=[2,4,10], length=[50,70,100])
 # markovian_seq = deterministic_sequences_generator(users=10, places=10, repeats=10)
 # ex_seq = exploratory_sequences_generator(users=10, places=10)
@@ -75,7 +75,9 @@ train, test = [x.droplevel(0) for x in split(markovian_seq,1-test_size,0)]
 cv_data = expanding_split(train,5)
 
 best_combos = sparse_wrapper(trajectories_frame = cv_data, search_size = SEARCH_SIZE)
+best_combos2 = sparse_wrapper(trajectories_frame = cv_data, search_size = SEARCH_SIZE)
 accs = {}
+accs2 = {}
 topks = {}
 for uid in pd.unique(train.index.get_level_values(0)):
     uid_model = Sparse(overreach=overreach, reverse=reverse, rolls=rolls,
@@ -85,8 +87,12 @@ for uid in pd.unique(train.index.get_level_values(0)):
     test_frame_X = test.loc[uid]
     uid_model.fit(train.loc[uid].values.ravel())
     forecast, topk = predict_with_hyperparameters(train_frame_X, test_frame_X, cur_model = uid_model, jit = True, use_probs = False, **best_combos[uid])
+    forecast2, topk2 = predict_with_hyperparameters(train_frame_X, test_frame_X, cur_model=uid_model, jit=True,
+                                                  use_probs=False, **best_combos2[uid])
     accuracy_score = sum(forecast == test_frame_X.values.ravel())/len(forecast)
+    accuracy_score2 = sum(forecast2 == test_frame_X.values.ravel()) / len(forecast2)
     accs[uid] = accuracy_score
+    accs2[uid] = accuracy_score2
     topks[uid] = topk
 accs
 
