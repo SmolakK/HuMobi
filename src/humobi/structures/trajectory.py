@@ -119,6 +119,7 @@ class TrajectoriesFrame(gpd.GeoDataFrame):
 		"""
 		try:
 			self._crs = data.crs
+			passed_crs = self._crs #correct in main
 		except AttributeError:
 			self._crs = params.pop('crs', None)
 
