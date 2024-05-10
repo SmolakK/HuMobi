@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from src.humobi.misc.utils import to_labels
 from tqdm import tqdm
-
+import gc
 tqdm.pandas()
 from src.humobi.predictors.markov import MarkovChain
 from src.humobi.predictors.sparse import Sparse, Sparse_old
@@ -16,7 +16,7 @@ import warnings
 from collections import OrderedDict
 from random import shuffle
 import optuna
-
+from time import time
 
 def iterate_random_values(S, n_check):
     """
@@ -379,6 +379,7 @@ def markov_wrapper(trajectories_frame, test_size=.2, state_size=2, update=False,
     train_frame, test_frame = split(trajectories_frame, train_size, state_size)  # train test split
     test_lengths = test_frame.groupby(level=0).apply(lambda x: x.shape[0])
     predictions_dic = {}
+    start = time()
     for uid, train_values in train_frame.groupby(level=0):  # training
         try:
             if online:
@@ -388,10 +389,14 @@ def markov_wrapper(trajectories_frame, test_size=.2, state_size=2, update=False,
                     test_lengths.loc[uid], update)
         except:
             continue
+    end = time()
+    learntime = end - start
     results_dic = {}
     to_conc = {}
     to_conc_topk = {}
-    for test_values, prediction_values in zip([g for g in test_frame.groupby(level=0)], predictions_dic):  # predicting
+    start = time()
+    test_grouped = test_frame.groupby(level=0)
+    for test_values, prediction_values in tqdm(zip([g for g in test_grouped], predictions_dic),total=len(test_grouped)):  # predicting
         uid = test_values[0]
         test_values = test_values[1].values
         if online:
@@ -407,14 +412,16 @@ def markov_wrapper(trajectories_frame, test_size=.2, state_size=2, update=False,
         else:
             results_dic[uid] = sum(test_values[state_size:] == predictions_dic[prediction_values]) / len(test_values)
             to_conc[uid] = predictions_dic[prediction_values]
+    end = time()
+    predtime = end-start
     predictions = pd.DataFrame().from_dict(to_conc, orient='index').T.unstack().droplevel(1)
     predictions = predictions[~predictions.isna()]
     test_frame_stack = test_frame.groupby(level=0).apply(lambda x: x[state_size:]).droplevel([1, 2])
-    if test_frame_stack.index.nlevels == 2:
-        test_frame_stack = test_frame_stack.droplevel(1)
+    if test_frame_stack.index.nlevels > 1:
+        test_frame_stack.index = test_frame_stack.index.get_level_values(0)
     aligned = pd.concat([predictions, test_frame_stack], axis=1)
     aligned.columns = ['predictions', 'y_set']
-    return aligned, pd.DataFrame.from_dict(results_dic, orient='index'), to_conc_topk
+    return aligned, pd.DataFrame.from_dict(results_dic, orient='index'), to_conc_topk, (learntime, predtime)
 
 
 def sparse_wrapper_learn(train_frame, overreach=True, reverse=False, old=False, rolls=True,
@@ -492,22 +499,20 @@ def sparse_wrapper_test(predictions_dic, test_frame, trajectories_frame, split_r
 
 
 def sparse_wrapper(trajectories_frame, search_size, parallel=True):
-    predictions_dic = {}
     best_combos = {}
-    fit_models = {}
 
     all_uids = pd.unique(trajectories_frame[0][0].index.get_level_values(0))
-    retrain_data = pd.concat(trajectories_frame[-1]).sort_index(level=0)
 
     # define training hyperparameters
     overreach = True
     reverse = True
     rolls = True
-    reverse_overreach = True  # the only changeable
+    reverse_overreach = True # the only changeable
     jit = True
-
+    uid_results = []
     for uid in all_uids:
-        predictions_dic[uid] = {fold:Sparse(overreach=overreach, reverse=reverse, rolls=rolls,
+        fold_models = {}
+        fold_models = {fold:Sparse(overreach=overreach, reverse=reverse, rolls=rolls,
                                       reverse_overreach=reverse_overreach,
                                       search_size=search_size) for fold in range(len(trajectories_frame))}
 
@@ -516,10 +521,12 @@ def sparse_wrapper(trajectories_frame, search_size, parallel=True):
                                     sampler=optuna.samplers.TPESampler(),
                                     pruner=optuna.pruners.HyperbandPruner())
         study.optimize(
-            lambda trial: objective(trial, uid, trajectories_frame, predictions_dic, jit, parallel),
+            lambda trial: objective(trial, uid, trajectories_frame, fold_models, jit, parallel),
             n_trials=10)
         best_params = study.best_params
         best_combos[uid] = best_params
+        uid_results.append(study.best_value)
+        gc.collect()
     return best_combos
 
 
@@ -545,11 +552,10 @@ def predict_with_hyperparameters(train_frame, test_frame, recency_weights, lengt
                               total=test_frame.size))
             forecast = [x[0] for x in preds]
             topk = {k: x[1] for k, x in enumerate(preds)}
-
     return forecast, topk
 
 
-def objective(trial, uid, trajectories_frame, predictions_dic, jit, parallel):
+def objective(trial, uid, trajectories_frame, fold_models, jit, parallel):
     # Define the hyperparameter search space
     recency_weights = trial.suggest_categorical('recency_weights', [None, 'L', 'Q', 'IW', 'IWS'])
     length_weights = trial.suggest_categorical('length_weights', [None, 'L', 'Q', 'IW', 'IWS'])
@@ -562,13 +568,13 @@ def objective(trial, uid, trajectories_frame, predictions_dic, jit, parallel):
     for fold, (fold_train, fold_val) in enumerate(trajectories_frame):
         train_frame_X = fold_train.loc[uid].values.ravel()
         test_frame_X = fold_val.loc[uid].values.ravel()
-        cur_model = predictions_dic[uid][fold]
+        cur_model = fold_models[fold]
         if not cur_model.fit_done:
             cur_model.fit(train_frame_X, jit=jit, parallel=parallel)
 
         # Call the function with the specified hyperparameters
         forecast, topk = predict_with_hyperparameters(train_frame_X, test_frame_X, recency_weights, length_weights,
-                                              False, org_recency_weights, org_length_weights, True, completeness_weights,
+                                              False, org_recency_weights, org_length_weights, jit, completeness_weights,
                                               uniqueness_weights, count_weights, cur_model)
 
         # Calculate and return the objective value (metric to be maximized)
