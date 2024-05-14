@@ -120,7 +120,8 @@ class TrajectoriesFrame(gpd.GeoDataFrame):
 		try:
 			self._crs = data.crs
 		except AttributeError:
-			self._crs = params.pop('crs', None)
+			passed_crs = params.pop('crs', None)
+			self._crs = passed_crs
 
 		if isinstance(data, str):
 			data = pd.read_csv(data, **params)
@@ -156,7 +157,8 @@ class TrajectoriesFrame(gpd.GeoDataFrame):
 			data.columns = columns_user_defined
 
 		if isinstance(data, gpd.GeoDataFrame):
-			self.crs = data._crs
+			if self._crs is None:
+				self.crs = passed_crs
 			self.geom_cols = self._geom_cols
 
 	@property

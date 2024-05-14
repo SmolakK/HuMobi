@@ -18,6 +18,7 @@ def normalize_array(arr):
 def rank_freq(trajectories_frame, quantity = 2, nighttime_approach = True, day_start=9, day_end=17, night_start=2, night_end=5):
 	"""
 	Ranks locations visited by each user by the frequency of visits. Used to select the most important location
+	:param nighttime_approach: Use an approach where the most visited locations at night are used to detect important locations
 	:param trajectories_frame: TrajectoriesFrame class object
 	:param quantity: how many locations should be returned
 	:param day_start: the start of the daylight location

@@ -16,7 +16,7 @@ def create_grid(trajectories_frame, resolution):
 	Returns:
 		A GeoDataFrame with the grid
 	"""
-	crs= trajectories_frame.crs
+	crs = trajectories_frame.crs
 	_x_min = trajectories_frame['geometry'].x.min()
 	_x_max = trajectories_frame['geometry'].x.max()
 	_y_min = trajectories_frame['geometry'].y.min()

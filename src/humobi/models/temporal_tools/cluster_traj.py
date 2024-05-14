@@ -23,16 +23,20 @@ def cluster_trajectories(trajectories_frame, length = 24, quantity = 3, weights 
 	:param weights: Whether the algorithm should calculate the weight for each of the locations rather than choose the
 	most often visited
 	:param clust_alg: Clustering algorithm to make clusterization
+	:param aux_cols: Auxillary columns in the data with the contextual information
 	:return: Clustered circadian rhythms, association of users to clusters, the ratio of users in clusters
 	"""
 	if aux_cols:
 		weights = True
-		warnings.warn("Warning: when aux cols are passed, the model is enforced to represent abtract trajectory as a set of probabilities")
-	if len(aux_cols) >1:
-		unique_combs = [z for z in product(*[list(pd.unique(trajectories_frame[col].dropna())) for col in aux_cols])]
+		warnings.warn("Warning: when aux cols are passed, the model is enforced to represent abstract trajectory as a set of probabilities")
+		if len(aux_cols) > 1:
+			unique_combs = [z for z in product(*[list(pd.unique(trajectories_frame[col].dropna())) for col in aux_cols])]
+		else:
+			unique_combs = [pd.unique(trajectories_frame[col].dropna()) for col in aux_cols][0]
 	else:
-		unique_combs = [pd.unique(trajectories_frame[col].dropna()) for col in aux_cols][0]
-	top_places = rank_freq(trajectories_frame, quantity = 3)
+		aux_cols = []
+		unique_combs = []
+	top_places = rank_freq(trajectories_frame, quantity = 3, nighttime_approach=False)
 	abstract_traj = {}
 	if length <= 24:
 		trajectories_frame['hod'] = trajectories_frame.index.get_level_values(1).hour
@@ -44,10 +48,13 @@ def cluster_trajectories(trajectories_frame, length = 24, quantity = 3, weights 
 			sig_place = top_places.loc[uid][n]
 			if pd.notna(sig_place):
 				sig_place_label = int(vals[vals['geometry'] == sig_place]['labels'].iloc[0])
-				extraction_combs = pd.concat([pd.DataFrame(index=unique_combs),extract.loc[sig_place_label,:]],axis=1).fillna(0)
+				extraction_combs = pd.concat([pd.DataFrame(index=unique_combs),extract.loc[sig_place_label,:]],axis=1).fillna(0).T
 				sig_places.append(extraction_combs)
 			else:
-				sig_places.append(np.zeros((len(unique_combs),length)))
+				if len(unique_combs) > 0:
+					sig_places.append(np.zeros((len(unique_combs),length)))
+				else:
+					sig_places.append(np.zeros((1, length)))
 		stacked = np.vstack(sig_places)
 		others = extract.sum(0) - stacked.sum(0)
 		stacked = np.vstack((stacked,others))
@@ -73,7 +80,10 @@ def cluster_trajectories(trajectories_frame, length = 24, quantity = 3, weights 
 			tries[eps] = sh
 		except:
 			pass
-	eps = max(tries, key=tries.get)
+	try:
+		eps = max(tries, key=tries.get)
+	except ValueError:
+		eps = 1
 	clust_alg = DBSCAN(metric='precomputed', min_samples=4, eps=eps)
 	clust_alg.fit(cdist)
 	labels = clust_alg.labels_

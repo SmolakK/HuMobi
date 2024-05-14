@@ -1,24 +1,24 @@
-from ...structures.trajectory import TrajectoriesFrame
 import sys
 sys.path.append("..")
-from humobi.models.temporal_tools import cluster_traj
-from humobi.models.spatial_tools import misc, distributions, generating, filtering
-from humobi.misc import create_grid
-from humobi.models.spatial_tools.misc import rank_freq
+from src.humobi.structures.trajectory import TrajectoriesFrame
+from src.humobi.models.temporal_tools import cluster_traj
+from src.humobi.models.spatial_tools import misc, distributions, generating, filtering
+from src.humobi.misc import create_grid
+from src.humobi.models.spatial_tools.misc import rank_freq
 from math import ceil
-from humobi.models.agent_module.generate_agents import generate_agents
+from src.humobi.models.agent_module.generate_agents import generate_agents
 
 
 WEIGHT = False
 SIDE = 1000
 
 
-path = "C:\\Users\\ppp\\Desktop\\staz\\repo-HuMobi2\\HuMobi2\\oryginal.csv"
+path = r"D:\Projekty\bias\london\london_1H_63095.7344480193_DETECTED.csv"
 trajectories_frame = TrajectoriesFrame(path, {
-	'names': ['id', 'datetime', 'temp', 'lat', 'lon', 'labels', 'start', 'end', 'geometry'], 'crs': "EPSG:27700",
+	'names': ['id','datetime','temp','timestamp','lat','lon','is_stop','date','start','end','geometry'], 'crs': "EPSG:3857",
 	'delimiter': ',', 'skiprows': 1, 'nrows': 9386})
 
-circadian_collection, cluster_association, cluster_share = cluster_traj.cluster_trajectories(trajectories_frame, weights=WEIGHT)
+circadian_collection, cluster_association, cluster_share, unique_combs = cluster_traj.cluster_trajectories(trajectories_frame, weights=WEIGHT)
 commute_dist = distributions.commute_distances(trajectories_frame, quantity = 2)
 layer = create_grid.create_grid(trajectories_frame, resolution = SIDE)
 layer = filtering.filter_layer(layer,trajectories_frame)
