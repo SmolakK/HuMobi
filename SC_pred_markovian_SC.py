@@ -23,11 +23,11 @@ jit = True
 
 test_size = .2
 train, test = [x.droplevel(0) for x in split(df,1-test_size,0)]
-cv_data = expanding_split(train,5)
+cv_data = expanding_split(train,2)
 save_path = r"D:\Projekty\Sparse Chains\paper_tests\markovian\predictions"
 
 just_for_tests = {}
-for SEARCH_SIZE in [20,30,35,40,50]:
+for SEARCH_SIZE in [40]:
     print(SEARCH_SIZE)
     start = time()
     best_combos = sparse_wrapper(trajectories_frame=cv_data, search_size=SEARCH_SIZE) # selects best params for each user
@@ -44,4 +44,4 @@ for SEARCH_SIZE in [20,30,35,40,50]:
         accuracy_score = sum(forecast == test_frame_X.values.ravel()) / len(forecast)
         us_res.append(accuracy_score)
     just_for_tests[SEARCH_SIZE] = us_res
-just_for_tests
+pd.DataFrame.from_dict(just_for_tests,orient='index').to_csv(r'D:\SC_markovian.csv')

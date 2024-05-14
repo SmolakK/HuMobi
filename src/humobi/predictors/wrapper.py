@@ -511,6 +511,7 @@ def sparse_wrapper(trajectories_frame, search_size, parallel=True):
     jit = True
     uid_results = []
     for uid in all_uids:
+        print(uid)
         fold_models = {}
         fold_models = {fold:Sparse(overreach=overreach, reverse=reverse, rolls=rolls,
                                       reverse_overreach=reverse_overreach,
