@@ -9,4 +9,4 @@ def filter_layer(layer,trajectories):
 	:param trajectories: TrajectoriesFrame class object
 	:return: A filtered aggregation layer
 	"""
-	return gpd.sjoin(layer.layer,trajectories,how='inner')[layer.layer.columns].drop_duplicates()
+	return gpd.sjoin(layer,trajectories,how='inner')[layer.columns].drop_duplicates()

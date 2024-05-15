@@ -67,7 +67,7 @@ def commute_distances_to_2d_distribution(commute_distances_frame, layer, crs=Non
 		for n_place in range(commute_distances_frame.shape[1]//2):
 			current_commute = gpd.GeoDataFrame(commute_distances_frame.iloc[:, n_place * 2:(n_place + 1) * 2],
 											   geometry=commute_distances_frame.iloc[:,((n_place+1)*2)-1])
-			grouped = gpd.tools.sjoin(current_commute, layer, how='right').groupby(level=0)
+			grouped = gpd.tools.sjoin(current_commute, layer, how='right').groupby(level=0)  # TODO: check this stuff
 			to_concat = []
 			for uid, vals in grouped:
 				if vals.iloc[:, 1].isna().all():

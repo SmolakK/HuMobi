@@ -18,12 +18,12 @@ def cluster_trajectories(trajectories_frame, length = 24, quantity = 3, weights 
 	"""
 	Extracts circadian rhythms and clusters users by them.
 	:param trajectories_frame: TrajectoriesFrame class object
-	:param length: The lenght of circadian rhythms to extract
+	:param length: The length of circadian rhythms to extract
 	:param quantity: The number of top most important locations to consider
 	:param weights: Whether the algorithm should calculate the weight for each of the locations rather than choose the
 	most often visited
 	:param clust_alg: Clustering algorithm to make clusterization
-	:param aux_cols: Auxillary columns in the data with the contextual information
+	:param aux_cols: Auxiliary columns in the data with the contextual information
 	:return: Clustered circadian rhythms, association of users to clusters, the ratio of users in clusters
 	"""
 	if aux_cols:
@@ -65,7 +65,7 @@ def cluster_trajectories(trajectories_frame, length = 24, quantity = 3, weights 
 			abstract_traj[uid] = stacked/stacked.sum(axis=0) #Circadian rhythm
 		else:
 			abstract_traj[uid] = np.argmax(stacked,axis=0) #most commonly visited place at given time (0-HOME, 1 - WORK, 2 - OTHER for q=2)
-	reshaped = np.concatenate([np.nan_to_num(x.reshape(1, -1),0) for x in abstract_traj.values()], 0) #slices to n hours strips and sets them horizontally in a matrix
+	reshaped = np.concatenate([np.nan_to_num(x.reshape(1, -1),0) for x in abstract_traj.values()], 0) # slices to n hours strips and sets them horizontally in a matrix
 	cdist = np.zeros((reshaped.shape[0],reshaped.shape[0]))
 	for n in range(reshaped.shape[0]):
 		for m in range(reshaped.shape[0]):
@@ -112,7 +112,7 @@ def circadian_rhythm_extraction(circadian_collection, combs, quantity, length, w
 						 np.unique(v, return_counts = True)[1]))
 	if weighted:
 		extracted = {k:v.mean() for k,v in circadian_rhythm_grouped.items()}
-	elif not weighted: #TODO: repair
+	elif not weighted:  # TODO: repair
 		extracted = {k:v.mode() for k,v in circadian_rhythm_grouped.items()}
 		for k,v in extracted.items():
 			if len(v) > 1:
