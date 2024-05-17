@@ -11,15 +11,15 @@ class Simple():
         pass
 
 
-def where(user):
+def where(agent):
     """
     WHERE module of the model
-    :param user: currently processed user
+    :param agent: currently processed user
     """
     try:
-        user.history.append(user.sig_locs[user.current_loc])
+        agent.history.append(agent.sig_locs.iloc[agent.current_loc])
     except KeyError:
         try:
-            user.history.append(np.random.choice([user.activity_area[n][0] for n in range(len(user.activity_area))]).centroid)
+            agent.history.append(np.random.choice([agent.activity_area[n][0] for n in range(len(agent.activity_area))]).centroid)
         except KeyError:
-            user.history.append(user.sig_locs[0])
+            agent.history.append(agent.sig_locs.iloc[0])

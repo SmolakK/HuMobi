@@ -11,7 +11,7 @@ class Agent:
 		activity_area: contains the area of activity.
 	"""
 
-	def __init__(self, sig_locs, temporal_mechanism, spatial_mechanism, cluster, activity_area):
+	def __init__(self, sig_locs, temporal_mechanism, spatial_mechanism, cluster, activity_area, circadian_rhythm):
 		"""
 		Initialises and agent and assigns him temporal and spatial mechanisms of movement.
 		"""
@@ -23,6 +23,7 @@ class Agent:
 		self._current_loc = None
 		self._cluster = cluster
 		self._activity_area = activity_area
+		self.circadian_rhythm = circadian_rhythm
 
 	def __str__(self):
 		return 'Current location: ' + str(self.current_loc) + ' Home position: ' + str(
@@ -95,6 +96,3 @@ class Agent:
 	@activity_area.setter
 	def activity_area(self, new_value):
 		self._activity_area = new_value
-
-	def move(self):
-		pass

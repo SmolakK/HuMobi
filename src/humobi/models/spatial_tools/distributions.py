@@ -47,17 +47,17 @@ def commute_distances(trajectories_frame, quantity=2):
 	return distances
 
 
-def commute_distances_to_2d_distribution(commute_distances_frame, layer, crs=None, return_centroids=False):
+def commute_distances_to_2d_distribution(commute_distances, layer, crs=None, return_centroids=False):
 	"""
 	Converts commuting distances into 2D distribution of median commuting distances.
-	:param commute_distances_frame: DataFrame with commuting distances to important locations
+	:param commute_distances: DataFrame with commuting distances to important locations
 	:param layer: Aggregation layer
 	:param crs: CRS of output data
 	:param return_centroids: Whether full layer or centroids should be returned
 	:return: 2D distribution of median commuting distances
 	"""
 	commute_distributions = {}
-	for k,v in commute_distances_frame.items():
+	for k,v in commute_distances.items():
 		commute_distances_frame = gpd.GeoDataFrame(v.reset_index(drop=True), geometry=0)
 		if crs:
 			pass
@@ -65,8 +65,11 @@ def commute_distances_to_2d_distribution(commute_distances_frame, layer, crs=Non
 			crs = layer.crs
 		multiple_commutes = []
 		for n_place in range(commute_distances_frame.shape[1]//2):
-			current_commute = gpd.GeoDataFrame(commute_distances_frame.iloc[:, n_place * 2:(n_place + 1) * 2],
-											   geometry=commute_distances_frame.iloc[:,((n_place+1)*2)-1])
+			cut_start = n_place*2
+			cut_end = cut_start + 2
+			current_commute = gpd.GeoDataFrame(commute_distances_frame.iloc[:, cut_start:cut_end],
+											   geometry=commute_distances_frame.columns[cut_end-1],
+											   crs=crs)
 			grouped = gpd.tools.sjoin(current_commute, layer, how='right').groupby(level=0)  # TODO: check this stuff
 			to_concat = []
 			for uid, vals in grouped:

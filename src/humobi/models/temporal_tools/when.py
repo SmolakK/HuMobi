@@ -3,17 +3,17 @@ from humobi.models.spatial_tools.misc import normalize_array
 WEIGHT = False
 
 
-def when(user,slot,circadian_rhythm):
+def when(agent, slot):
 	"""
 	WHEN module of the model
-	:param user: Currently processed user
+	:param agent: Currently processed user
 	:param slot: Currently processed time slot
 	:param circadian_rhythm: Circadian rhythm of the group within which the user is
 	"""
 	if WEIGHT:
-		probabilities = normalize_array(np.array([circadian_rhythm[user.cluster][slot.hour],
-												circadian_rhythm[user.cluster][slot.hour + 24],
-												circadian_rhythm[user.cluster][slot.hour + 48]]))
-		user.current_loc = np.random.choice([0, 1, 2], size=1, p=probabilities)[0]
+		probabilities = normalize_array(np.array([agent.circadian_rhythm[slot.hour],
+												  agent.circadian_rhythm[slot.hour + 24],
+												  agent.circadian_rhythm[slot.hour + 48]]))
+		agent.current_loc = np.random.choice([0, 1, 2], size=1, p=probabilities)[0]
 	if not WEIGHT:
-		user.current_loc = int(circadian_rhythm[user.cluster][slot.hour])
+		agent.current_loc = int(agent.circadian_rhythm[slot.hour])
