@@ -17,7 +17,7 @@ def calculate_distances(gs1, gs2):
 	return gs1.distance(gs2)
 
 
-def commute_distances(trajectories_frame, quantity=2):
+def commute_distances(trajectories_frame, sig_frame=None, quantity=2):
 	"""
 	Calculates the commuting distances for each user. Quantity regulates the number of locations to which the distance
 	is calculated.
@@ -25,7 +25,8 @@ def commute_distances(trajectories_frame, quantity=2):
 	:param quantity: The number of locations to which the distance will be calculated
 	:return: The DataFrame of distances to the locations
 	"""
-	sig_frame = rank_freq(trajectories_frame, quantity=quantity)
+	if sig_frame is None:
+		sig_frame = rank_freq(trajectories_frame, quantity=quantity)
 	indices = []
 	distances = {}
 	for n in range(quantity - 1):
