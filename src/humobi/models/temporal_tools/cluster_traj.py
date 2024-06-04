@@ -13,86 +13,100 @@ from itertools import product
 import warnings
 
 
-def cluster_trajectories(trajectories_frame, length = 24, quantity = 3, weights = True, clust_alg = DBSCAN(),
-                         aux_cols = None):
-	"""
-	Extracts circadian rhythms and clusters users by them.
-	:param trajectories_frame: TrajectoriesFrame class object
-	:param length: The length of circadian rhythms to extract
-	:param quantity: The number of top most important locations to consider
-	:param weights: Whether the algorithm should calculate the weight for each of the locations rather than choose the
-	most often visited
-	:param clust_alg: Clustering algorithm to make clusterization
-	:param aux_cols: Auxiliary columns in the data with the contextual information
-	:return: Clustered circadian rhythms, association of users to clusters, the ratio of users in clusters
-	"""
-	if aux_cols:
-		weights = True
-		warnings.warn("Warning: when aux cols are passed, the model is enforced to represent abstract trajectory as a set of probabilities")
-		if len(aux_cols) > 1:
-			unique_combs = [z for z in product(*[list(pd.unique(trajectories_frame[col].dropna())) for col in aux_cols])]
-		else:
-			unique_combs = [pd.unique(trajectories_frame[col].dropna()) for col in aux_cols][0]
-	else:
-		aux_cols = []
-		unique_combs = []
-	top_places = rank_freq(trajectories_frame, quantity = 3, nighttime_approach=False)
-	abstract_traj = {}
-	if length <= 24:
-		trajectories_frame['hod'] = trajectories_frame.index.get_level_values(1).hour
-	grouped = trajectories_frame.groupby(level=0)
-	for uid, vals in grouped:
-		extract = vals.groupby(['labels',*aux_cols, 'hod']).count().iloc[:, 0].unstack().fillna(0)
-		sig_places = []
-		for n in range(quantity):
-			sig_place = top_places.loc[uid][n]
-			if pd.notna(sig_place):
-				sig_place_label = int(vals[vals['geometry'] == sig_place]['labels'].iloc[0])
-				extraction_combs = pd.concat([pd.DataFrame(index=unique_combs),extract.loc[sig_place_label,:]],axis=1).fillna(0).T
-				sig_places.append(extraction_combs)
-			else:
-				if len(unique_combs) > 0:
-					sig_places.append(np.zeros((len(unique_combs),length)))
-				else:
-					sig_places.append(np.zeros((1, length)))
-		stacked = np.vstack(sig_places)
-		others = extract.sum(0) - stacked.sum(0)
-		stacked = np.vstack((stacked,others))
-		if stacked.shape[1] != 24:
-			fillup = np.zeros(((len(unique_combs)*quantity+1, 24-stacked.shape[1])))
-			stacked = np.hstack([stacked,fillup])
-		if weights:
-			abstract_traj[uid] = stacked/stacked.sum(axis=0) #Circadian rhythm
-		else:
-			abstract_traj[uid] = np.argmax(stacked,axis=0) #most commonly visited place at given time (0-HOME, 1 - WORK, 2 - OTHER for q=2)
-	reshaped = np.concatenate([np.nan_to_num(x.reshape(1, -1),0) for x in abstract_traj.values()], 0) # slices to n hours strips and sets them horizontally in a matrix
-	cdist = np.zeros((reshaped.shape[0],reshaped.shape[0]))
-	for n in range(reshaped.shape[0]):
-		for m in range(reshaped.shape[0]):
-			cdist[m,n] = stats.wasserstein_distance(reshaped[n,:],reshaped[m,:])
-	tries = {}
-	for z in range(1,5000): #find optimal clustering
-		eps = z/1000
-		try:
-			clust_alg = DBSCAN(metric='precomputed',min_samples=4,eps=eps)
-			clust_alg.fit(cdist)
-			sh = silhouette_score(cdist,clust_alg.labels_,metric='precomputed')
-			tries[eps] = sh
-		except:
-			pass
-	try:
-		eps = max(tries, key=tries.get)
-	except ValueError:
-		eps = 1
-	clust_alg = DBSCAN(metric='precomputed', min_samples=4, eps=eps)
-	clust_alg.fit(cdist)
-	labels = clust_alg.labels_
-	cluster_association = {k: v for k, v in zip(abstract_traj.keys(), clust_alg.labels_)}
-	abstract_collection = pd.DataFrame(reshaped, index=labels)
-	cluster_share = Counter([x for x in cluster_association.values() if x != -1])
-	cluster_share = {k: v / sum(cluster_share.values()) for k, v in cluster_share.items()}
-	return abstract_collection, cluster_association, cluster_share, unique_combs
+def extract_unique_combinations(trajectories_frame, aux_cols):
+    if aux_cols:
+        warnings.warn("Warning: when aux cols are passed, the model is enforced to represent abstract trajectory as a set of probabilities")
+        if len(aux_cols) > 1:
+            unique_combs = [z for z in product(*[list(pd.unique(trajectories_frame[col].dropna())) for col in aux_cols])]
+        else:
+            unique_combs = [pd.unique(trajectories_frame[aux_cols[0]].dropna())]
+    else:
+        unique_combs = []
+    return unique_combs
 
+
+def prepare_abstract_trajectory(grouped, top_places, unique_combs, quantity, length, aux_cols, weights):
+    abstract_traj = {}
+    for uid, vals in grouped:
+        group_cols = ['labels', 'hod'] + (aux_cols if aux_cols else [])
+        extract = vals.groupby(group_cols).count().iloc[:, 0].unstack().fillna(0)
+        sig_places = []
+
+        for n in range(quantity):
+            sig_place = top_places.loc[uid][n]
+            if sig_place is not None and sig_place is not np.nan:
+                sig_place_label = int(vals[vals['geometry'] == sig_place]['labels'].iloc[0])
+                extraction_combs = pd.concat([pd.DataFrame(index=unique_combs), extract.loc[sig_place_label, :]], axis=1).fillna(0).T
+                sig_places.append(extraction_combs)
+            else:
+                sig_places.append(np.zeros((len(unique_combs), length) if aux_cols else (1, length)))
+
+        stacked = np.vstack(sig_places)
+        others = extract.sum(0) - stacked.sum(0)
+        stacked = np.vstack((stacked, others))
+        if weights:
+            abstract_traj[uid] = stacked / stacked.sum(axis=0)  # Circadian rhythm
+        else:
+            abstract_traj[uid] = np.argmax(stacked, axis=0)  # Most commonly visited place at given time
+    return abstract_traj
+
+def calculate_distance_matrix(abstract_traj):
+    reshaped = np.concatenate([x.reshape(1, -1) for x in abstract_traj.values()], 0)
+    cdist = np.zeros((reshaped.shape[0], reshaped.shape[0]))
+    for n in range(reshaped.shape[0]):
+        for m in range(reshaped.shape[0]):
+            cdist[m, n] = stats.wasserstein_distance(reshaped[n, :], reshaped[m, :])
+    return cdist
+
+def find_optimal_clustering(cdist):
+    tries = {}
+    for z in range(1, 5000):  # Find optimal clustering
+        eps = z / 1000
+        try:
+            clust_alg = DBSCAN(metric='precomputed', min_samples=4, eps=eps)
+            clust_alg.fit(cdist)
+            sh = silhouette_score(cdist, clust_alg.labels_, metric='precomputed')
+            tries[eps] = sh
+        except:
+            pass
+    return max(tries, key=tries.get)
+
+def cluster_trajectories(trajectories_frame, top_places = None, length=24, quantity=2, weights=True, clust_alg=DBSCAN(), aux_cols=None):
+    """
+    Extracts circadian rhythms and clusters users by them.
+
+    :param trajectories_frame: TrajectoriesFrame class object
+    :param length: The length of circadian rhythms to extract
+    :param quantity: The number of top most important locations to consider
+    :param weights: Whether the algorithm should calculate the weight for each of the locations rather than choose the
+    most often visited
+    :param clust_alg: Clustering algorithm to make clustering
+    :param aux_cols: Auxiliary columns in the data with the contextual information
+    :return: Clustered circadian rhythms, association of users to clusters, the ratio of users in clusters
+    """
+    if length <= 24:
+        trajectories_frame['hod'] = trajectories_frame.index.get_level_values(1).hour
+
+    unique_combs = extract_unique_combinations(trajectories_frame, aux_cols)
+    if top_places is None:
+        print("SSSSSSSSSSSSSSSSSS")
+        top_places = rank_freq(trajectories_frame, quantity)
+    grouped = trajectories_frame.groupby(level=0)
+
+    abstract_traj = prepare_abstract_trajectory(grouped, top_places, unique_combs, quantity, length, aux_cols, weights)
+    cdist = calculate_distance_matrix(abstract_traj)
+    optimal_eps = find_optimal_clustering(cdist)
+
+    clust_alg = DBSCAN(metric='precomputed', min_samples=4, eps=optimal_eps)
+    clust_alg.fit(cdist)
+    labels = clust_alg.labels_
+
+    cluster_association = {k: v for k, v in zip(abstract_traj.keys(), labels)}
+    abstract_collection = pd.DataFrame(np.concatenate([x.reshape(1, -1) for x in abstract_traj.values()], 0), index=labels)
+    cluster_share = Counter([x for x in cluster_association.values() if x != -1])
+    cluster_share = {k: v / sum(cluster_share.values()) for k, v in cluster_share.items()}
+
+    return abstract_collection, cluster_association, cluster_share
 
 def circadian_rhythm_extraction(circadian_collection, combs, quantity, length, weighted = False):
 	"""

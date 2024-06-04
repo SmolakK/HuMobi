@@ -127,7 +127,7 @@ def matchfinder(gs, gpu=True):
 	return output
 
 
-@jit
+@jit(nopython=True)
 def _repeatfinder_dense(s1, s2):
 	output = np.zeros(len(s2))
 	for pos1 in range(0, len(s2)):
@@ -144,7 +144,7 @@ def _repeatfinder_dense(s1, s2):
 	return max(output)-1 / len(s2)-1
 
 
-@jit
+@jit(nopython=True)
 def _repeatfinder_sparse(s1, s2):
 	matrix = [[0 for x in range(len(s2))] for x in range(len(s1))]
 	for i in range(len(s1)):
