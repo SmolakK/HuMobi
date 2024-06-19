@@ -1,5 +1,5 @@
 # HuMobi
-* HuMobi is going now through a major update! If you face any troubles, be sure we are working on removing these bugs right now <dev team> *
+<b> HuMobi is going now through a major update! If you face any troubles, be sure we are working on removing these bugs right now <dev team> </b>
 
 You can find an interactive version of this README on Google Colab here: https://colab.research.google.com/drive/1nmYJDBYr1nN89LLx2NKP6Q5bqQ2mugbO?usp=sharing
  
