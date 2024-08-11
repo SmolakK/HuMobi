@@ -68,7 +68,7 @@ def infer_geometry(trajectories_frame):
 			latitude_column = 'lat'
 			longitude_column = 'lon'
 			warnings.warn("TrajectoriesFrame: No coordinates, adding empty floats")
-	return latitude_column, longitude_column
+	return longitude_column, latitude_column
 
 
 def infer_id(trajectories_frame):
