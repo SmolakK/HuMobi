@@ -33,7 +33,7 @@ If you use this library please cite the below work:
 Smolak, K., Siła-Nowicka, K., Delvenne, J. C., Wierzbiński, M., & Rohm, W. (2021). The impact of human mobility data scales and processing on movement predictability. Scientific Reports, 11(1), 1-10.
 ```
 
-### What HuMobi does?
+### What does HuMobi do?
 
 It is a constantly expanding project, and new functionalities are added as you read that text. Currently, I am implementing human mobility models - these are not functioning properly yet and are not covered in the documentation.
 
