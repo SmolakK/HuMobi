@@ -21,10 +21,19 @@ DataFrames and Geopandas GeoDataFrames and facilitates operating on a very speci
 
 This library is mainly devoted to processing individual mobility trajectories and focuses on human mobility prediction and modelling. Initially, it was implemented during PhD studies of Kamil Smolak, a PhD candidate at the Wrocław University of Environmental and Life Sciences.
 
+
+### Funding
+
+The work was financed under the National Science Centre (NCN), Poland research grant “Explanation and mitigation of the bias in human mobility predictions” no. 2021/41/N/HS4/03084
+
+Project title: Explanation and mitigation of the bias in human mobility predictions (polish title: Wyjaśnienie i łagodzenie obciążeń statystycznych w prognozach mobilności ludzi)
+
 If you use this library please cite the below work:
 ```
 Smolak, K., Siła-Nowicka, K., Delvenne, J. C., Wierzbiński, M., & Rohm, W. (2021). The impact of human mobility data scales and processing on movement predictability. Scientific Reports, 11(1), 1-10.
 ```
+
+### What HuMobi does?
 
 It is a constantly expanding project, and new functionalities are added as you read that text. Currently, I am implementing human mobility models - these are not functioning properly yet and are not covered in the documentation.
 
